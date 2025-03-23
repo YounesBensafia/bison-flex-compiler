@@ -54,5 +54,28 @@ DI      {printf("mc_DI\n"); rechercher(yytext, "MC_DI", "Mot clé", 0, 1); retur
 ":"     {printf("COLON\n"); rechercher(yytext, "COlON", "Séparateur", 0, 1); return colon;}
 "."     {printf("DOT\n"); rechercher(yytext, "DOT", "Séparateur", 0, 1); return dot;}
 
+{IDF} {
+    yylval.string = strdup(yytext); 
+    rechercher(yytext, "IDF", "Identifiant", 0, 0);
+    return idf;
+}
+
+{INTEGER} {
+    yylval.entier=atoi(yytext); rechercher(yytext, "INTEGER", "INTEGER", atof(yytext), 0); return integer;
+}
+
+{FLOAT} {
+    yylval.entier=atof(yytext); rechercher(yytext, "FLOAT", "FLOAT", atof(yytext), 0); return float;
+}
+
+{char} { 
+    yylval.caracter=yytext[1]; rechercher(yytext[1], "CHAR", "CHAR", 0, 0); return caracter; 
+}
+
+{commentaire} 
+
+{string} { 
+    yylval.string=strdup(yytext); addConstant(yytext, "STRING", "STRING", 0, 0); return string; 
+}
 
 
