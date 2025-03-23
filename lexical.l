@@ -1,19 +1,24 @@
 %{
 #include <stdio.h>
+#include "SymbolTable.h"
+#include "parser.tab.h"
+
 %}
 
 
 lettre         [a-zA-Z]
 NATUREL        {chiffre}+
+INTEGER        [\-]?{NATUREL}
+FLOAT          [\-]?{NATUREL}\.{NATUREL}
 chiffre        [0-9]
-IDF {lettre}({lettre}|{chiffre}|\_){0,9}
-REALNEGATIF    -{NATUREL}\.{NATUREL}
-REALPOSITIF    \+{NATUREL}\.{NATUREL}
+char           \'.\'
+string         \".+\"   
 commentaire %.*;
+IDF {lettre}({lettre}|{chiffre}|\_){0,9}
 
 
 %%
-DATA    {printf("MC_DATA\n");}
+DATA    {printf("MC_DATA\n"); rechercher(yytext, "MC_DATA", "Mot clé", 0, 1); return mc_data;}
 END     {printf("MC_END\n");}
 CODE    {printf("MC_CODE\n");}
 
@@ -46,6 +51,8 @@ DI      {printf("mc_DI\n");}
 "="     {printf("EQ\n");}
 "("     {printf("PARAO\n");}
 ")"     {printf("PARAF\n");}
+":"     {printf("COLON\n");}
+"."     {printf("DOT\n");}
 
 
 
