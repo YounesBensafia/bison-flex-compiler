@@ -20,8 +20,7 @@ void yyerror(const char *s);
 %%
 
 instruction_Do_While : 
-    mc_do mc_if paraO condition paraF inst mc_else inst mc_while paraO condition paraF pvg { printf("Instruction do-while with else executed successfully.\n"); YYACCEPT; }
-    | mc_do mc_if paraO condition paraF inst mc_while paraO condition paraF pvg { printf("Instruction do-while executed successfully.\n"); YYACCEPT; }
+    mc_do mc_if paraO condition paraF inst mc_else inst mc_while paraO condition paraF pvg { printf("Program executed successfully.\n"); YYACCEPT; }
 ;
 
 oper_math : plus 

@@ -19,40 +19,40 @@ IDF {lettre}({lettre}|{chiffre}|\_){0,9}
 
 %%
 DATA    {printf("MC_DATA\n"); rechercher(yytext, "MC_DATA", "Mot clé", 0, 1); return mc_data;}
-END     {printf("MC_END\n");}
-CODE    {printf("MC_CODE\n");}
+END     {printf("MC_END\n"); rechercher(yytext, "MC_END", "Mot clé", 0, 1); return mc_end;}
+CODE    {printf("MC_CODE\n"); rechercher(yytext, "MC_CODE", "Mot clé", 0, 1); return mc_code;}
 
-VECTOR  {printf("MC_VECTOR\n");}
-CONST   {printf("MC_CONST\n");}
-INTEGER {printf("MC_INTEGER\n");}
-FLOAT   {printf("MC_FLOAT\n");}
-CHAR    {printf("MC_CHAR\n");}
-STRING  {printf("MC_STRING\n");}
+VECTOR  {printf("MC_VECTOR\n"); rechercher(yytext, "MC_VECTOR", "Mot clé", 0, 1); return MC_VECTOR;}
+CONST   {printf("MC_CONST\n"); rechercher(yytext, "MC_CONST", "Mot clé", 0, 1); return mc_const;}
+INTEGER {printf("MC_INTEGER\n"); rechercher(yytext, "MC_INTEGER", "Mot clé", 0, 1); return mc_integer;}
+FLOAT   {printf("MC_FLOAT\n"); rechercher(yytext, "MC_FLOAT", "Mot clé", 0, 1); return mc_float;}
+CHAR    {printf("MC_CHAR\n"); rechercher(yytext, "MC_CHAR", "Mot clé", 0, 1); return mc_char;}
+STRING  {printf("MC_STRING\n"); rechercher(yytext, "MC_STRING", "Mot clé", 0, 1); return mc_string;}
 
-IF      {printf("MC_IF\n");}
-ELSE    {printf("MC_ELSE\n");}
-FOR     {printf("MC_FOR\n");}
+IF      {printf("MC_IF\n"); rechercher(yytext, "MC_IF", "Mot clé", 0, 1); return mc_if;}
+ELSE    {printf("MC_ELSE\n"); rechercher(yytext, "MC_ELSE", "Mot clé", 0, 1); return mc_else;}
+FOR     {printf("MC_FOR\n"); rechercher(yytext, "MC_FOR", "Mot clé", 0, 1); return mc_for;}
 
-AND     {printf("MC_AND\n");}
-OR      {printf("MC_OR\n");}
-NOT     {printf("MC_NOT\n");}
+AND     {printf("MC_AND\n"); rechercher(yytext, "MC_IF", "Mot clé", 0, 1); return mc_if;}
+OR      {printf("MC_OR\n"); rechercher(yytext, "MC_OR", "Mot clé", 0, 1); return mc_or;}
+NOT     {printf("MC_NOT\n"); rechercher(yytext, "MC_NOT", "Mot clé", 0, 1); return mc_not;}
 
-GE      {printf("mc_GE\n");}
-L       {printf("mc_L\n");}
+GE      {printf("mc_GE\n"); rechercher(yytext, "MC_GE", "Mot clé", 0, 1); return mc_ge;}
+L       {printf("mc_L\n"); rechercher(yytext, "MC_L", "Mot clé", 0, 1); return mc_l;}
 
-LE      {printf("mc_LE\n");}
-DI      {printf("mc_DI\n");}
+LE      {printf("mc_LE\n"); rechercher(yytext, "MC_LE", "Mot clé", 0, 1); return mc_le;}
+DI      {printf("mc_DI\n"); rechercher(yytext, "MC_DI", "Mot clé", 0, 1); return mc_di;}
 
-";"     {printf("PVGR\n");}
-"+"     {printf("PLUS\n");}
-"*"     {printf("MULT\n");}
-"-"     {printf("MINUS\n");}
-"/"     {printf("DIV\n");}
-"="     {printf("EQ\n");}
-"("     {printf("PARAO\n");}
-")"     {printf("PARAF\n");}
-":"     {printf("COLON\n");}
-"."     {printf("DOT\n");}
+";"     {printf("PVGR\n"); rechercher(yytext, "PVG", "Séparateur", 0, 1); return pvg;}
+"+"     {printf("PLUS\n"); rechercher(yytext, "SUM", "Séparateur", 0, 1); return sum;}
+"*"     {printf("MULT\n"); rechercher(yytext, "MUL", "Séparateur", 0, 1); return mul;}
+"-"     {printf("MINUS\n"); rechercher(yytext, "MINUS", "Séparateur", 0, 1); return minus;}
+"/"     {printf("DIV\n"); rechercher(yytext, "DIV", "Séparateur", 0, 1); return div;}
+"="     {printf("EQ\n"); rechercher(yytext, "EQ", "Séparateur", 0, 1); return eq;} 
+"("     {printf("PARAO\n"); rechercher(yytext, "PARAO", "Séparateur", 0, 1); return PARAO;}
+")"     {printf("PARAF\n"); rechercher(yytext, "PARAF", "Séparateur", 0, 1); return paraf;}
+":"     {printf("COLON\n"); rechercher(yytext, "COlON", "Séparateur", 0, 1); return colon;}
+"."     {printf("DOT\n"); rechercher(yytext, "DOT", "Séparateur", 0, 1); return dot;}
 
 
 
