@@ -54,24 +54,39 @@ extern int yydebug;
     YYEOF = 0,                     /* "end of file"  */
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
-    mc_do = 258,                   /* mc_do  */
-    mc_if = 259,                   /* mc_if  */
-    mc_else = 260,                 /* mc_else  */
-    mc_while = 261,                /* mc_while  */
-    mc_data = 262,                 /* mc_data  */
-    idf = 263,                     /* idf  */
-    REELN = 264,                   /* REELN  */
-    REELP = 265,                   /* REELP  */
-    pvg = 266,                     /* pvg  */
-    gt = 267,                      /* gt  */
-    ls = 268,                      /* ls  */
-    plus = 269,                    /* plus  */
-    produit = 270,                 /* produit  */
-    minus = 271,                   /* minus  */
-    divi = 272,                    /* divi  */
-    eq = 273,                      /* eq  */
-    paraF = 274,                   /* paraF  */
-    paraO = 275                    /* paraO  */
+    mc_end = 258,                  /* mc_end  */
+    mc_data = 259,                 /* mc_data  */
+    mc_code = 260,                 /* mc_code  */
+    MC_VECTOR = 261,               /* MC_VECTOR  */
+    mc_const = 262,                /* mc_const  */
+    mc_integer = 263,              /* mc_integer  */
+    mc_float = 264,                /* mc_float  */
+    mc_char = 265,                 /* mc_char  */
+    mc_string = 266,               /* mc_string  */
+    mc_if = 267,                   /* mc_if  */
+    mc_else = 268,                 /* mc_else  */
+    mc_for = 269,                  /* mc_for  */
+    mc_or = 270,                   /* mc_or  */
+    mc_not = 271,                  /* mc_not  */
+    mc_ge = 272,                   /* mc_ge  */
+    mc_l = 273,                    /* mc_l  */
+    mc_di = 274,                   /* mc_di  */
+    mc_le = 275,                   /* mc_le  */
+    idf = 276,                     /* idf  */
+    INTEGER = 277,                 /* INTEGER  */
+    FLOAT = 278,                   /* FLOAT  */
+    CHAR = 279,                    /* CHAR  */
+    STRING = 280,                  /* STRING  */
+    pvg = 281,                     /* pvg  */
+    sum = 282,                     /* sum  */
+    mul = 283,                     /* mul  */
+    minus = 284,                   /* minus  */
+    PARAO = 285,                   /* PARAO  */
+    paraf = 286,                   /* paraf  */
+    colon = 287,                   /* colon  */
+    dot = 288,                     /* dot  */
+    DIV = 289,                     /* DIV  */
+    eq = 290                       /* eq  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -87,7 +102,7 @@ union YYSTYPE
    char* string;
    char caracter;
 
-#line 91 "parser.tab.h"
+#line 106 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

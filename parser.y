@@ -13,41 +13,29 @@ void yyerror(const char *s);
    char caracter;
 }
 
-%token <string> mc_do mc_if mc_else mc_while mc_data
-%token <string> idf <real> REELN <real> REELP
-%token pvg gt ls plus produit minus divi eq paraF paraO
+%token mc_end
+%token mc_data mc_code MC_VECTOR mc_const mc_integer mc_float mc_char mc_string mc_if mc_else mc_for mc_or mc_not mc_ge mc_l mc_di mc_le
+%token <string> idf <entier> INTEGER <real> FLOAT <string> CHAR <string> STRING
+%token <string> pvg sum mul minus PARAO paraf colon dot DIV eq
 
 %%
 
 instruction_Do_While : 
-    mc_do mc_if paraO condition paraF inst mc_else inst mc_while paraO condition paraF pvg { printf("Program executed successfully.\n"); YYACCEPT; }
+    idf mc_data declartion mc_end mc_code instructions mc_end mc_end { printf("Program executed successfully.\n"); YYACCEPT; }
 ;
 
-oper_math : plus 
-          | minus 
-          | divi 
-          | produit
+declartion : type colon pvg
 ;
 
-oper : ls 
-     | gt
+type : mc_integer
+       | mc_float
+       | mc_char
+       | mc_string
+
+;
+instructions : mc_if
 ;
 
-inst: var eq instplus pvg
-    | inst var eq instplus pvg
-;
-
-instplus : var oper_math var instplus 
-         | var
-;
-
-condition : var oper var
-;
-
-var : REELN 
-    | REELP 
-    | idf
-;
 
 %%
 

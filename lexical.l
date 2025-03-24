@@ -47,7 +47,7 @@ DI      {printf("mc_DI\n"); rechercher(yytext, "MC_DI", "Mot clé", 0, 1); retur
 "+"     {printf("PLUS\n"); rechercher(yytext, "SUM", "Séparateur", 0, 1); return sum;}
 "*"     {printf("MULT\n"); rechercher(yytext, "MUL", "Séparateur", 0, 1); return mul;}
 "-"     {printf("MINUS\n"); rechercher(yytext, "MINUS", "Séparateur", 0, 1); return minus;}
-"/"     {printf("DIV\n"); rechercher(yytext, "DIV", "Séparateur", 0, 1); return div;}
+"/"     {printf("DIV\n"); rechercher(yytext, "DIV", "Séparateur", 0, 1); return DIV;}
 "="     {printf("EQ\n"); rechercher(yytext, "EQ", "Séparateur", 0, 1); return eq;} 
 "("     {printf("PARAO\n"); rechercher(yytext, "PARAO", "Séparateur", 0, 1); return PARAO;}
 ")"     {printf("PARAF\n"); rechercher(yytext, "PARAF", "Séparateur", 0, 1); return paraf;}
@@ -61,21 +61,23 @@ DI      {printf("mc_DI\n"); rechercher(yytext, "MC_DI", "Mot clé", 0, 1); retur
 }
 
 {INTEGER} {
-    yylval.entier=atoi(yytext); rechercher(yytext, "INTEGER", "INTEGER", atof(yytext), 0); return integer;
+    yylval.entier=atoi(yytext); rechercher(yytext, "INTEGER", "INTEGER", atof(yytext), 0); return INTEGER;
 }
 
 {FLOAT} {
-    yylval.entier=atof(yytext); rechercher(yytext, "FLOAT", "FLOAT", atof(yytext), 0); return float;
+    yylval.entier=atof(yytext); rechercher(yytext, "FLOAT", "FLOAT", atof(yytext), 0); return FLOAT;
 }
 
 {char} { 
-    yylval.caracter=yytext[1]; rechercher(yytext[1], "CHAR", "CHAR", 0, 0); return caracter; 
+    yylval.caracter = yytext[1]; 
+    rechercher(yytext, "CHAR", "CHAR", 0, 0); 
+    return CHAR; 
 }
 
 {commentaire} 
 
 {string} { 
-    yylval.string=strdup(yytext); addConstant(yytext, "STRING", "STRING", 0, 0); return string; 
+    yylval.string=strdup(yytext); rechercher(yytext, "STRING", "STRING", 0, 0); return STRING; 
 }
 
 
