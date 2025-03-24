@@ -25,14 +25,22 @@ Program :
     idf mc_data declartions_list mc_end mc_code instruction_list mc_end mc_end { printf("Program executed successfully.\n"); YYACCEPT; }
 ;
 
-declartions_list : type colon liste_vars pvg 
-           | idf '[' INTEGER virgule INTEGER ']' colon type pvg
+declartions_list : type colon idf liste_vars pvg declartions_list
+           | vector | constante pvg
 ;
 
-liste_vars : idf
-           | virgule idf
+liste_vars : virgule idf { printf("Entered liste_vars with virgule idf\n"); }
+            |
 ;
 
+vector : idf '[' INTEGER virgule INTEGER colon type ']' vector_list
+;
+
+vector_list : pvg 
+         | pvg idf '[' INTEGER virgule INTEGER colon type ']' vector_list
+;
+
+constante: mc_const colon idf liste_vars
 
 type : mc_integer
        | mc_float
@@ -41,7 +49,7 @@ type : mc_integer
 ;
 
 instruction_list :  instruction
-                | instruction_list instruction
+                | instruction instruction_list
 ;
 
 instruction : assignment
@@ -82,12 +90,12 @@ factor : INTEGER
        | PARAO expression paraf
 ;
 
-condition : expression mc_ge expression
-          | expression mc_le expression
-          | expression mc_l expression
-          | expression mc_di expression
-          | expression mc_not expression
-          | expression mc_or expression
+condition : expression dot mc_ge dot expression
+          | expression dot mc_le dot expression
+          | expression dot mc_l dot expression
+          | expression dot mc_di dot expression
+          | expression dot mc_not dot expression
+          | expression dot mc_or dot expression
 ;
 ;
 

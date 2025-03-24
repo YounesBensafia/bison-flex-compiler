@@ -1,0 +1,5 @@
+younes 
+DATA
+INTEGER : an , vef ;
+FLOAT : jdj, dkdk;
+END
