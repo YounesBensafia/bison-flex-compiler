@@ -72,21 +72,24 @@ extern int yydebug;
     mc_l = 273,                    /* mc_l  */
     mc_di = 274,                   /* mc_di  */
     mc_le = 275,                   /* mc_le  */
-    idf = 276,                     /* idf  */
-    INTEGER = 277,                 /* INTEGER  */
-    FLOAT = 278,                   /* FLOAT  */
-    CHAR = 279,                    /* CHAR  */
-    STRING = 280,                  /* STRING  */
-    pvg = 281,                     /* pvg  */
-    sum = 282,                     /* sum  */
-    mul = 283,                     /* mul  */
-    minus = 284,                   /* minus  */
-    PARAO = 285,                   /* PARAO  */
-    paraf = 286,                   /* paraf  */
-    colon = 287,                   /* colon  */
-    dot = 288,                     /* dot  */
-    DIV = 289,                     /* DIV  */
-    eq = 290                       /* eq  */
+    mc_read = 276,                 /* mc_read  */
+    mc_display = 277,              /* mc_display  */
+    idf = 278,                     /* idf  */
+    INTEGER = 279,                 /* INTEGER  */
+    FLOAT = 280,                   /* FLOAT  */
+    CHAR = 281,                    /* CHAR  */
+    STRING = 282,                  /* STRING  */
+    pvg = 283,                     /* pvg  */
+    sum = 284,                     /* sum  */
+    mul = 285,                     /* mul  */
+    minus = 286,                   /* minus  */
+    PARAO = 287,                   /* PARAO  */
+    paraf = 288,                   /* paraf  */
+    colon = 289,                   /* colon  */
+    dot = 290,                     /* dot  */
+    DIV = 291,                     /* DIV  */
+    eq = 292,                      /* eq  */
+    virgule = 293                  /* virgule  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -102,7 +105,7 @@ union YYSTYPE
    char* string;
    char caracter;
 
-#line 106 "parser.tab.h"
+#line 109 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
