@@ -1,1 +1,7 @@
-flex lexical.l && bison parser.y && gcc -o compilateur SymbolTable.c lex.yy.c parser.tab.c -lfl
+bison -d parser.y
+flex lexical.l
+gcc -c SymbolTable.c -o SymbolTable.o
+gcc -c parser.tab.c -o parser.o
+gcc -c lex.yy.c -o lexical.o
+gcc -o compilateur SymbolTable.o lexical.o parser.o -lfl
+./compilateur

@@ -54,6 +54,8 @@ DI      {printf("mc_DI\n"); rechercher(yytext, "MC_DI", "Mot clé", 0, 1); retur
 ":"     {printf("COLON\n"); rechercher(yytext, "COLON", "Séparateur", 0, 1); return colon;}
 "."     {printf("DOT\n"); rechercher(yytext, "DOT", "Séparateur", 0, 1); return dot;}
 ","     {printf("VIRGULE\n"); rechercher(yytext, "VIRGULE", "Séparateur", 0, 1); return virgule;}
+"["     {printf("OPENED\n"); rechercher(yytext, "VIRGULE", "Séparateur", 0, 1); return batata;}
+"]"     {printf("CLOSED\n"); rechercher(yytext, "VIRGULE", "Séparateur", 0, 1); return bata;}
 
 {IDF} {
     yylval.string = strdup(yytext); 

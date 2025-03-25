@@ -5,6 +5,9 @@ void yyerror(const char *s);
 #include "SymbolTable.h"
 %}
 
+%start program
+%precedence LOWER
+
 %union 
 { 
    int entier;
@@ -17,27 +20,29 @@ void yyerror(const char *s);
 %token mc_data mc_code MC_VECTOR mc_const mc_integer mc_float
 %token mc_char mc_string mc_if mc_else mc_for mc_or mc_not mc_ge mc_l mc_di mc_le mc_read mc_display
 %token <string> idf <entier> INTEGER <real> FLOAT <string> CHAR <string> STRING
-%token <string> pvg sum mul minus PARAO paraf colon dot DIV eq virgule
+%token <string> pvg sum mul minus PARAO paraf colon dot DIV eq virgule 
+%token batata bata
 
 %%
 
-Program : 
+program : 
     idf mc_data declartions_list mc_end mc_code instruction_list mc_end mc_end { printf("Program executed successfully.\n"); YYACCEPT; }
 ;
 
-declartions_list : type colon idf liste_vars pvg declartions_list
-           | vector | constante pvg
+declartions_list : type colon idf liste_vars declartions_list
+           | vector declartions_list | constante pvg declartions_list
+           | /* empty */
 ;
 
-liste_vars : virgule idf { printf("Entered liste_vars with virgule idf\n"); }
-            |
+liste_vars : virgule idf liste_vars pvg
+            | pvg
+;
+// VECTOR : younes [ 2 , 5 : INTEGER];
+// GITHUB ISSUE: #1 2 conflits par décalage/réduction
+vector :MC_VECTOR colon idf batata INTEGER virgule INTEGER colon type bata vector_list
 ;
 
-vector : idf '[' INTEGER virgule INTEGER colon type ']' vector_list
-;
-
-vector_list : pvg 
-         | pvg idf '[' INTEGER virgule INTEGER colon type ']' vector_list
+vector_list : virgule idf batata INTEGER virgule INTEGER colon type bata vector_list | pvg
 ;
 
 constante: mc_const colon idf liste_vars
