@@ -37,15 +37,17 @@ declartions_list : type colon idf liste_vars declartions_list
 liste_vars : virgule idf liste_vars pvg
             | pvg
 ;
-// VECTOR : younes [ 2 , 5 : INTEGER];
-// GITHUB ISSUE: #1 2 conflits par décalage/réduction
+
 vector :MC_VECTOR colon idf batata INTEGER virgule INTEGER colon type bata vector_list
 ;
 
 vector_list : virgule idf batata INTEGER virgule INTEGER colon type bata vector_list | pvg
 ;
 
-constante: mc_const colon idf liste_vars
+constante: mc_const colon idf eq factor_constante
+
+factor_constante : INTEGER | FLOAT | STRING | CHAR
+;
 
 type : mc_integer
        | mc_float

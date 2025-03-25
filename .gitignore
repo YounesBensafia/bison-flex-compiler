@@ -54,3 +54,5 @@ dkms.conf
 
 compilateur
 lex.yy.c
+parser.tab.h
+parser.tab.c
