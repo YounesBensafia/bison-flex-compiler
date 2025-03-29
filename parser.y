@@ -55,7 +55,8 @@ type : mc_integer
        | mc_string
 ;
 
-instruction_list : instruction instruction_list | instruction
+// GITHUB ISSUE: #3 There is an issue with generating the `mc_read` instruction after an `if-else` block. The parser does not handle this sequence correctly, leading to unexpected behavior or errors.
+instruction_list : instruction instruction_list | 
 ;
 
 instruction : assignment 
@@ -68,7 +69,7 @@ assignment : idf eq expression pvg
 ;
 
 read_display : mc_read PARAO STRING colon arobase idf PARAF pvg
-             | mc_display PARAO  STRING colon idf PARAF pvg
+             | mc_display PARAO STRING colon idf PARAF pvg
 ;
 
 if_condition : mc_if PARAO condition PARAF colon instruction_list else_condition

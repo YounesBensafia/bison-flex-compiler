@@ -29,6 +29,10 @@ FLOAT   {printf("MC_FLOAT\n"); rechercher(yytext, "MC_FLOAT", "Mot clé", 0, 1);
 CHAR    {printf("MC_CHAR\n"); rechercher(yytext, "MC_CHAR", "Mot clé", 0, 1); return mc_char;}
 STRING  {printf("MC_STRING\n"); rechercher(yytext, "MC_STRING", "Mot clé", 0, 1); return mc_string;}
 
+READ    {printf("MC_READ\n"); rechercher(yytext, "MC_READ", "Mot clé", 0, 1); return mc_read;}
+
+DISPLAY {printf("MC_DISPLAY\n"); rechercher(yytext, "MC_DISPLAY", "Mot clé", 0, 1); return mc_display;}
+
 IF      {printf("MC_IF\n"); rechercher(yytext, "MC_IF", "Mot clé", 0, 1); return mc_if;}
 ELSE    {printf("MC_ELSE\n"); rechercher(yytext, "MC_ELSE", "Mot clé", 0, 1); return mc_else;}
 FOR     {printf("MC_FOR\n"); rechercher(yytext, "MC_FOR", "Mot clé", 0, 1); return mc_for;}
