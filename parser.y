@@ -20,7 +20,7 @@ void yyerror(const char *s);
 %token mc_data mc_code MC_VECTOR mc_const mc_integer mc_float
 %token mc_char mc_string mc_if mc_else mc_for mc_or mc_not mc_ge mc_l mc_di mc_le mc_read mc_display
 %token <string> idf <entier> INTEGER <real> FLOAT <string> CHAR <string> STRING
-%token <string> pvg sum mul minus PARAO PARAF colon dot DIV eq virgule 
+%token <string> pvg sum mul minus PARAO PARAF colon dot DIV eq virgule arobase
 %token batata bata
 
 %%
@@ -55,21 +55,20 @@ type : mc_integer
        | mc_string
 ;
 
-instruction_list :  instruction
-                | instruction instruction_list
+instruction_list : instruction instruction_list | instruction
 ;
 
-instruction : assignment
+instruction : assignment 
             | read_display
-            | if_condition
+            | if_condition 
             | loop
 ;
 
 assignment : idf eq expression pvg
 ;
 
-read_display : mc_read PARAO idf PARAF pvg
-             | mc_display PARAO idf PARAF pvg
+read_display : mc_read PARAO STRING colon arobase idf PARAF pvg
+             | mc_display PARAO  STRING colon idf PARAF pvg
 ;
 
 if_condition : mc_if PARAO condition PARAF colon instruction_list else_condition
@@ -79,7 +78,7 @@ else_condition: mc_else colon instruction_list mc_end
                 | mc_end
 ;
 
-loop : mc_for PARAO assignment condition pvg assignment PARAF mc_code instruction_list mc_end
+loop : mc_for PARAO idf colon INTEGER colon INTEGER PARAF instruction_list mc_end
 ;
 
 expression : term

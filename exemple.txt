@@ -13,4 +13,11 @@ CODE
 
     IF (z.GE.15) : 
         F = 15;
+    ELSE : 
+        z = 15;
+    END
+    READ ("sklkflk" : @ younes);
+
+END
+END
 

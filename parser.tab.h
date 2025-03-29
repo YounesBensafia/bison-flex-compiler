@@ -91,8 +91,9 @@ extern int yydebug;
     DIV = 292,                     /* DIV  */
     eq = 293,                      /* eq  */
     virgule = 294,                 /* virgule  */
-    batata = 295,                  /* batata  */
-    bata = 296                     /* bata  */
+    arobase = 295,                 /* arobase  */
+    batata = 296,                  /* batata  */
+    bata = 297                     /* bata  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -108,7 +109,7 @@ union YYSTYPE
    char* string;
    char caracter;
 
-#line 112 "parser.tab.h"
+#line 113 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
