@@ -50,7 +50,7 @@ DI      {printf("mc_DI\n"); rechercher(yytext, "MC_DI", "Mot clé", 0, 1); retur
 "/"     {printf("DIV\n"); rechercher(yytext, "DIV", "Séparateur", 0, 1); return DIV;}
 "="     {printf("EQ\n"); rechercher(yytext, "EQ", "Séparateur", 0, 1); return eq;} 
 "("     {printf("PARAO\n"); rechercher(yytext, "PARAO", "Séparateur", 0, 1); return PARAO;}
-")"     {printf("PARAF\n"); rechercher(yytext, "PARAF", "Séparateur", 0, 1); return paraf;}
+")"     {printf("PARAF\n"); rechercher(yytext, "PARAF", "Séparateur", 0, 1); return PARAF;}
 ":"     {printf("COLON\n"); rechercher(yytext, "COLON", "Séparateur", 0, 1); return colon;}
 "."     {printf("DOT\n"); rechercher(yytext, "DOT", "Séparateur", 0, 1); return dot;}
 ","     {printf("VIRGULE\n"); rechercher(yytext, "VIRGULE", "Séparateur", 0, 1); return virgule;}

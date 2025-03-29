@@ -20,7 +20,7 @@ void yyerror(const char *s);
 %token mc_data mc_code MC_VECTOR mc_const mc_integer mc_float
 %token mc_char mc_string mc_if mc_else mc_for mc_or mc_not mc_ge mc_l mc_di mc_le mc_read mc_display
 %token <string> idf <entier> INTEGER <real> FLOAT <string> CHAR <string> STRING
-%token <string> pvg sum mul minus PARAO paraf colon dot DIV eq virgule 
+%token <string> pvg sum mul minus PARAO PARAF colon dot DIV eq virgule 
 %token batata bata
 
 %%
@@ -34,7 +34,7 @@ declartions_list : type colon idf liste_vars declartions_list
            | /* empty */
 ;
 
-liste_vars : virgule idf liste_vars pvg
+liste_vars : virgule idf liste_vars
             | pvg
 ;
 
@@ -68,15 +68,18 @@ instruction : assignment
 assignment : idf eq expression pvg
 ;
 
-read_display : mc_read PARAO idf paraf pvg
-             | mc_display PARAO idf paraf pvg
+read_display : mc_read PARAO idf PARAF pvg
+             | mc_display PARAO idf PARAF pvg
 ;
 
-if_condition : mc_if PARAO condition paraf mc_code instruction_list mc_end
-             | mc_if PARAO condition paraf mc_code instruction_list mc_end mc_else mc_code instruction_list mc_end
+if_condition : mc_if PARAO condition PARAF colon instruction_list else_condition
 ;
 
-loop : mc_for PARAO assignment condition pvg assignment paraf mc_code instruction_list mc_end
+else_condition: mc_else colon instruction_list mc_end 
+                | mc_end
+;
+
+loop : mc_for PARAO assignment condition pvg assignment PARAF mc_code instruction_list mc_end
 ;
 
 expression : term
@@ -94,7 +97,7 @@ factor : INTEGER
        | CHAR
        | STRING
        | idf
-       | PARAO expression paraf
+       | PARAO expression PARAF
 ;
 
 condition : expression dot mc_ge dot expression

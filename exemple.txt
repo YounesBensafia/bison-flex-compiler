@@ -1,5 +1,16 @@
-younes 
-DATA
-INTEGER : an , vef ;
-FLOAT : jdj, dkdk;
-END
+COMPILER  
+
+DATA  
+    INTEGER: x , y ;  
+    FLOAT: z ;  
+    CONST: PI = 3.14 ;  
+END  
+
+CODE  
+    x = 10 ;  
+    y = 20 ;  
+    z = (x + y) / 2.0;  
+
+    IF (z.GE.15) : 
+        F = 15;
+

@@ -85,7 +85,7 @@ extern int yydebug;
     mul = 286,                     /* mul  */
     minus = 287,                   /* minus  */
     PARAO = 288,                   /* PARAO  */
-    paraf = 289,                   /* paraf  */
+    PARAF = 289,                   /* PARAF  */
     colon = 290,                   /* colon  */
     dot = 291,                     /* dot  */
     DIV = 292,                     /* DIV  */
