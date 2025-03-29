@@ -47,20 +47,20 @@ L       {printf("mc_L\n"); rechercher(yytext, "MC_L", "Mot clé", 0, 1); return 
 LE      {printf("mc_LE\n"); rechercher(yytext, "MC_LE", "Mot clé", 0, 1); return mc_le;}
 DI      {printf("mc_DI\n"); rechercher(yytext, "MC_DI", "Mot clé", 0, 1); return mc_di;}
 
-";"     {printf("PVGR\n"); rechercher(yytext, "PVG", "Séparateur", 0, 1); return pvg;}
-"+"     {printf("PLUS\n"); rechercher(yytext, "SUM", "Séparateur", 0, 1); return sum;}
-"*"     {printf("MULT\n"); rechercher(yytext, "MUL", "Séparateur", 0, 1); return mul;}
-"-"     {printf("MINUS\n"); rechercher(yytext, "MINUS", "Séparateur", 0, 1); return minus;}
-"/"     {printf("DIV\n"); rechercher(yytext, "DIV", "Séparateur", 0, 1); return DIV;}
-"="     {printf("EQ\n"); rechercher(yytext, "EQ", "Séparateur", 0, 1); return eq;} 
-"("     {printf("PARAO\n"); rechercher(yytext, "PARAO", "Séparateur", 0, 1); return PARAO;}
-")"     {printf("PARAF\n"); rechercher(yytext, "PARAF", "Séparateur", 0, 1); return PARAF;}
-"@"     {printf("Arobase\n"); rechercher(yytext, "Arobase", "Séparateur", 0, 1); return arobase;}
-":"     {printf("COLON\n"); rechercher(yytext, "COLON", "Séparateur", 0, 1); return colon;}
-"."     {printf("DOT\n"); rechercher(yytext, "DOT", "Séparateur", 0, 1); return dot;}
-","     {printf("VIRGULE\n"); rechercher(yytext, "VIRGULE", "Séparateur", 0, 1); return virgule;}
-"["     {printf("OPENED\n"); rechercher(yytext, "VIRGULE", "Séparateur", 0, 1); return batata;}
-"]"     {printf("CLOSED\n"); rechercher(yytext, "VIRGULE", "Séparateur", 0, 1); return bata;}
+";"     {printf("PVGR\n"); rechercher(yytext, "PVG", "Séparateur", 0, 2); return pvg;}
+"+"     {printf("PLUS\n"); rechercher(yytext, "SUM", "Séparateur", 0, 2); return sum;}
+"*"     {printf("MULT\n"); rechercher(yytext, "MUL", "Séparateur", 0, 2); return mul;}
+"-"     {printf("MINUS\n"); rechercher(yytext, "MINUS", "Séparateur", 0, 2); return minus;}
+"/"     {printf("DIV\n"); rechercher(yytext, "DIV", "Séparateur", 0, 2); return DIV;}
+"="     {printf("EQ\n"); rechercher(yytext, "EQ", "Séparateur", 0, 2); return eq;} 
+"("     {printf("PARAO\n"); rechercher(yytext, "PARAO", "Séparateur", 0, 2); return PARAO;}
+")"     {printf("PARAF\n"); rechercher(yytext, "PARAF", "Séparateur", 0, 2); return PARAF;}
+"@"     {printf("Arobase\n"); rechercher(yytext, "Arobase", "Séparateur", 0, 2); return arobase;}
+":"     {printf("COLON\n"); rechercher(yytext, "COLON", "Séparateur", 0, 2); return colon;}
+"."     {printf("DOT\n"); rechercher(yytext, "DOT", "Séparateur", 0, 2); return dot;}
+","     {printf("VIRGULE\n"); rechercher(yytext, "VIRGULE", "Séparateur", 0, 2); return virgule;}
+"["     {printf("OPENED\n"); rechercher(yytext, "VIRGULE", "Séparateur", 0, 2); return batata;}
+"]"     {printf("CLOSED\n"); rechercher(yytext, "VIRGULE", "Séparateur", 0, 2); return bata;}
 
 {IDF} {
     yylval.string = strdup(yytext); 
