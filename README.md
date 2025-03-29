@@ -1,6 +1,6 @@
 ## Execute the Commands Inside `exemple.txt`
 
-The following steps compile and build the compiler:
+The following steps compile and build the compiler. You will find them in `commands.bat`: 
 
 ```sh
 bison -d parser.y
