@@ -1,4 +1,4 @@
-## Execute the Commands Inside `exemple.txt`
+## Execute the Commands Inside `commands.bat`
 
 The following steps compile and build the compiler. You will find them in `commands.bat`: 
 
