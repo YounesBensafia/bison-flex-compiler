@@ -3,6 +3,8 @@
 int yylex(void);           
 void yyerror(const char *s);
 #include "SymbolTable.h"
+
+int nb_ligne=1, nb_colonne=1;
 %}
 
 %start program
@@ -46,8 +48,10 @@ vector_list : virgule idf batata INTEGER virgule INTEGER colon type bata vector_
 
 constante: mc_const colon idf eq factor_constante
 
-factor_constante : INTEGER | FLOAT | STRING | CHAR
-;
+factor_constante : INTEGER
+                 | FLOAT 
+                 | STRING 
+                 | CHAR 
 
 type : mc_integer
        | mc_float

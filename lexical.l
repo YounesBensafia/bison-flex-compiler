@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include "SymbolTable.h"
 #include "parser.tab.h"
-
+extern int nb_ligne;
+extern int nb_colonne;
 %}
 
 
@@ -18,74 +19,88 @@ IDF {lettre}({lettre}|{chiffre}|\_){0,9}
 
 
 %%
-DATA    {printf("MC_DATA\n"); rechercher(yytext, "MC_DATA", "Mot clé", 0, 1); return mc_data;}
-END     {printf("MC_END\n"); rechercher(yytext, "MC_END", "Mot clé", 0, 1); return mc_end;}
-CODE    {printf("MC_CODE\n"); rechercher(yytext, "MC_CODE", "Mot clé", 0, 1); return mc_code;}
+DATA    {nb_colonne = nb_colonne + yyleng; printf("MC_DATA\n"); rechercher(yytext, "MC_DATA", "Mot clé", 0, 1); return mc_data;}
+END     {nb_colonne = nb_colonne + yyleng; printf("MC_END\n"); rechercher(yytext, "MC_END", "Mot clé", 0, 1); return mc_end;}
+CODE    {nb_colonne = nb_colonne + yyleng; printf("MC_CODE\n"); rechercher(yytext, "MC_CODE", "Mot clé", 0, 1); return mc_code;}
 
-VECTOR  {printf("MC_VECTOR\n"); rechercher(yytext, "MC_VECTOR", "Mot clé", 0, 1); return MC_VECTOR;}
-CONST   {printf("MC_CONST\n"); rechercher(yytext, "MC_CONST", "Mot clé", 0, 1); return mc_const;}
-INTEGER {printf("MC_INTEGER\n"); rechercher(yytext, "MC_INTEGER", "Mot clé", 0, 1); return mc_integer;}
-FLOAT   {printf("MC_FLOAT\n"); rechercher(yytext, "MC_FLOAT", "Mot clé", 0, 1); return mc_float;}
-CHAR    {printf("MC_CHAR\n"); rechercher(yytext, "MC_CHAR", "Mot clé", 0, 1); return mc_char;}
-STRING  {printf("MC_STRING\n"); rechercher(yytext, "MC_STRING", "Mot clé", 0, 1); return mc_string;}
+VECTOR  {nb_colonne = nb_colonne + yyleng; printf("MC_VECTOR\n"); rechercher(yytext, "MC_VECTOR", "Mot clé", 0, 1); return MC_VECTOR;}
+CONST   {nb_colonne = nb_colonne + yyleng; printf("MC_CONST\n"); rechercher(yytext, "MC_CONST", "Mot clé", 0, 1); return mc_const;}
+INTEGER {nb_colonne = nb_colonne + yyleng; printf("MC_INTEGER\n"); rechercher(yytext, "MC_INTEGER", "Mot clé", 0, 1); return mc_integer;}
+FLOAT   {nb_colonne = nb_colonne + yyleng; printf("MC_FLOAT\n"); rechercher(yytext, "MC_FLOAT", "Mot clé", 0, 1); return mc_float;}
+CHAR    {nb_colonne = nb_colonne + yyleng; printf("MC_CHAR\n"); rechercher(yytext, "MC_CHAR", "Mot clé", 0, 1); return mc_char;}
+STRING  {nb_colonne = nb_colonne + yyleng; printf("MC_STRING\n"); rechercher(yytext, "MC_STRING", "Mot clé", 0, 1); return mc_string;}
 
-READ    {printf("MC_READ\n"); rechercher(yytext, "MC_READ", "Mot clé", 0, 1); return mc_read;}
+READ    {nb_colonne = nb_colonne + yyleng; printf("MC_READ\n"); rechercher(yytext, "MC_READ", "Mot clé", 0, 1); return mc_read;}
+DISPLAY {nb_colonne = nb_colonne + yyleng; printf("MC_DISPLAY\n"); rechercher(yytext, "MC_DISPLAY", "Mot clé", 0, 1); return mc_display;}
 
-DISPLAY {printf("MC_DISPLAY\n"); rechercher(yytext, "MC_DISPLAY", "Mot clé", 0, 1); return mc_display;}
+IF      {nb_colonne = nb_colonne + yyleng; printf("MC_IF\n"); rechercher(yytext, "MC_IF", "Mot clé", 0, 1); return mc_if;}
+ELSE    {nb_colonne = nb_colonne + yyleng; printf("MC_ELSE\n"); rechercher(yytext, "MC_ELSE", "Mot clé", 0, 1); return mc_else;}
+FOR     {nb_colonne = nb_colonne + yyleng; printf("MC_FOR\n"); rechercher(yytext, "MC_FOR", "Mot clé", 0, 1); return mc_for;}
 
-IF      {printf("MC_IF\n"); rechercher(yytext, "MC_IF", "Mot clé", 0, 1); return mc_if;}
-ELSE    {printf("MC_ELSE\n"); rechercher(yytext, "MC_ELSE", "Mot clé", 0, 1); return mc_else;}
-FOR     {printf("MC_FOR\n"); rechercher(yytext, "MC_FOR", "Mot clé", 0, 1); return mc_for;}
+AND     {nb_colonne = nb_colonne + yyleng; printf("MC_AND\n"); rechercher(yytext, "MC_IF", "Mot clé", 0, 1); return mc_if;}
+OR      {nb_colonne = nb_colonne + yyleng; printf("MC_OR\n"); rechercher(yytext, "MC_OR", "Mot clé", 0, 1); return mc_or;}
+NOT     {nb_colonne = nb_colonne + yyleng; printf("MC_NOT\n"); rechercher(yytext, "MC_NOT", "Mot clé", 0, 1); return mc_not;}
 
-AND     {printf("MC_AND\n"); rechercher(yytext, "MC_IF", "Mot clé", 0, 1); return mc_if;}
-OR      {printf("MC_OR\n"); rechercher(yytext, "MC_OR", "Mot clé", 0, 1); return mc_or;}
-NOT     {printf("MC_NOT\n"); rechercher(yytext, "MC_NOT", "Mot clé", 0, 1); return mc_not;}
+GE      {nb_colonne = nb_colonne + yyleng; printf("mc_GE\n"); rechercher(yytext, "MC_GE", "Mot clé", 0, 1); return mc_ge;}
+L       {nb_colonne = nb_colonne + yyleng; printf("mc_L\n"); rechercher(yytext, "MC_L", "Mot clé", 0, 1); return mc_l;}
 
-GE      {printf("mc_GE\n"); rechercher(yytext, "MC_GE", "Mot clé", 0, 1); return mc_ge;}
-L       {printf("mc_L\n"); rechercher(yytext, "MC_L", "Mot clé", 0, 1); return mc_l;}
+LE      {nb_colonne = nb_colonne + yyleng; printf("mc_LE\n"); rechercher(yytext, "MC_LE", "Mot clé", 0, 1); return mc_le;}
+DI      {nb_colonne = nb_colonne + yyleng; printf("mc_DI\n"); rechercher(yytext, "MC_DI", "Mot clé", 0, 1); return mc_di;}
 
-LE      {printf("mc_LE\n"); rechercher(yytext, "MC_LE", "Mot clé", 0, 1); return mc_le;}
-DI      {printf("mc_DI\n"); rechercher(yytext, "MC_DI", "Mot clé", 0, 1); return mc_di;}
-
-";"     {printf("PVGR\n"); rechercher(yytext, "PVG", "Séparateur", 0, 2); return pvg;}
-"+"     {printf("PLUS\n"); rechercher(yytext, "SUM", "Séparateur", 0, 2); return sum;}
-"*"     {printf("MULT\n"); rechercher(yytext, "MUL", "Séparateur", 0, 2); return mul;}
-"-"     {printf("MINUS\n"); rechercher(yytext, "MINUS", "Séparateur", 0, 2); return minus;}
-"/"     {printf("DIV\n"); rechercher(yytext, "DIV", "Séparateur", 0, 2); return DIV;}
-"="     {printf("EQ\n"); rechercher(yytext, "EQ", "Séparateur", 0, 2); return eq;} 
-"("     {printf("PARAO\n"); rechercher(yytext, "PARAO", "Séparateur", 0, 2); return PARAO;}
-")"     {printf("PARAF\n"); rechercher(yytext, "PARAF", "Séparateur", 0, 2); return PARAF;}
-"@"     {printf("Arobase\n"); rechercher(yytext, "Arobase", "Séparateur", 0, 2); return arobase;}
-":"     {printf("COLON\n"); rechercher(yytext, "COLON", "Séparateur", 0, 2); return colon;}
-"."     {printf("DOT\n"); rechercher(yytext, "DOT", "Séparateur", 0, 2); return dot;}
-","     {printf("VIRGULE\n"); rechercher(yytext, "VIRGULE", "Séparateur", 0, 2); return virgule;}
-"["     {printf("OPENED\n"); rechercher(yytext, "VIRGULE", "Séparateur", 0, 2); return batata;}
-"]"     {printf("CLOSED\n"); rechercher(yytext, "VIRGULE", "Séparateur", 0, 2); return bata;}
+";"     {nb_colonne = nb_colonne + yyleng; printf("PVGR\n"); rechercher(yytext, "PVG", "Séparateur", 0, 2); return pvg;}
+"+"     {nb_colonne = nb_colonne + yyleng; printf("PLUS\n"); rechercher(yytext, "SUM", "Séparateur", 0, 2); return sum;}
+"*"     {nb_colonne = nb_colonne + yyleng; printf("MULT\n"); rechercher(yytext, "MUL", "Séparateur", 0, 2); return mul;}
+"-"     {nb_colonne = nb_colonne + yyleng; printf("MINUS\n"); rechercher(yytext, "MINUS", "Séparateur", 0, 2); return minus;}
+"/"     {nb_colonne = nb_colonne + yyleng; printf("DIV\n"); rechercher(yytext, "DIV", "Séparateur", 0, 2); return DIV;}
+"="     {nb_colonne = nb_colonne + yyleng; printf("EQ\n"); rechercher(yytext, "EQ", "Séparateur", 0, 2); return eq;} 
+"("     {nb_colonne = nb_colonne + yyleng; printf("PARAO\n"); rechercher(yytext, "PARAO", "Séparateur", 0, 2); return PARAO;}
+")"     {nb_colonne = nb_colonne + yyleng; printf("PARAF\n"); rechercher(yytext, "PARAF", "Séparateur", 0, 2); return PARAF;}
+"@"     {nb_colonne = nb_colonne + yyleng; printf("Arobase\n"); rechercher(yytext, "Arobase", "Séparateur", 0, 2); return arobase;}
+":"     {nb_colonne = nb_colonne + yyleng; printf("COLON\n"); rechercher(yytext, "COLON", "Séparateur", 0, 2); return colon;}
+"."     {nb_colonne = nb_colonne + yyleng; printf("DOT\n"); rechercher(yytext, "DOT", "Séparateur", 0, 2); return dot;}
+","     {nb_colonne = nb_colonne + yyleng; printf("VIRGULE\n"); rechercher(yytext, "VIRGULE", "Séparateur", 0, 2); return virgule;}
+"["     {nb_colonne = nb_colonne + yyleng; printf("OPENED\n"); rechercher(yytext, "VIRGULE", "Séparateur", 0, 2); return batata;}
+"]"     {nb_colonne = nb_colonne + yyleng; printf("CLOSED\n"); rechercher(yytext, "VIRGULE", "Séparateur", 0, 2); return bata;}
 
 {IDF} {
+    if (yyleng > 8)
+    {
+        printf("ERREUR LEXICALE a la ligne %d, et la colonne %d sur l'entite %s (IDF trop long)\n",nb_ligne,nb_colonne,yytext);
+    }
     yylval.string = strdup(yytext); 
-    rechercher(yytext, "IDF", "Identifiant", 0, 0);
+    rechercher(yytext, "IDF", "", 0, 0);
     return idf;
 }
 
 {INTEGER} {
-    yylval.entier=atoi(yytext); rechercher(yytext, "INTEGER", "INTEGER", atof(yytext), 0); return INTEGER;
+    if (atoi(yytext) < -32768 || atoi(yytext) > 32767) {
+        printf("ERREUR LEXICALE a la ligne %d, et la colonne %d sur l'entite %s (INTEGER non valide)\n",nb_ligne,nb_colonne,yytext);
+    }
+    
+    yylval.entier=atoi(yytext); rechercher(yytext, "INTEGER", "", atof(yytext), 0); return INTEGER;
 }
 
 {FLOAT} {
-    yylval.entier=atof(yytext); rechercher(yytext, "FLOAT", "FLOAT", atof(yytext), 0); return FLOAT;
+    yylval.real=atof(yytext); rechercher(yytext, "FLOAT", "", atof(yytext), 0); return FLOAT;
+    if (yylval.real < -3.4e38 || yylval.real > 3.4e38) {
+        printf("ERREUR LEXICALE à la ligne %d, colonne %d sur l'entité %s (real non valide)\n", nb_ligne, nb_colonne, yytext);
+    }
 }
 
 {char} { 
     yylval.caracter = yytext[1]; 
-    rechercher(yytext, "CHAR", "CHAR", 0, 0); 
+    rechercher(yytext, "CHAR", "", 0, 0); 
     return CHAR; 
 }
 
 {commentaire} 
 
 {string} { 
-    yylval.string=strdup(yytext); rechercher(yytext, "STRING", "STRING", 0, 0); return STRING; 
+    yylval.string=strdup(yytext); rechercher(yytext, "STRING", "", 0, 0); return STRING; 
 }
+
+[ \t] nb_colonne = nb_colonne + yyleng;
+
+\n {nb_colonne=1; nb_ligne++;}
 
 

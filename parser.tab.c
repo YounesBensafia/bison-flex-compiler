@@ -74,7 +74,9 @@ int yylex(void);
 void yyerror(const char *s);
 #include "SymbolTable.h"
 
-#line 78 "parser.tab.c"
+int nb_ligne=1, nb_colonne=1;
+
+#line 80 "parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -554,12 +556,12 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    29,    29,    32,    33,    33,    34,    37,    38,    41,
-      44,    44,    47,    49,    49,    49,    49,    52,    53,    54,
-      55,    59,    59,    62,    63,    64,    65,    68,    71,    72,
-      75,    78,    79,    82,    85,    86,    87,    90,    91,    92,
-      95,    96,    97,    98,    99,   100,   103,   104,   105,   106,
-     107,   108
+       0,    31,    31,    34,    35,    35,    36,    39,    40,    43,
+      46,    46,    49,    51,    52,    53,    54,    56,    57,    58,
+      59,    63,    63,    66,    67,    68,    69,    72,    75,    76,
+      79,    82,    83,    86,    89,    90,    91,    94,    95,    96,
+      99,   100,   101,   102,   103,   104,   107,   108,   109,   110,
+     111,   112
 };
 #endif
 
@@ -1207,13 +1209,13 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* program: idf mc_data declartions_list mc_end mc_code instruction_list mc_end mc_end  */
-#line 29 "parser.y"
+#line 31 "parser.y"
                                                                                { printf("Program executed successfully.\n"); YYACCEPT; }
-#line 1213 "parser.tab.c"
+#line 1215 "parser.tab.c"
     break;
 
 
-#line 1217 "parser.tab.c"
+#line 1219 "parser.tab.c"
 
       default: break;
     }
@@ -1406,7 +1408,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 113 "parser.y"
+#line 117 "parser.y"
 
 
 int main() {

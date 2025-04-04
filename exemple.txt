@@ -1,9 +1,9 @@
-COMPILER  
+COMPILER
 
 DATA  
     INTEGER: x , y ;  
     FLOAT: z ;  
-    CONST: PI = 3.14 ;  
+    CONST: PI = 3;  
 END  
 
 CODE  
