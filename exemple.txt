@@ -9,16 +9,16 @@ END
 CODE  
     x = 10 ;  
     y = 20 ;  
-    z = (x + y) / 2.0 ;  
+    z = (x + y) / 2.2 ;  
 
     IF (z.GE.15):  
-        DISPLAY("La valeur de z est grande: %" : z);  
+        DISPLAY("%" : z);  
     ELSE:  
-        DISPLAY("La valeur de z est petite: %" : z);  
+        DISPLAY("%" : z);  
     END  
 
     FOR (i : 1 : 5)  
-        DISPLAY("Iteration numéro $" : i);  
+        DISPLAY("$" : i);  
     END  
 END  
 END  
