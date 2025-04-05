@@ -8,6 +8,7 @@
 #define CYAN       "\033[36m" // Cyan
 #define WHITE      "\033[37m" // White
 #include "SymbolTable.h"
+#include <stdbool.h>
 
 element* tab[HASH_SIZE_IDF];
 elt* tabm[HASH_SIZE_KW];
@@ -210,3 +211,19 @@ void update_type(char *entite, char *nouveau_type) {
     }
 }
 
+
+bool isConstant(char *entite)
+{   unsigned int indice = hash_function(entite) % HASH_SIZE_IDF;
+    element* curr = tab[indice];
+
+    
+    while (curr != NULL && strcmp(curr->name, entite) != 0) curr = curr->next;
+    if (curr == NULL) {
+        return false;
+    }
+    if (strcmp(curr->type, "C_INTEGER") == 0 || strcmp(curr->type, "C_STRING") == 0 || strcmp(curr->type, "C_CHAR") == 0 || strcmp(curr->type, "C_FLOAT") == 0)
+    {
+        return true;
+    }
+    return false;
+}

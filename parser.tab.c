@@ -559,10 +559,10 @@ static const yytype_uint8 yyrline[] =
 {
        0,    34,    34,    34,    39,    39,    55,    55,    56,    59,
       66,    71,    70,    92,   110,   111,   112,   113,   115,   116,
-     117,   118,   122,   122,   125,   126,   127,   128,   131,   134,
-     135,   138,   141,   142,   145,   148,   149,   150,   153,   154,
-     155,   158,   159,   160,   161,   162,   163,   166,   167,   168,
-     169,   170,   171
+     117,   118,   122,   122,   125,   126,   127,   128,   131,   142,
+     143,   146,   149,   150,   153,   156,   157,   158,   161,   162,
+     163,   166,   167,   168,   169,   170,   171,   174,   175,   176,
+     177,   178,   179
 };
 #endif
 
@@ -1294,25 +1294,25 @@ yyreduce:
 
   case 14: /* factor_constante: INTEGER  */
 #line 110 "parser.y"
-                           {strcpy(type, "INTEGER");}
+                           {strcpy(type, "C_INTEGER");}
 #line 1299 "parser.tab.c"
     break;
 
   case 15: /* factor_constante: FLOAT  */
 #line 111 "parser.y"
-                         {strcpy(type, "FLOAT");}
+                         {strcpy(type, "C_FLOAT");}
 #line 1305 "parser.tab.c"
     break;
 
   case 16: /* factor_constante: STRING  */
 #line 112 "parser.y"
-                          {strcpy(type, "STRING");}
+                          {strcpy(type, "C_STRING");}
 #line 1311 "parser.tab.c"
     break;
 
   case 17: /* factor_constante: CHAR  */
 #line 113 "parser.y"
-                        {strcpy(type, "CHAR");}
+                        {strcpy(type, "C_CHAR");}
 #line 1317 "parser.tab.c"
     break;
 
@@ -1340,8 +1340,22 @@ yyreduce:
 #line 1341 "parser.tab.c"
     break;
 
+  case 28: /* assignment: idf eq expression pvg  */
+#line 131 "parser.y"
+                                   {
+    if(double_declaration((yyvsp[-3].string), "") == 1) 
+        printf("ERREUR SEMANTIQUE: %s non declare, a la ligne %d, et la colonne %d\n", (yyvsp[-3].string), nb_ligne, nb_colonne);
+    printf("%s\n", isConstant((yyvsp[-3].string)) ? "true" : "false");
+    if(isConstant((yyvsp[-3].string)))
+    {
+        printf("ERREUR SEMANTIQUE: %s est une constante et la constante est unchangeable, a la ligne %d, et la colonne %d\n", (yyvsp[-3].string), nb_ligne, nb_colonne);
+    }
+}
+#line 1355 "parser.tab.c"
+    break;
 
-#line 1345 "parser.tab.c"
+
+#line 1359 "parser.tab.c"
 
       default: break;
     }
@@ -1534,7 +1548,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 176 "parser.y"
+#line 184 "parser.y"
 
 
 int main() {

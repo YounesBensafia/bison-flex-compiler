@@ -107,10 +107,10 @@ constante: mc_const colon idf eq factor_constante {
     
     }
 
-factor_constante : INTEGER {strcpy(type, "INTEGER");}
-                 | FLOAT {strcpy(type, "FLOAT");}
-                 | STRING {strcpy(type, "STRING");}
-                 | CHAR {strcpy(type, "CHAR");}
+factor_constante : INTEGER {strcpy(type, "C_INTEGER");}
+                 | FLOAT {strcpy(type, "C_FLOAT");}
+                 | STRING {strcpy(type, "C_STRING");}
+                 | CHAR {strcpy(type, "C_CHAR");}
 
 type : mc_integer {$$ = strdup($1); }
     | mc_float {$$ = strdup($1); }
@@ -128,7 +128,14 @@ instruction : assignment
             | loop
 ;
 
-assignment : idf eq expression pvg
+assignment : idf eq expression pvg {
+    if(double_declaration($1, "") == 1) 
+        printf("ERREUR SEMANTIQUE: %s non declare, a la ligne %d, et la colonne %d\n", $1, nb_ligne, nb_colonne);
+    if(isConstant($1))
+    {
+        printf("ERREUR SEMANTIQUE: %s est une constante et la constante est unchangeable, a la ligne %d, et la colonne %d\n", $1, nb_ligne, nb_colonne);
+    }
+}
 ;
 
 read_display : mc_read PARAO STRING colon arobase idf PARAF pvg

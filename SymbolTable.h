@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 // Structure definitions
 typedef struct element {
@@ -41,4 +42,5 @@ void rechercher(char entite[], char code[], char type[], float val, int y);
 void afficher(void);
 void update_type(char *entite, char *nouveau_type);
 int double_declaration(char entite[], char type[]);
+bool isConstant(char entite[]);
 #endif
