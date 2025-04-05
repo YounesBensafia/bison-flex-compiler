@@ -559,10 +559,10 @@ static const yytype_uint8 yyrline[] =
 {
        0,    34,    34,    34,    39,    39,    55,    55,    56,    59,
       66,    71,    70,    92,   110,   111,   112,   113,   115,   116,
-     117,   118,   122,   122,   125,   126,   127,   128,   131,   142,
-     143,   146,   149,   150,   153,   156,   157,   158,   161,   162,
-     163,   166,   167,   168,   169,   170,   171,   174,   175,   176,
-     177,   178,   179
+     117,   118,   122,   122,   125,   126,   127,   128,   131,   141,
+     142,   145,   148,   149,   152,   155,   156,   157,   160,   161,
+     162,   165,   166,   167,   168,   169,   170,   173,   174,   175,
+     176,   177,   178
 };
 #endif
 
@@ -1345,17 +1345,16 @@ yyreduce:
                                    {
     if(double_declaration((yyvsp[-3].string), "") == 1) 
         printf("ERREUR SEMANTIQUE: %s non declare, a la ligne %d, et la colonne %d\n", (yyvsp[-3].string), nb_ligne, nb_colonne);
-    printf("%s\n", isConstant((yyvsp[-3].string)) ? "true" : "false");
     if(isConstant((yyvsp[-3].string)))
     {
         printf("ERREUR SEMANTIQUE: %s est une constante et la constante est unchangeable, a la ligne %d, et la colonne %d\n", (yyvsp[-3].string), nb_ligne, nb_colonne);
     }
 }
-#line 1355 "parser.tab.c"
+#line 1354 "parser.tab.c"
     break;
 
 
-#line 1359 "parser.tab.c"
+#line 1358 "parser.tab.c"
 
       default: break;
     }
@@ -1548,7 +1547,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 184 "parser.y"
+#line 183 "parser.y"
 
 
 int main() {

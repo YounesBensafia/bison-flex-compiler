@@ -77,11 +77,11 @@ DI      {nb_colonne = nb_colonne + yyleng; rechercher(yytext, "MC_DI", "Mot clé
         printf("ERREUR LEXICALE a la ligne %d, et la colonne %d sur l'entite %s (INTEGER non valide)\n",nb_ligne,nb_colonne,yytext);
     }
     
-    yylval.entier=atoi(yytext); rechercher(yytext, "INTEGER", "", atof(yytext), 0); return INTEGER;
+    yylval.entier=atoi(yytext); rechercher(yytext, "INTEGER", "INTEGER", atof(yytext), 0); return INTEGER;
 }
 
 {FLOAT} {
-    yylval.real=atof(yytext); rechercher(yytext, "FLOAT", "", atof(yytext), 0); return FLOAT;
+    yylval.real=atof(yytext); rechercher(yytext, "FLOAT", "FLOAT", atof(yytext), 0); return FLOAT;
     if (yylval.real < -3.4e38 || yylval.real > 3.4e38) {
         printf("ERREUR LEXICALE à la ligne %d, colonne %d sur l'entité %s (real non valide)\n", nb_ligne, nb_colonne, yytext);
     }
@@ -89,7 +89,7 @@ DI      {nb_colonne = nb_colonne + yyleng; rechercher(yytext, "MC_DI", "Mot clé
 
 {char} { 
     yylval.caracter = yytext[1]; 
-    rechercher(yytext, "CHAR", "", 0, 0); 
+    rechercher(yytext, "CHAR", "CHAR", 0, 0); 
     return CHAR; 
 }
 

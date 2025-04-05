@@ -13,6 +13,7 @@
 element* tab[HASH_SIZE_IDF];
 elt* tabm[HASH_SIZE_KW];
 elt* tabs[HASH_SIZE_SEP];
+static int color_counter = 0;  // Compteur pour alterner les couleurs
 
 
 void initialisation(void) {
@@ -25,6 +26,16 @@ void initialisation(void) {
     tabs[i] = NULL;
 }
 
+// Fonction pour choisir la couleur en fonction du compteur
+const char* get_color() {
+    switch (color_counter % 3) {
+        case 0: return RED;   // 0 -> Rouge
+        case 1: return BLUE;  // 1 -> Bleu
+        case 2: return GREEN; // 2 -> Vert
+        default: return RESET;
+    }
+}
+
 unsigned int hash_function(const char* str) {
     unsigned int hash = 0;      
     while (*str) {
@@ -35,7 +46,6 @@ unsigned int hash_function(const char* str) {
 
 void inserer(char entite[], char code[], char type[], float val, int y) {
     unsigned int index = hash_function(entite);
-    
     switch (y) {
         case 0:
             index %= HASH_SIZE_IDF;
@@ -48,7 +58,7 @@ void inserer(char entite[], char code[], char type[], float val, int y) {
             new_elem->next = tab[index];
             tab[index] = new_elem;
             break;
-        case 1: 
+            case 1: 
             index %= HASH_SIZE_KW;
             elt* new_elt_m = (elt*)malloc(sizeof(elt));
             new_elt_m->state = 1;
@@ -57,7 +67,7 @@ void inserer(char entite[], char code[], char type[], float val, int y) {
             new_elt_m->next = tabm[index];
             tabm[index] = new_elt_m;
             break;
-        case 2: 
+            case 2: 
             index %= HASH_SIZE_SEP;
             elt* new_elt_s = (elt*)malloc(sizeof(elt));
             new_elt_s->state = 1;
@@ -66,64 +76,65 @@ void inserer(char entite[], char code[], char type[], float val, int y) {
             new_elt_s->next = tabs[index];
             tabs[index] = new_elt_s;
             break;
+        }
     }
-}
 
-void rechercher(char entite[], char code[], char type[], float val, int y) {
-    unsigned int index = hash_function(entite);
-    switch (y) {
-        case 0:
+    void rechercher(char entite[], char code[], char type[], float val, int y) {
+        unsigned int index = hash_function(entite);
+        switch (y) {
+            case 0:
             index %= HASH_SIZE_IDF;
             {
                 element* curr = tab[index];
                 while (curr != NULL && strcmp(entite, curr->name) != 0)
-                    curr = curr->next;
+                curr = curr->next;
                 if (curr == NULL)
-                    inserer(entite, code, type, val, 0);
+                inserer(entite, code, type, val, 0);
             }
             break;
-        case 1: 
+            case 1: 
             index %= HASH_SIZE_KW;
             {
                 elt* curr = tabm[index];
                 while (curr != NULL && strcmp(entite, curr->name) != 0)
-                    curr = curr->next;
+                curr = curr->next;
                 if (curr == NULL)
-                    inserer(entite, code, type, val, 1);
+                inserer(entite, code, type, val, 1);
             }
             break;
-        case 2:
-        index %= HASH_SIZE_SEP;
-        {
-            elt* curr = tabs[index];
-            while (curr != NULL && strcmp(entite, curr->name) != 0)
+            case 2:
+            index %= HASH_SIZE_SEP;
+            {
+                elt* curr = tabs[index];
+                while (curr != NULL && strcmp(entite, curr->name) != 0)
                 curr = curr->next;
-            
-            if (curr == NULL) {
-                inserer(entite, code, type, val, 2);
-            }
+                
+                if (curr == NULL) {
+                    inserer(entite, code, type, val, 2);
+                }
         }
         break;
         
         case 3: // Same as case 0
-            index %= HASH_SIZE_IDF;
-            {
-                element* curr = tab[index];
-                while (curr != NULL && strcmp(entite, curr->name) != 0)
-                    curr = curr->next;
-                if (curr == NULL)
-                    inserer(entite, code, type, val, 0);
-                else
-                    printf("entité existe déjà\n");
-            }
-            break;
+        index %= HASH_SIZE_IDF;
+        {
+            element* curr = tab[index];
+            while (curr != NULL && strcmp(entite, curr->name) != 0)
+            curr = curr->next;
+            if (curr == NULL)
+            inserer(entite, code, type, val, 0);
+            else
+            printf("entité existe déjà\n");
+        }
+        break;
     }
 }
 
 
 void afficher(void) {
     int i;
-
+    const char* color = get_color();
+    
     // Table des symboles IDF
     printf(YELLOW "/***************Table des symboles IDF*************/\n" RESET);
     printf("____________________________________________________________________\n");
@@ -133,8 +144,21 @@ void afficher(void) {
         element* curr = tab[i];
         while (curr != NULL) {
             if (curr->state == 1) {
-                printf("\t| %s%-10s" RESET " | %-15s | %-12s | %-12f\n",
-                       CYAN, curr->name, curr->code, curr->type, curr->val);
+                if (strncmp(curr->type, "C_", 2) == 0) {
+                    printf("\t| %s%-10s" RESET " | %-15s | " GREEN "%-12s" RESET " | %-12f\n",
+                           CYAN, curr->name, curr->code, curr->type, curr->val);
+                } else if (strcmp(curr->type, "INTEGER") == 0) {
+                    printf("\t| %s%-10s" RESET " | %-15s | " RED "%-12s" RESET " | %-12f\n",
+                           CYAN, curr->name, curr->code, curr->type, curr->val);
+                } else if (strcmp(curr->type, "FLOAT") == 0) {
+                    printf("\t| %s%-10s" RESET " | %-15s | " BLUE "%-12s" RESET " | %-12f\n",
+                           CYAN, curr->name, curr->code, curr->type, curr->val);
+                } else {
+                    printf("\t| %s%-10s" RESET " | %-15s | %-12s | %-12f\n",
+                           CYAN, curr->name, curr->code, curr->type, curr->val);
+                }
+                
+        
             }
             curr = curr->next;
         }
