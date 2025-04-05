@@ -22,6 +22,7 @@ typedef struct elt {
     struct elt* next;
 } elt;
 
+
 // Hash table sizes
 #define HASH_SIZE_IDF 100
 #define HASH_SIZE_KW 20
@@ -39,5 +40,5 @@ void inserer(char entite[], char code[], char type[], float val, int y);
 void rechercher(char entite[], char code[], char type[], float val, int y);
 void afficher(void);
 void update_type(char *entite, char *nouveau_type);
-
+int double_declaration(char entite[], char type[]);
 #endif

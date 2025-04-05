@@ -59,8 +59,8 @@ DI      {nb_colonne = nb_colonne + yyleng; rechercher(yytext, "MC_DI", "Mot clé
 ":"     {nb_colonne = nb_colonne + yyleng; rechercher(yytext, "COLON", "Séparateur", 0, 2); return colon;}
 "."     {nb_colonne = nb_colonne + yyleng; rechercher(yytext, "DOT", "Séparateur", 0, 2); return dot;}
 ","     {nb_colonne = nb_colonne + yyleng; rechercher(yytext, "VIRGULE", "Séparateur", 0, 2); return virgule;}
-"["     {nb_colonne = nb_colonne + yyleng; rechercher(yytext, "VIRGULE", "Séparateur", 0, 2); return batata;}
-"]"     {nb_colonne = nb_colonne + yyleng; rechercher(yytext, "VIRGULE", "Séparateur", 0, 2); return bata;}
+"["     {nb_colonne = nb_colonne + yyleng; rechercher(yytext, "VIRGULE", "Séparateur", 0, 2); return left_bracket;}
+"]"     {nb_colonne = nb_colonne + yyleng; rechercher(yytext, "VIRGULE", "Séparateur", 0, 2); return right_bracket;}
 
 {IDF} {
     if (yyleng > 8)

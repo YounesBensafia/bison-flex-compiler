@@ -1,119 +1,124 @@
-Terminaux inutilisés dans la grammaire
-
-    LOWER
-    MC_VECTOR
-
-
 Grammaire
 
     0 $accept: program $end
 
-    1 program: idf mc_data declartions_list mc_end mc_code instruction_list mc_end mc_end
+    1 $@1: ε
 
-    2 declartions_list: type colon idf liste_vars declartions_list
-    3                 | vector declartions_list
-    4                 | constante pvg declartions_list
-    5                 | ε
+    2 program: idf $@1 mc_data declartions_list mc_end mc_code instruction_list mc_end mc_end
 
-    6 liste_vars: virgule idf liste_vars pvg
-    7           | pvg
+    3 $@2: ε
 
-    8 vector: idf '[' INTEGER virgule INTEGER colon type ']' vector_list
+    4 declartions_list: type colon idf $@2 liste_vars declartions_list
+    5                 | vector declartions_list
+    6                 | constante pvg declartions_list
+    7                 | ε
 
-    9 vector_list: virgule idf '[' INTEGER virgule INTEGER colon type ']' vector_list
-   10            | pvg
+    8 liste_vars: virgule idf liste_vars
+    9           | pvg
 
-   11 constante: mc_const colon idf liste_vars
+   10 vector: MC_VECTOR colon idf left_bracket INTEGER virgule INTEGER colon type right_bracket vector_list
 
-   12 type: mc_integer
-   13     | mc_float
-   14     | mc_char
-   15     | mc_string
+   11 vector_list: virgule idf left_bracket INTEGER virgule INTEGER colon type right_bracket vector_list
+   12            | pvg
 
-   16 instruction_list: instruction
-   17                 | instruction instruction_list
+   13 constante: mc_const colon idf eq factor_constante
 
-   18 instruction: assignment
-   19            | read_display
-   20            | if_condition
-   21            | loop
+   14 factor_constante: INTEGER
+   15                 | FLOAT
+   16                 | STRING
+   17                 | CHAR
 
-   22 assignment: idf eq expression pvg
+   18 type: mc_integer
+   19     | mc_float
+   20     | mc_char
+   21     | mc_string
 
-   23 read_display: mc_read PARAO idf paraf pvg
-   24             | mc_display PARAO idf paraf pvg
+   22 instruction_list: instruction instruction_list
+   23                 | ε
 
-   25 if_condition: mc_if PARAO condition paraf mc_code instruction_list mc_end
-   26             | mc_if PARAO condition paraf mc_code instruction_list mc_end mc_else mc_code instruction_list mc_end
+   24 instruction: assignment
+   25            | read_display
+   26            | if_condition
+   27            | loop
 
-   27 loop: mc_for PARAO assignment condition pvg assignment paraf mc_code instruction_list mc_end
+   28 assignment: idf eq expression pvg
 
-   28 expression: term
-   29           | expression sum term
-   30           | expression minus term
+   29 read_display: mc_read PARAO STRING colon arobase idf PARAF pvg
+   30             | mc_display PARAO STRING colon idf PARAF pvg
 
-   31 term: factor
-   32     | term mul factor
-   33     | term DIV factor
+   31 if_condition: mc_if PARAO condition PARAF colon instruction_list else_condition
 
-   34 factor: INTEGER
-   35       | FLOAT
-   36       | CHAR
-   37       | STRING
-   38       | idf
-   39       | PARAO expression paraf
+   32 else_condition: mc_else colon instruction_list mc_end
+   33               | mc_end
 
-   40 condition: expression dot mc_ge dot expression
-   41          | expression dot mc_le dot expression
-   42          | expression dot mc_l dot expression
-   43          | expression dot mc_di dot expression
-   44          | expression dot mc_not dot expression
-   45          | expression dot mc_or dot expression
+   34 loop: mc_for PARAO idf colon INTEGER colon INTEGER PARAF instruction_list mc_end
+
+   35 expression: term
+   36           | expression sum term
+   37           | expression minus term
+
+   38 term: factor
+   39     | term mul factor
+   40     | term DIV factor
+
+   41 factor: INTEGER
+   42       | FLOAT
+   43       | CHAR
+   44       | STRING
+   45       | idf
+   46       | PARAO expression PARAF
+
+   47 condition: expression dot mc_ge dot expression
+   48          | expression dot mc_le dot expression
+   49          | expression dot mc_l dot expression
+   50          | expression dot mc_di dot expression
+   51          | expression dot mc_not dot expression
+   52          | expression dot mc_or dot expression
 
 
 Terminaux, suivis des règles où ils apparaissent
 
     $end (0) 0
-    '[' (91) 8 9
-    ']' (93) 8 9
     error (256)
-    LOWER (258)
-    mc_end (259) 1 25 26 27
-    mc_data (260) 1
-    mc_code (261) 1 25 26 27
-    MC_VECTOR (262)
-    mc_const (263) 11
-    mc_integer (264) 12
-    mc_float (265) 13
-    mc_char (266) 14
-    mc_string (267) 15
-    mc_if (268) 25 26
-    mc_else (269) 26
-    mc_for (270) 27
-    mc_or (271) 45
-    mc_not (272) 44
-    mc_ge (273) 40
-    mc_l (274) 42
-    mc_di (275) 43
-    mc_le (276) 41
-    mc_read (277) 23
-    mc_display (278) 24
-    idf <string> (279) 1 2 6 8 9 11 22 23 24 38
-    INTEGER <entier> (280) 8 9 34
-    FLOAT <real> (281) 35
-    CHAR <string> (282) 36
-    STRING <string> (283) 37
-    pvg <string> (284) 4 6 7 10 22 23 24 27
-    sum <string> (285) 29
-    mul <string> (286) 32
-    minus <string> (287) 30
-    PARAO <string> (288) 23 24 25 26 27 39
-    paraf <string> (289) 23 24 25 26 27 39
-    colon <string> (290) 2 8 9 11
-    dot <string> (291) 40 41 42 43 44 45
-    DIV <string> (292) 33
-    eq <string> (293) 22
-    virgule <string> (294) 6 8 9
+    mc_end <string> (258) 2 32 33 34
+    mc_data <string> (259) 2
+    mc_code <string> (260) 2
+    MC_VECTOR <string> (261) 10
+    mc_const <string> (262) 13
+    mc_if (263) 31
+    mc_else (264) 32
+    mc_for (265) 34
+    mc_or (266) 52
+    mc_not (267) 51
+    mc_ge (268) 47
+    mc_l (269) 49
+    mc_di (270) 50
+    mc_le (271) 48
+    mc_read (272) 29
+    mc_display (273) 30
+    idf <string> (274) 2 4 8 10 11 13 28 29 30 34 45
+    INTEGER <entier> (275) 10 11 14 34 41
+    FLOAT <real> (276) 15 42
+    CHAR <string> (277) 17 43
+    STRING <string> (278) 16 29 30 44
+    pvg <string> (279) 6 9 12 28 29 30
+    sum <string> (280) 36
+    mul <string> (281) 39
+    minus <string> (282) 37
+    PARAO <string> (283) 29 30 31 34 46
+    PARAF <string> (284) 29 30 31 34 46
+    colon <string> (285) 4 10 11 13 29 30 31 32 34
+    dot <string> (286) 47 48 49 50 51 52
+    DIV <string> (287) 40
+    eq <string> (288) 13 28
+    virgule <string> (289) 8 10 11
+    arobase <string> (290) 29
+    left_bracket (291) 10 11
+    right_bracket (292) 10 11
+    mc_integer <string> (293) 18
+    mc_float <string> (294) 19
+    mc_char <string> (295) 20
+    mc_string <string> (296) 21
 
 
 Non-terminaux, suivis des règles où ils apparaissent
@@ -121,56 +126,68 @@ Non-terminaux, suivis des règles où ils apparaissent
     $accept (42)
         à gauche: 0
     program (43)
-        à gauche: 1
+        à gauche: 2
         à droite: 0
-    declartions_list (44)
-        à gauche: 2 3 4 5
-        à droite: 1 2 3 4
-    liste_vars (45)
-        à gauche: 6 7
-        à droite: 2 6 11
-    vector (46)
-        à gauche: 8
-        à droite: 3
-    vector_list (47)
-        à gauche: 9 10
-        à droite: 8 9
-    constante (48)
-        à gauche: 11
+    $@1 (44)
+        à gauche: 1
+        à droite: 2
+    declartions_list (45)
+        à gauche: 4 5 6 7
+        à droite: 2 4 5 6
+    $@2 (46)
+        à gauche: 3
         à droite: 4
-    type (49)
-        à gauche: 12 13 14 15
-        à droite: 2 8 9
-    instruction_list (50)
-        à gauche: 16 17
-        à droite: 1 17 25 26 27
-    instruction (51)
+    liste_vars (47)
+        à gauche: 8 9
+        à droite: 4 8
+    vector (48)
+        à gauche: 10
+        à droite: 5
+    vector_list (49)
+        à gauche: 11 12
+        à droite: 10 11
+    constante (50)
+        à gauche: 13
+        à droite: 6
+    factor_constante (51)
+        à gauche: 14 15 16 17
+        à droite: 13
+    type <string> (52)
         à gauche: 18 19 20 21
-        à droite: 16 17
-    assignment (52)
-        à gauche: 22
-        à droite: 18 27
-    read_display (53)
-        à gauche: 23 24
-        à droite: 19
-    if_condition (54)
-        à gauche: 25 26
-        à droite: 20
-    loop (55)
-        à gauche: 27
-        à droite: 21
-    expression (56)
-        à gauche: 28 29 30
-        à droite: 22 29 30 39 40 41 42 43 44 45
-    term (57)
-        à gauche: 31 32 33
-        à droite: 28 29 30 32 33
-    factor (58)
-        à gauche: 34 35 36 37 38 39
-        à droite: 31 32 33
-    condition (59)
-        à gauche: 40 41 42 43 44 45
-        à droite: 25 26 27
+        à droite: 4 10 11
+    instruction_list (53)
+        à gauche: 22 23
+        à droite: 2 22 31 32 34
+    instruction (54)
+        à gauche: 24 25 26 27
+        à droite: 22
+    assignment (55)
+        à gauche: 28
+        à droite: 24
+    read_display (56)
+        à gauche: 29 30
+        à droite: 25
+    if_condition (57)
+        à gauche: 31
+        à droite: 26
+    else_condition (58)
+        à gauche: 32 33
+        à droite: 31
+    loop (59)
+        à gauche: 34
+        à droite: 27
+    expression (60)
+        à gauche: 35 36 37
+        à droite: 28 36 37 46 47 48 49 50 51 52
+    term (61)
+        à gauche: 38 39 40
+        à droite: 35 36 37 39 40
+    factor (62)
+        à gauche: 41 42 43 44 45 46
+        à droite: 38 39 40
+    condition (63)
+        à gauche: 47 48 49 50 51 52
+        à droite: 31
 
 
 État 0
@@ -184,9 +201,11 @@ Non-terminaux, suivis des règles où ils apparaissent
 
 État 1
 
-    1 program: idf • mc_data declartions_list mc_end mc_code instruction_list mc_end mc_end
+    2 program: idf • $@1 mc_data declartions_list mc_end mc_code instruction_list mc_end mc_end
 
-    mc_data  décalage et aller à l'état 3
+    $défaut  réduction par utilisation de la règle 1 ($@1)
+
+    $@1  aller à l'état 3
 
 
 État 2
@@ -198,21 +217,9 @@ Non-terminaux, suivis des règles où ils apparaissent
 
 État 3
 
-    1 program: idf mc_data • declartions_list mc_end mc_code instruction_list mc_end mc_end
+    2 program: idf $@1 • mc_data declartions_list mc_end mc_code instruction_list mc_end mc_end
 
-    mc_const    décalage et aller à l'état 5
-    mc_integer  décalage et aller à l'état 6
-    mc_float    décalage et aller à l'état 7
-    mc_char     décalage et aller à l'état 8
-    mc_string   décalage et aller à l'état 9
-    idf         décalage et aller à l'état 10
-
-    $défaut  réduction par utilisation de la règle 5 (declartions_list)
-
-    declartions_list  aller à l'état 11
-    vector            aller à l'état 12
-    constante         aller à l'état 13
-    type              aller à l'état 14
+    mc_data  décalage et aller à l'état 5
 
 
 État 4
@@ -224,1221 +231,1322 @@ Non-terminaux, suivis des règles où ils apparaissent
 
 État 5
 
-   11 constante: mc_const • colon idf liste_vars
+    2 program: idf $@1 mc_data • declartions_list mc_end mc_code instruction_list mc_end mc_end
 
-    colon  décalage et aller à l'état 15
+    MC_VECTOR   décalage et aller à l'état 6
+    mc_const    décalage et aller à l'état 7
+    mc_integer  décalage et aller à l'état 8
+    mc_float    décalage et aller à l'état 9
+    mc_char     décalage et aller à l'état 10
+    mc_string   décalage et aller à l'état 11
+
+    $défaut  réduction par utilisation de la règle 7 (declartions_list)
+
+    declartions_list  aller à l'état 12
+    vector            aller à l'état 13
+    constante         aller à l'état 14
+    type              aller à l'état 15
 
 
 État 6
 
-   12 type: mc_integer •
+   10 vector: MC_VECTOR • colon idf left_bracket INTEGER virgule INTEGER colon type right_bracket vector_list
 
-    $défaut  réduction par utilisation de la règle 12 (type)
+    colon  décalage et aller à l'état 16
 
 
 État 7
 
-   13 type: mc_float •
+   13 constante: mc_const • colon idf eq factor_constante
 
-    $défaut  réduction par utilisation de la règle 13 (type)
+    colon  décalage et aller à l'état 17
 
 
 État 8
 
-   14 type: mc_char •
+   18 type: mc_integer •
 
-    $défaut  réduction par utilisation de la règle 14 (type)
+    $défaut  réduction par utilisation de la règle 18 (type)
 
 
 État 9
 
-   15 type: mc_string •
+   19 type: mc_float •
 
-    $défaut  réduction par utilisation de la règle 15 (type)
+    $défaut  réduction par utilisation de la règle 19 (type)
 
 
 État 10
 
-    8 vector: idf • '[' INTEGER virgule INTEGER colon type ']' vector_list
+   20 type: mc_char •
 
-    '['  décalage et aller à l'état 16
+    $défaut  réduction par utilisation de la règle 20 (type)
 
 
 État 11
 
-    1 program: idf mc_data declartions_list • mc_end mc_code instruction_list mc_end mc_end
+   21 type: mc_string •
 
-    mc_end  décalage et aller à l'état 17
+    $défaut  réduction par utilisation de la règle 21 (type)
 
 
 État 12
 
-    3 declartions_list: vector • declartions_list
+    2 program: idf $@1 mc_data declartions_list • mc_end mc_code instruction_list mc_end mc_end
 
-    mc_const    décalage et aller à l'état 5
-    mc_integer  décalage et aller à l'état 6
-    mc_float    décalage et aller à l'état 7
-    mc_char     décalage et aller à l'état 8
-    mc_string   décalage et aller à l'état 9
-    idf         décalage et aller à l'état 10
-
-    $défaut  réduction par utilisation de la règle 5 (declartions_list)
-
-    declartions_list  aller à l'état 18
-    vector            aller à l'état 12
-    constante         aller à l'état 13
-    type              aller à l'état 14
+    mc_end  décalage et aller à l'état 18
 
 
 État 13
 
-    4 declartions_list: constante • pvg declartions_list
+    5 declartions_list: vector • declartions_list
 
-    pvg  décalage et aller à l'état 19
+    MC_VECTOR   décalage et aller à l'état 6
+    mc_const    décalage et aller à l'état 7
+    mc_integer  décalage et aller à l'état 8
+    mc_float    décalage et aller à l'état 9
+    mc_char     décalage et aller à l'état 10
+    mc_string   décalage et aller à l'état 11
+
+    $défaut  réduction par utilisation de la règle 7 (declartions_list)
+
+    declartions_list  aller à l'état 19
+    vector            aller à l'état 13
+    constante         aller à l'état 14
+    type              aller à l'état 15
 
 
 État 14
 
-    2 declartions_list: type • colon idf liste_vars declartions_list
+    6 declartions_list: constante • pvg declartions_list
 
-    colon  décalage et aller à l'état 20
+    pvg  décalage et aller à l'état 20
 
 
 État 15
 
-   11 constante: mc_const colon • idf liste_vars
+    4 declartions_list: type • colon idf $@2 liste_vars declartions_list
 
-    idf  décalage et aller à l'état 21
+    colon  décalage et aller à l'état 21
 
 
 État 16
 
-    8 vector: idf '[' • INTEGER virgule INTEGER colon type ']' vector_list
+   10 vector: MC_VECTOR colon • idf left_bracket INTEGER virgule INTEGER colon type right_bracket vector_list
 
-    INTEGER  décalage et aller à l'état 22
+    idf  décalage et aller à l'état 22
 
 
 État 17
 
-    1 program: idf mc_data declartions_list mc_end • mc_code instruction_list mc_end mc_end
+   13 constante: mc_const colon • idf eq factor_constante
 
-    mc_code  décalage et aller à l'état 23
+    idf  décalage et aller à l'état 23
 
 
 État 18
 
-    3 declartions_list: vector declartions_list •
+    2 program: idf $@1 mc_data declartions_list mc_end • mc_code instruction_list mc_end mc_end
 
-    $défaut  réduction par utilisation de la règle 3 (declartions_list)
+    mc_code  décalage et aller à l'état 24
 
 
 État 19
 
-    4 declartions_list: constante pvg • declartions_list
-
-    mc_const    décalage et aller à l'état 5
-    mc_integer  décalage et aller à l'état 6
-    mc_float    décalage et aller à l'état 7
-    mc_char     décalage et aller à l'état 8
-    mc_string   décalage et aller à l'état 9
-    idf         décalage et aller à l'état 10
+    5 declartions_list: vector declartions_list •
 
     $défaut  réduction par utilisation de la règle 5 (declartions_list)
-
-    declartions_list  aller à l'état 24
-    vector            aller à l'état 12
-    constante         aller à l'état 13
-    type              aller à l'état 14
 
 
 État 20
 
-    2 declartions_list: type colon • idf liste_vars declartions_list
+    6 declartions_list: constante pvg • declartions_list
 
-    idf  décalage et aller à l'état 25
+    MC_VECTOR   décalage et aller à l'état 6
+    mc_const    décalage et aller à l'état 7
+    mc_integer  décalage et aller à l'état 8
+    mc_float    décalage et aller à l'état 9
+    mc_char     décalage et aller à l'état 10
+    mc_string   décalage et aller à l'état 11
+
+    $défaut  réduction par utilisation de la règle 7 (declartions_list)
+
+    declartions_list  aller à l'état 25
+    vector            aller à l'état 13
+    constante         aller à l'état 14
+    type              aller à l'état 15
 
 
 État 21
 
-   11 constante: mc_const colon idf • liste_vars
+    4 declartions_list: type colon • idf $@2 liste_vars declartions_list
 
-    pvg      décalage et aller à l'état 26
-    virgule  décalage et aller à l'état 27
-
-    liste_vars  aller à l'état 28
+    idf  décalage et aller à l'état 26
 
 
 État 22
 
-    8 vector: idf '[' INTEGER • virgule INTEGER colon type ']' vector_list
+   10 vector: MC_VECTOR colon idf • left_bracket INTEGER virgule INTEGER colon type right_bracket vector_list
 
-    virgule  décalage et aller à l'état 29
+    left_bracket  décalage et aller à l'état 27
 
 
 État 23
 
-    1 program: idf mc_data declartions_list mc_end mc_code • instruction_list mc_end mc_end
+   13 constante: mc_const colon idf • eq factor_constante
 
-    mc_if       décalage et aller à l'état 30
-    mc_for      décalage et aller à l'état 31
-    mc_read     décalage et aller à l'état 32
-    mc_display  décalage et aller à l'état 33
-    idf         décalage et aller à l'état 34
-
-    instruction_list  aller à l'état 35
-    instruction       aller à l'état 36
-    assignment        aller à l'état 37
-    read_display      aller à l'état 38
-    if_condition      aller à l'état 39
-    loop              aller à l'état 40
+    eq  décalage et aller à l'état 28
 
 
 État 24
 
-    4 declartions_list: constante pvg declartions_list •
+    2 program: idf $@1 mc_data declartions_list mc_end mc_code • instruction_list mc_end mc_end
 
-    $défaut  réduction par utilisation de la règle 4 (declartions_list)
+    mc_if       décalage et aller à l'état 29
+    mc_for      décalage et aller à l'état 30
+    mc_read     décalage et aller à l'état 31
+    mc_display  décalage et aller à l'état 32
+    idf         décalage et aller à l'état 33
+
+    $défaut  réduction par utilisation de la règle 23 (instruction_list)
+
+    instruction_list  aller à l'état 34
+    instruction       aller à l'état 35
+    assignment        aller à l'état 36
+    read_display      aller à l'état 37
+    if_condition      aller à l'état 38
+    loop              aller à l'état 39
 
 
 État 25
 
-    2 declartions_list: type colon idf • liste_vars declartions_list
+    6 declartions_list: constante pvg declartions_list •
 
-    pvg      décalage et aller à l'état 26
-    virgule  décalage et aller à l'état 27
-
-    liste_vars  aller à l'état 41
+    $défaut  réduction par utilisation de la règle 6 (declartions_list)
 
 
 État 26
 
-    7 liste_vars: pvg •
+    4 declartions_list: type colon idf • $@2 liste_vars declartions_list
 
-    $défaut  réduction par utilisation de la règle 7 (liste_vars)
+    $défaut  réduction par utilisation de la règle 3 ($@2)
+
+    $@2  aller à l'état 40
 
 
 État 27
 
-    6 liste_vars: virgule • idf liste_vars pvg
+   10 vector: MC_VECTOR colon idf left_bracket • INTEGER virgule INTEGER colon type right_bracket vector_list
 
-    idf  décalage et aller à l'état 42
+    INTEGER  décalage et aller à l'état 41
 
 
 État 28
 
-   11 constante: mc_const colon idf liste_vars •
+   13 constante: mc_const colon idf eq • factor_constante
 
-    $défaut  réduction par utilisation de la règle 11 (constante)
+    INTEGER  décalage et aller à l'état 42
+    FLOAT    décalage et aller à l'état 43
+    CHAR     décalage et aller à l'état 44
+    STRING   décalage et aller à l'état 45
+
+    factor_constante  aller à l'état 46
 
 
 État 29
 
-    8 vector: idf '[' INTEGER virgule • INTEGER colon type ']' vector_list
-
-    INTEGER  décalage et aller à l'état 43
-
-
-État 30
-
-   25 if_condition: mc_if • PARAO condition paraf mc_code instruction_list mc_end
-   26             | mc_if • PARAO condition paraf mc_code instruction_list mc_end mc_else mc_code instruction_list mc_end
-
-    PARAO  décalage et aller à l'état 44
-
-
-État 31
-
-   27 loop: mc_for • PARAO assignment condition pvg assignment paraf mc_code instruction_list mc_end
-
-    PARAO  décalage et aller à l'état 45
-
-
-État 32
-
-   23 read_display: mc_read • PARAO idf paraf pvg
-
-    PARAO  décalage et aller à l'état 46
-
-
-État 33
-
-   24 read_display: mc_display • PARAO idf paraf pvg
+   31 if_condition: mc_if • PARAO condition PARAF colon instruction_list else_condition
 
     PARAO  décalage et aller à l'état 47
 
 
+État 30
+
+   34 loop: mc_for • PARAO idf colon INTEGER colon INTEGER PARAF instruction_list mc_end
+
+    PARAO  décalage et aller à l'état 48
+
+
+État 31
+
+   29 read_display: mc_read • PARAO STRING colon arobase idf PARAF pvg
+
+    PARAO  décalage et aller à l'état 49
+
+
+État 32
+
+   30 read_display: mc_display • PARAO STRING colon idf PARAF pvg
+
+    PARAO  décalage et aller à l'état 50
+
+
+État 33
+
+   28 assignment: idf • eq expression pvg
+
+    eq  décalage et aller à l'état 51
+
+
 État 34
 
-   22 assignment: idf • eq expression pvg
+    2 program: idf $@1 mc_data declartions_list mc_end mc_code instruction_list • mc_end mc_end
 
-    eq  décalage et aller à l'état 48
+    mc_end  décalage et aller à l'état 52
 
 
 État 35
 
-    1 program: idf mc_data declartions_list mc_end mc_code instruction_list • mc_end mc_end
+   22 instruction_list: instruction • instruction_list
 
-    mc_end  décalage et aller à l'état 49
+    mc_if       décalage et aller à l'état 29
+    mc_for      décalage et aller à l'état 30
+    mc_read     décalage et aller à l'état 31
+    mc_display  décalage et aller à l'état 32
+    idf         décalage et aller à l'état 33
+
+    $défaut  réduction par utilisation de la règle 23 (instruction_list)
+
+    instruction_list  aller à l'état 53
+    instruction       aller à l'état 35
+    assignment        aller à l'état 36
+    read_display      aller à l'état 37
+    if_condition      aller à l'état 38
+    loop              aller à l'état 39
 
 
 État 36
 
-   16 instruction_list: instruction •
-   17                 | instruction • instruction_list
+   24 instruction: assignment •
 
-    mc_if       décalage et aller à l'état 30
-    mc_for      décalage et aller à l'état 31
-    mc_read     décalage et aller à l'état 32
-    mc_display  décalage et aller à l'état 33
-    idf         décalage et aller à l'état 34
-
-    $défaut  réduction par utilisation de la règle 16 (instruction_list)
-
-    instruction_list  aller à l'état 50
-    instruction       aller à l'état 36
-    assignment        aller à l'état 37
-    read_display      aller à l'état 38
-    if_condition      aller à l'état 39
-    loop              aller à l'état 40
+    $défaut  réduction par utilisation de la règle 24 (instruction)
 
 
 État 37
 
-   18 instruction: assignment •
+   25 instruction: read_display •
 
-    $défaut  réduction par utilisation de la règle 18 (instruction)
+    $défaut  réduction par utilisation de la règle 25 (instruction)
 
 
 État 38
 
-   19 instruction: read_display •
+   26 instruction: if_condition •
 
-    $défaut  réduction par utilisation de la règle 19 (instruction)
+    $défaut  réduction par utilisation de la règle 26 (instruction)
 
 
 État 39
 
-   20 instruction: if_condition •
+   27 instruction: loop •
 
-    $défaut  réduction par utilisation de la règle 20 (instruction)
+    $défaut  réduction par utilisation de la règle 27 (instruction)
 
 
 État 40
 
-   21 instruction: loop •
+    4 declartions_list: type colon idf $@2 • liste_vars declartions_list
 
-    $défaut  réduction par utilisation de la règle 21 (instruction)
+    pvg      décalage et aller à l'état 54
+    virgule  décalage et aller à l'état 55
+
+    liste_vars  aller à l'état 56
 
 
 État 41
 
-    2 declartions_list: type colon idf liste_vars • declartions_list
+   10 vector: MC_VECTOR colon idf left_bracket INTEGER • virgule INTEGER colon type right_bracket vector_list
 
-    mc_const    décalage et aller à l'état 5
-    mc_integer  décalage et aller à l'état 6
-    mc_float    décalage et aller à l'état 7
-    mc_char     décalage et aller à l'état 8
-    mc_string   décalage et aller à l'état 9
-    idf         décalage et aller à l'état 10
-
-    $défaut  réduction par utilisation de la règle 5 (declartions_list)
-
-    declartions_list  aller à l'état 51
-    vector            aller à l'état 12
-    constante         aller à l'état 13
-    type              aller à l'état 14
+    virgule  décalage et aller à l'état 57
 
 
 État 42
 
-    6 liste_vars: virgule idf • liste_vars pvg
+   14 factor_constante: INTEGER •
 
-    pvg      décalage et aller à l'état 26
-    virgule  décalage et aller à l'état 27
-
-    liste_vars  aller à l'état 52
+    $défaut  réduction par utilisation de la règle 14 (factor_constante)
 
 
 État 43
 
-    8 vector: idf '[' INTEGER virgule INTEGER • colon type ']' vector_list
+   15 factor_constante: FLOAT •
 
-    colon  décalage et aller à l'état 53
+    $défaut  réduction par utilisation de la règle 15 (factor_constante)
 
 
 État 44
 
-   25 if_condition: mc_if PARAO • condition paraf mc_code instruction_list mc_end
-   26             | mc_if PARAO • condition paraf mc_code instruction_list mc_end mc_else mc_code instruction_list mc_end
+   17 factor_constante: CHAR •
 
-    idf      décalage et aller à l'état 54
-    INTEGER  décalage et aller à l'état 55
-    FLOAT    décalage et aller à l'état 56
-    CHAR     décalage et aller à l'état 57
-    STRING   décalage et aller à l'état 58
-    PARAO    décalage et aller à l'état 59
-
-    expression  aller à l'état 60
-    term        aller à l'état 61
-    factor      aller à l'état 62
-    condition   aller à l'état 63
+    $défaut  réduction par utilisation de la règle 17 (factor_constante)
 
 
 État 45
 
-   27 loop: mc_for PARAO • assignment condition pvg assignment paraf mc_code instruction_list mc_end
+   16 factor_constante: STRING •
 
-    idf  décalage et aller à l'état 34
-
-    assignment  aller à l'état 64
+    $défaut  réduction par utilisation de la règle 16 (factor_constante)
 
 
 État 46
 
-   23 read_display: mc_read PARAO • idf paraf pvg
+   13 constante: mc_const colon idf eq factor_constante •
 
-    idf  décalage et aller à l'état 65
+    $défaut  réduction par utilisation de la règle 13 (constante)
 
 
 État 47
 
-   24 read_display: mc_display PARAO • idf paraf pvg
+   31 if_condition: mc_if PARAO • condition PARAF colon instruction_list else_condition
 
-    idf  décalage et aller à l'état 66
+    idf      décalage et aller à l'état 58
+    INTEGER  décalage et aller à l'état 59
+    FLOAT    décalage et aller à l'état 60
+    CHAR     décalage et aller à l'état 61
+    STRING   décalage et aller à l'état 62
+    PARAO    décalage et aller à l'état 63
+
+    expression  aller à l'état 64
+    term        aller à l'état 65
+    factor      aller à l'état 66
+    condition   aller à l'état 67
 
 
 État 48
 
-   22 assignment: idf eq • expression pvg
+   34 loop: mc_for PARAO • idf colon INTEGER colon INTEGER PARAF instruction_list mc_end
 
-    idf      décalage et aller à l'état 54
-    INTEGER  décalage et aller à l'état 55
-    FLOAT    décalage et aller à l'état 56
-    CHAR     décalage et aller à l'état 57
-    STRING   décalage et aller à l'état 58
-    PARAO    décalage et aller à l'état 59
-
-    expression  aller à l'état 67
-    term        aller à l'état 61
-    factor      aller à l'état 62
+    idf  décalage et aller à l'état 68
 
 
 État 49
 
-    1 program: idf mc_data declartions_list mc_end mc_code instruction_list mc_end • mc_end
+   29 read_display: mc_read PARAO • STRING colon arobase idf PARAF pvg
 
-    mc_end  décalage et aller à l'état 68
+    STRING  décalage et aller à l'état 69
 
 
 État 50
 
-   17 instruction_list: instruction instruction_list •
+   30 read_display: mc_display PARAO • STRING colon idf PARAF pvg
 
-    $défaut  réduction par utilisation de la règle 17 (instruction_list)
+    STRING  décalage et aller à l'état 70
 
 
 État 51
 
-    2 declartions_list: type colon idf liste_vars declartions_list •
+   28 assignment: idf eq • expression pvg
 
-    $défaut  réduction par utilisation de la règle 2 (declartions_list)
+    idf      décalage et aller à l'état 58
+    INTEGER  décalage et aller à l'état 59
+    FLOAT    décalage et aller à l'état 60
+    CHAR     décalage et aller à l'état 61
+    STRING   décalage et aller à l'état 62
+    PARAO    décalage et aller à l'état 63
+
+    expression  aller à l'état 71
+    term        aller à l'état 65
+    factor      aller à l'état 66
 
 
 État 52
 
-    6 liste_vars: virgule idf liste_vars • pvg
+    2 program: idf $@1 mc_data declartions_list mc_end mc_code instruction_list mc_end • mc_end
 
-    pvg  décalage et aller à l'état 69
+    mc_end  décalage et aller à l'état 72
 
 
 État 53
 
-    8 vector: idf '[' INTEGER virgule INTEGER colon • type ']' vector_list
+   22 instruction_list: instruction instruction_list •
 
-    mc_integer  décalage et aller à l'état 6
-    mc_float    décalage et aller à l'état 7
-    mc_char     décalage et aller à l'état 8
-    mc_string   décalage et aller à l'état 9
-
-    type  aller à l'état 70
+    $défaut  réduction par utilisation de la règle 22 (instruction_list)
 
 
 État 54
 
-   38 factor: idf •
+    9 liste_vars: pvg •
 
-    $défaut  réduction par utilisation de la règle 38 (factor)
+    $défaut  réduction par utilisation de la règle 9 (liste_vars)
 
 
 État 55
 
-   34 factor: INTEGER •
+    8 liste_vars: virgule • idf liste_vars
 
-    $défaut  réduction par utilisation de la règle 34 (factor)
+    idf  décalage et aller à l'état 73
 
 
 État 56
 
-   35 factor: FLOAT •
+    4 declartions_list: type colon idf $@2 liste_vars • declartions_list
 
-    $défaut  réduction par utilisation de la règle 35 (factor)
+    MC_VECTOR   décalage et aller à l'état 6
+    mc_const    décalage et aller à l'état 7
+    mc_integer  décalage et aller à l'état 8
+    mc_float    décalage et aller à l'état 9
+    mc_char     décalage et aller à l'état 10
+    mc_string   décalage et aller à l'état 11
+
+    $défaut  réduction par utilisation de la règle 7 (declartions_list)
+
+    declartions_list  aller à l'état 74
+    vector            aller à l'état 13
+    constante         aller à l'état 14
+    type              aller à l'état 15
 
 
 État 57
 
-   36 factor: CHAR •
+   10 vector: MC_VECTOR colon idf left_bracket INTEGER virgule • INTEGER colon type right_bracket vector_list
 
-    $défaut  réduction par utilisation de la règle 36 (factor)
+    INTEGER  décalage et aller à l'état 75
 
 
 État 58
 
-   37 factor: STRING •
+   45 factor: idf •
 
-    $défaut  réduction par utilisation de la règle 37 (factor)
+    $défaut  réduction par utilisation de la règle 45 (factor)
 
 
 État 59
 
-   39 factor: PARAO • expression paraf
+   41 factor: INTEGER •
 
-    idf      décalage et aller à l'état 54
-    INTEGER  décalage et aller à l'état 55
-    FLOAT    décalage et aller à l'état 56
-    CHAR     décalage et aller à l'état 57
-    STRING   décalage et aller à l'état 58
-    PARAO    décalage et aller à l'état 59
-
-    expression  aller à l'état 71
-    term        aller à l'état 61
-    factor      aller à l'état 62
+    $défaut  réduction par utilisation de la règle 41 (factor)
 
 
 État 60
 
-   29 expression: expression • sum term
-   30           | expression • minus term
-   40 condition: expression • dot mc_ge dot expression
-   41          | expression • dot mc_le dot expression
-   42          | expression • dot mc_l dot expression
-   43          | expression • dot mc_di dot expression
-   44          | expression • dot mc_not dot expression
-   45          | expression • dot mc_or dot expression
+   42 factor: FLOAT •
 
-    sum    décalage et aller à l'état 72
-    minus  décalage et aller à l'état 73
-    dot    décalage et aller à l'état 74
+    $défaut  réduction par utilisation de la règle 42 (factor)
 
 
 État 61
 
-   28 expression: term •
-   32 term: term • mul factor
-   33     | term • DIV factor
+   43 factor: CHAR •
 
-    mul  décalage et aller à l'état 75
-    DIV  décalage et aller à l'état 76
-
-    $défaut  réduction par utilisation de la règle 28 (expression)
+    $défaut  réduction par utilisation de la règle 43 (factor)
 
 
 État 62
 
-   31 term: factor •
+   44 factor: STRING •
 
-    $défaut  réduction par utilisation de la règle 31 (term)
+    $défaut  réduction par utilisation de la règle 44 (factor)
 
 
 État 63
 
-   25 if_condition: mc_if PARAO condition • paraf mc_code instruction_list mc_end
-   26             | mc_if PARAO condition • paraf mc_code instruction_list mc_end mc_else mc_code instruction_list mc_end
+   46 factor: PARAO • expression PARAF
 
-    paraf  décalage et aller à l'état 77
+    idf      décalage et aller à l'état 58
+    INTEGER  décalage et aller à l'état 59
+    FLOAT    décalage et aller à l'état 60
+    CHAR     décalage et aller à l'état 61
+    STRING   décalage et aller à l'état 62
+    PARAO    décalage et aller à l'état 63
+
+    expression  aller à l'état 76
+    term        aller à l'état 65
+    factor      aller à l'état 66
 
 
 État 64
 
-   27 loop: mc_for PARAO assignment • condition pvg assignment paraf mc_code instruction_list mc_end
+   36 expression: expression • sum term
+   37           | expression • minus term
+   47 condition: expression • dot mc_ge dot expression
+   48          | expression • dot mc_le dot expression
+   49          | expression • dot mc_l dot expression
+   50          | expression • dot mc_di dot expression
+   51          | expression • dot mc_not dot expression
+   52          | expression • dot mc_or dot expression
 
-    idf      décalage et aller à l'état 54
-    INTEGER  décalage et aller à l'état 55
-    FLOAT    décalage et aller à l'état 56
-    CHAR     décalage et aller à l'état 57
-    STRING   décalage et aller à l'état 58
-    PARAO    décalage et aller à l'état 59
-
-    expression  aller à l'état 60
-    term        aller à l'état 61
-    factor      aller à l'état 62
-    condition   aller à l'état 78
+    sum    décalage et aller à l'état 77
+    minus  décalage et aller à l'état 78
+    dot    décalage et aller à l'état 79
 
 
 État 65
 
-   23 read_display: mc_read PARAO idf • paraf pvg
+   35 expression: term •
+   39 term: term • mul factor
+   40     | term • DIV factor
 
-    paraf  décalage et aller à l'état 79
+    mul  décalage et aller à l'état 80
+    DIV  décalage et aller à l'état 81
+
+    $défaut  réduction par utilisation de la règle 35 (expression)
 
 
 État 66
 
-   24 read_display: mc_display PARAO idf • paraf pvg
+   38 term: factor •
 
-    paraf  décalage et aller à l'état 80
+    $défaut  réduction par utilisation de la règle 38 (term)
 
 
 État 67
 
-   22 assignment: idf eq expression • pvg
-   29 expression: expression • sum term
-   30           | expression • minus term
+   31 if_condition: mc_if PARAO condition • PARAF colon instruction_list else_condition
 
-    pvg    décalage et aller à l'état 81
-    sum    décalage et aller à l'état 72
-    minus  décalage et aller à l'état 73
+    PARAF  décalage et aller à l'état 82
 
 
 État 68
 
-    1 program: idf mc_data declartions_list mc_end mc_code instruction_list mc_end mc_end •
+   34 loop: mc_for PARAO idf • colon INTEGER colon INTEGER PARAF instruction_list mc_end
 
-    $défaut  réduction par utilisation de la règle 1 (program)
+    colon  décalage et aller à l'état 83
 
 
 État 69
 
-    6 liste_vars: virgule idf liste_vars pvg •
+   29 read_display: mc_read PARAO STRING • colon arobase idf PARAF pvg
 
-    $défaut  réduction par utilisation de la règle 6 (liste_vars)
+    colon  décalage et aller à l'état 84
 
 
 État 70
 
-    8 vector: idf '[' INTEGER virgule INTEGER colon type • ']' vector_list
+   30 read_display: mc_display PARAO STRING • colon idf PARAF pvg
 
-    ']'  décalage et aller à l'état 82
+    colon  décalage et aller à l'état 85
 
 
 État 71
 
-   29 expression: expression • sum term
-   30           | expression • minus term
-   39 factor: PARAO expression • paraf
+   28 assignment: idf eq expression • pvg
+   36 expression: expression • sum term
+   37           | expression • minus term
 
-    sum    décalage et aller à l'état 72
-    minus  décalage et aller à l'état 73
-    paraf  décalage et aller à l'état 83
+    pvg    décalage et aller à l'état 86
+    sum    décalage et aller à l'état 77
+    minus  décalage et aller à l'état 78
 
 
 État 72
 
-   29 expression: expression sum • term
+    2 program: idf $@1 mc_data declartions_list mc_end mc_code instruction_list mc_end mc_end •
 
-    idf      décalage et aller à l'état 54
-    INTEGER  décalage et aller à l'état 55
-    FLOAT    décalage et aller à l'état 56
-    CHAR     décalage et aller à l'état 57
-    STRING   décalage et aller à l'état 58
-    PARAO    décalage et aller à l'état 59
-
-    term    aller à l'état 84
-    factor  aller à l'état 62
+    $défaut  réduction par utilisation de la règle 2 (program)
 
 
 État 73
 
-   30 expression: expression minus • term
+    8 liste_vars: virgule idf • liste_vars
 
-    idf      décalage et aller à l'état 54
-    INTEGER  décalage et aller à l'état 55
-    FLOAT    décalage et aller à l'état 56
-    CHAR     décalage et aller à l'état 57
-    STRING   décalage et aller à l'état 58
-    PARAO    décalage et aller à l'état 59
+    pvg      décalage et aller à l'état 54
+    virgule  décalage et aller à l'état 55
 
-    term    aller à l'état 85
-    factor  aller à l'état 62
+    liste_vars  aller à l'état 87
 
 
 État 74
 
-   40 condition: expression dot • mc_ge dot expression
-   41          | expression dot • mc_le dot expression
-   42          | expression dot • mc_l dot expression
-   43          | expression dot • mc_di dot expression
-   44          | expression dot • mc_not dot expression
-   45          | expression dot • mc_or dot expression
+    4 declartions_list: type colon idf $@2 liste_vars declartions_list •
 
-    mc_or   décalage et aller à l'état 86
-    mc_not  décalage et aller à l'état 87
-    mc_ge   décalage et aller à l'état 88
-    mc_l    décalage et aller à l'état 89
-    mc_di   décalage et aller à l'état 90
-    mc_le   décalage et aller à l'état 91
+    $défaut  réduction par utilisation de la règle 4 (declartions_list)
 
 
 État 75
 
-   32 term: term mul • factor
+   10 vector: MC_VECTOR colon idf left_bracket INTEGER virgule INTEGER • colon type right_bracket vector_list
 
-    idf      décalage et aller à l'état 54
-    INTEGER  décalage et aller à l'état 55
-    FLOAT    décalage et aller à l'état 56
-    CHAR     décalage et aller à l'état 57
-    STRING   décalage et aller à l'état 58
-    PARAO    décalage et aller à l'état 59
-
-    factor  aller à l'état 92
+    colon  décalage et aller à l'état 88
 
 
 État 76
 
-   33 term: term DIV • factor
+   36 expression: expression • sum term
+   37           | expression • minus term
+   46 factor: PARAO expression • PARAF
 
-    idf      décalage et aller à l'état 54
-    INTEGER  décalage et aller à l'état 55
-    FLOAT    décalage et aller à l'état 56
-    CHAR     décalage et aller à l'état 57
-    STRING   décalage et aller à l'état 58
-    PARAO    décalage et aller à l'état 59
-
-    factor  aller à l'état 93
+    sum    décalage et aller à l'état 77
+    minus  décalage et aller à l'état 78
+    PARAF  décalage et aller à l'état 89
 
 
 État 77
 
-   25 if_condition: mc_if PARAO condition paraf • mc_code instruction_list mc_end
-   26             | mc_if PARAO condition paraf • mc_code instruction_list mc_end mc_else mc_code instruction_list mc_end
+   36 expression: expression sum • term
 
-    mc_code  décalage et aller à l'état 94
+    idf      décalage et aller à l'état 58
+    INTEGER  décalage et aller à l'état 59
+    FLOAT    décalage et aller à l'état 60
+    CHAR     décalage et aller à l'état 61
+    STRING   décalage et aller à l'état 62
+    PARAO    décalage et aller à l'état 63
+
+    term    aller à l'état 90
+    factor  aller à l'état 66
 
 
 État 78
 
-   27 loop: mc_for PARAO assignment condition • pvg assignment paraf mc_code instruction_list mc_end
+   37 expression: expression minus • term
 
-    pvg  décalage et aller à l'état 95
+    idf      décalage et aller à l'état 58
+    INTEGER  décalage et aller à l'état 59
+    FLOAT    décalage et aller à l'état 60
+    CHAR     décalage et aller à l'état 61
+    STRING   décalage et aller à l'état 62
+    PARAO    décalage et aller à l'état 63
+
+    term    aller à l'état 91
+    factor  aller à l'état 66
 
 
 État 79
 
-   23 read_display: mc_read PARAO idf paraf • pvg
+   47 condition: expression dot • mc_ge dot expression
+   48          | expression dot • mc_le dot expression
+   49          | expression dot • mc_l dot expression
+   50          | expression dot • mc_di dot expression
+   51          | expression dot • mc_not dot expression
+   52          | expression dot • mc_or dot expression
 
-    pvg  décalage et aller à l'état 96
+    mc_or   décalage et aller à l'état 92
+    mc_not  décalage et aller à l'état 93
+    mc_ge   décalage et aller à l'état 94
+    mc_l    décalage et aller à l'état 95
+    mc_di   décalage et aller à l'état 96
+    mc_le   décalage et aller à l'état 97
 
 
 État 80
 
-   24 read_display: mc_display PARAO idf paraf • pvg
+   39 term: term mul • factor
 
-    pvg  décalage et aller à l'état 97
+    idf      décalage et aller à l'état 58
+    INTEGER  décalage et aller à l'état 59
+    FLOAT    décalage et aller à l'état 60
+    CHAR     décalage et aller à l'état 61
+    STRING   décalage et aller à l'état 62
+    PARAO    décalage et aller à l'état 63
+
+    factor  aller à l'état 98
 
 
 État 81
 
-   22 assignment: idf eq expression pvg •
+   40 term: term DIV • factor
 
-    $défaut  réduction par utilisation de la règle 22 (assignment)
+    idf      décalage et aller à l'état 58
+    INTEGER  décalage et aller à l'état 59
+    FLOAT    décalage et aller à l'état 60
+    CHAR     décalage et aller à l'état 61
+    STRING   décalage et aller à l'état 62
+    PARAO    décalage et aller à l'état 63
+
+    factor  aller à l'état 99
 
 
 État 82
 
-    8 vector: idf '[' INTEGER virgule INTEGER colon type ']' • vector_list
+   31 if_condition: mc_if PARAO condition PARAF • colon instruction_list else_condition
 
-    pvg      décalage et aller à l'état 98
-    virgule  décalage et aller à l'état 99
-
-    vector_list  aller à l'état 100
+    colon  décalage et aller à l'état 100
 
 
 État 83
 
-   39 factor: PARAO expression paraf •
+   34 loop: mc_for PARAO idf colon • INTEGER colon INTEGER PARAF instruction_list mc_end
 
-    $défaut  réduction par utilisation de la règle 39 (factor)
+    INTEGER  décalage et aller à l'état 101
 
 
 État 84
 
-   29 expression: expression sum term •
-   32 term: term • mul factor
-   33     | term • DIV factor
+   29 read_display: mc_read PARAO STRING colon • arobase idf PARAF pvg
 
-    mul  décalage et aller à l'état 75
-    DIV  décalage et aller à l'état 76
-
-    $défaut  réduction par utilisation de la règle 29 (expression)
+    arobase  décalage et aller à l'état 102
 
 
 État 85
 
-   30 expression: expression minus term •
-   32 term: term • mul factor
-   33     | term • DIV factor
+   30 read_display: mc_display PARAO STRING colon • idf PARAF pvg
 
-    mul  décalage et aller à l'état 75
-    DIV  décalage et aller à l'état 76
-
-    $défaut  réduction par utilisation de la règle 30 (expression)
+    idf  décalage et aller à l'état 103
 
 
 État 86
 
-   45 condition: expression dot mc_or • dot expression
+   28 assignment: idf eq expression pvg •
 
-    dot  décalage et aller à l'état 101
+    $défaut  réduction par utilisation de la règle 28 (assignment)
 
 
 État 87
 
-   44 condition: expression dot mc_not • dot expression
+    8 liste_vars: virgule idf liste_vars •
 
-    dot  décalage et aller à l'état 102
+    $défaut  réduction par utilisation de la règle 8 (liste_vars)
 
 
 État 88
 
-   40 condition: expression dot mc_ge • dot expression
+   10 vector: MC_VECTOR colon idf left_bracket INTEGER virgule INTEGER colon • type right_bracket vector_list
 
-    dot  décalage et aller à l'état 103
+    mc_integer  décalage et aller à l'état 8
+    mc_float    décalage et aller à l'état 9
+    mc_char     décalage et aller à l'état 10
+    mc_string   décalage et aller à l'état 11
+
+    type  aller à l'état 104
 
 
 État 89
 
-   42 condition: expression dot mc_l • dot expression
+   46 factor: PARAO expression PARAF •
 
-    dot  décalage et aller à l'état 104
+    $défaut  réduction par utilisation de la règle 46 (factor)
 
 
 État 90
 
-   43 condition: expression dot mc_di • dot expression
+   36 expression: expression sum term •
+   39 term: term • mul factor
+   40     | term • DIV factor
 
-    dot  décalage et aller à l'état 105
+    mul  décalage et aller à l'état 80
+    DIV  décalage et aller à l'état 81
+
+    $défaut  réduction par utilisation de la règle 36 (expression)
 
 
 État 91
 
-   41 condition: expression dot mc_le • dot expression
+   37 expression: expression minus term •
+   39 term: term • mul factor
+   40     | term • DIV factor
 
-    dot  décalage et aller à l'état 106
+    mul  décalage et aller à l'état 80
+    DIV  décalage et aller à l'état 81
+
+    $défaut  réduction par utilisation de la règle 37 (expression)
 
 
 État 92
 
-   32 term: term mul factor •
+   52 condition: expression dot mc_or • dot expression
 
-    $défaut  réduction par utilisation de la règle 32 (term)
+    dot  décalage et aller à l'état 105
 
 
 État 93
 
-   33 term: term DIV factor •
+   51 condition: expression dot mc_not • dot expression
 
-    $défaut  réduction par utilisation de la règle 33 (term)
+    dot  décalage et aller à l'état 106
 
 
 État 94
 
-   25 if_condition: mc_if PARAO condition paraf mc_code • instruction_list mc_end
-   26             | mc_if PARAO condition paraf mc_code • instruction_list mc_end mc_else mc_code instruction_list mc_end
+   47 condition: expression dot mc_ge • dot expression
 
-    mc_if       décalage et aller à l'état 30
-    mc_for      décalage et aller à l'état 31
-    mc_read     décalage et aller à l'état 32
-    mc_display  décalage et aller à l'état 33
-    idf         décalage et aller à l'état 34
-
-    instruction_list  aller à l'état 107
-    instruction       aller à l'état 36
-    assignment        aller à l'état 37
-    read_display      aller à l'état 38
-    if_condition      aller à l'état 39
-    loop              aller à l'état 40
+    dot  décalage et aller à l'état 107
 
 
 État 95
 
-   27 loop: mc_for PARAO assignment condition pvg • assignment paraf mc_code instruction_list mc_end
+   49 condition: expression dot mc_l • dot expression
 
-    idf  décalage et aller à l'état 34
-
-    assignment  aller à l'état 108
+    dot  décalage et aller à l'état 108
 
 
 État 96
 
-   23 read_display: mc_read PARAO idf paraf pvg •
+   50 condition: expression dot mc_di • dot expression
 
-    $défaut  réduction par utilisation de la règle 23 (read_display)
+    dot  décalage et aller à l'état 109
 
 
 État 97
 
-   24 read_display: mc_display PARAO idf paraf pvg •
+   48 condition: expression dot mc_le • dot expression
 
-    $défaut  réduction par utilisation de la règle 24 (read_display)
+    dot  décalage et aller à l'état 110
 
 
 État 98
 
-   10 vector_list: pvg •
+   39 term: term mul factor •
 
-    $défaut  réduction par utilisation de la règle 10 (vector_list)
+    $défaut  réduction par utilisation de la règle 39 (term)
 
 
 État 99
 
-    9 vector_list: virgule • idf '[' INTEGER virgule INTEGER colon type ']' vector_list
+   40 term: term DIV factor •
 
-    idf  décalage et aller à l'état 109
+    $défaut  réduction par utilisation de la règle 40 (term)
 
 
 État 100
 
-    8 vector: idf '[' INTEGER virgule INTEGER colon type ']' vector_list •
+   31 if_condition: mc_if PARAO condition PARAF colon • instruction_list else_condition
 
-    $défaut  réduction par utilisation de la règle 8 (vector)
+    mc_if       décalage et aller à l'état 29
+    mc_for      décalage et aller à l'état 30
+    mc_read     décalage et aller à l'état 31
+    mc_display  décalage et aller à l'état 32
+    idf         décalage et aller à l'état 33
+
+    $défaut  réduction par utilisation de la règle 23 (instruction_list)
+
+    instruction_list  aller à l'état 111
+    instruction       aller à l'état 35
+    assignment        aller à l'état 36
+    read_display      aller à l'état 37
+    if_condition      aller à l'état 38
+    loop              aller à l'état 39
 
 
 État 101
 
-   45 condition: expression dot mc_or dot • expression
+   34 loop: mc_for PARAO idf colon INTEGER • colon INTEGER PARAF instruction_list mc_end
 
-    idf      décalage et aller à l'état 54
-    INTEGER  décalage et aller à l'état 55
-    FLOAT    décalage et aller à l'état 56
-    CHAR     décalage et aller à l'état 57
-    STRING   décalage et aller à l'état 58
-    PARAO    décalage et aller à l'état 59
-
-    expression  aller à l'état 110
-    term        aller à l'état 61
-    factor      aller à l'état 62
+    colon  décalage et aller à l'état 112
 
 
 État 102
 
-   44 condition: expression dot mc_not dot • expression
+   29 read_display: mc_read PARAO STRING colon arobase • idf PARAF pvg
 
-    idf      décalage et aller à l'état 54
-    INTEGER  décalage et aller à l'état 55
-    FLOAT    décalage et aller à l'état 56
-    CHAR     décalage et aller à l'état 57
-    STRING   décalage et aller à l'état 58
-    PARAO    décalage et aller à l'état 59
-
-    expression  aller à l'état 111
-    term        aller à l'état 61
-    factor      aller à l'état 62
+    idf  décalage et aller à l'état 113
 
 
 État 103
 
-   40 condition: expression dot mc_ge dot • expression
+   30 read_display: mc_display PARAO STRING colon idf • PARAF pvg
 
-    idf      décalage et aller à l'état 54
-    INTEGER  décalage et aller à l'état 55
-    FLOAT    décalage et aller à l'état 56
-    CHAR     décalage et aller à l'état 57
-    STRING   décalage et aller à l'état 58
-    PARAO    décalage et aller à l'état 59
-
-    expression  aller à l'état 112
-    term        aller à l'état 61
-    factor      aller à l'état 62
+    PARAF  décalage et aller à l'état 114
 
 
 État 104
 
-   42 condition: expression dot mc_l dot • expression
+   10 vector: MC_VECTOR colon idf left_bracket INTEGER virgule INTEGER colon type • right_bracket vector_list
 
-    idf      décalage et aller à l'état 54
-    INTEGER  décalage et aller à l'état 55
-    FLOAT    décalage et aller à l'état 56
-    CHAR     décalage et aller à l'état 57
-    STRING   décalage et aller à l'état 58
-    PARAO    décalage et aller à l'état 59
-
-    expression  aller à l'état 113
-    term        aller à l'état 61
-    factor      aller à l'état 62
+    right_bracket  décalage et aller à l'état 115
 
 
 État 105
 
-   43 condition: expression dot mc_di dot • expression
+   52 condition: expression dot mc_or dot • expression
 
-    idf      décalage et aller à l'état 54
-    INTEGER  décalage et aller à l'état 55
-    FLOAT    décalage et aller à l'état 56
-    CHAR     décalage et aller à l'état 57
-    STRING   décalage et aller à l'état 58
-    PARAO    décalage et aller à l'état 59
+    idf      décalage et aller à l'état 58
+    INTEGER  décalage et aller à l'état 59
+    FLOAT    décalage et aller à l'état 60
+    CHAR     décalage et aller à l'état 61
+    STRING   décalage et aller à l'état 62
+    PARAO    décalage et aller à l'état 63
 
-    expression  aller à l'état 114
-    term        aller à l'état 61
-    factor      aller à l'état 62
+    expression  aller à l'état 116
+    term        aller à l'état 65
+    factor      aller à l'état 66
 
 
 État 106
 
-   41 condition: expression dot mc_le dot • expression
+   51 condition: expression dot mc_not dot • expression
 
-    idf      décalage et aller à l'état 54
-    INTEGER  décalage et aller à l'état 55
-    FLOAT    décalage et aller à l'état 56
-    CHAR     décalage et aller à l'état 57
-    STRING   décalage et aller à l'état 58
-    PARAO    décalage et aller à l'état 59
+    idf      décalage et aller à l'état 58
+    INTEGER  décalage et aller à l'état 59
+    FLOAT    décalage et aller à l'état 60
+    CHAR     décalage et aller à l'état 61
+    STRING   décalage et aller à l'état 62
+    PARAO    décalage et aller à l'état 63
 
-    expression  aller à l'état 115
-    term        aller à l'état 61
-    factor      aller à l'état 62
+    expression  aller à l'état 117
+    term        aller à l'état 65
+    factor      aller à l'état 66
 
 
 État 107
 
-   25 if_condition: mc_if PARAO condition paraf mc_code instruction_list • mc_end
-   26             | mc_if PARAO condition paraf mc_code instruction_list • mc_end mc_else mc_code instruction_list mc_end
+   47 condition: expression dot mc_ge dot • expression
 
-    mc_end  décalage et aller à l'état 116
+    idf      décalage et aller à l'état 58
+    INTEGER  décalage et aller à l'état 59
+    FLOAT    décalage et aller à l'état 60
+    CHAR     décalage et aller à l'état 61
+    STRING   décalage et aller à l'état 62
+    PARAO    décalage et aller à l'état 63
+
+    expression  aller à l'état 118
+    term        aller à l'état 65
+    factor      aller à l'état 66
 
 
 État 108
 
-   27 loop: mc_for PARAO assignment condition pvg assignment • paraf mc_code instruction_list mc_end
+   49 condition: expression dot mc_l dot • expression
 
-    paraf  décalage et aller à l'état 117
+    idf      décalage et aller à l'état 58
+    INTEGER  décalage et aller à l'état 59
+    FLOAT    décalage et aller à l'état 60
+    CHAR     décalage et aller à l'état 61
+    STRING   décalage et aller à l'état 62
+    PARAO    décalage et aller à l'état 63
+
+    expression  aller à l'état 119
+    term        aller à l'état 65
+    factor      aller à l'état 66
 
 
 État 109
 
-    9 vector_list: virgule idf • '[' INTEGER virgule INTEGER colon type ']' vector_list
+   50 condition: expression dot mc_di dot • expression
 
-    '['  décalage et aller à l'état 118
+    idf      décalage et aller à l'état 58
+    INTEGER  décalage et aller à l'état 59
+    FLOAT    décalage et aller à l'état 60
+    CHAR     décalage et aller à l'état 61
+    STRING   décalage et aller à l'état 62
+    PARAO    décalage et aller à l'état 63
+
+    expression  aller à l'état 120
+    term        aller à l'état 65
+    factor      aller à l'état 66
 
 
 État 110
 
-   29 expression: expression • sum term
-   30           | expression • minus term
-   45 condition: expression dot mc_or dot expression •
+   48 condition: expression dot mc_le dot • expression
 
-    sum    décalage et aller à l'état 72
-    minus  décalage et aller à l'état 73
+    idf      décalage et aller à l'état 58
+    INTEGER  décalage et aller à l'état 59
+    FLOAT    décalage et aller à l'état 60
+    CHAR     décalage et aller à l'état 61
+    STRING   décalage et aller à l'état 62
+    PARAO    décalage et aller à l'état 63
 
-    $défaut  réduction par utilisation de la règle 45 (condition)
+    expression  aller à l'état 121
+    term        aller à l'état 65
+    factor      aller à l'état 66
 
 
 État 111
 
-   29 expression: expression • sum term
-   30           | expression • minus term
-   44 condition: expression dot mc_not dot expression •
+   31 if_condition: mc_if PARAO condition PARAF colon instruction_list • else_condition
 
-    sum    décalage et aller à l'état 72
-    minus  décalage et aller à l'état 73
+    mc_end   décalage et aller à l'état 122
+    mc_else  décalage et aller à l'état 123
 
-    $défaut  réduction par utilisation de la règle 44 (condition)
+    else_condition  aller à l'état 124
 
 
 État 112
 
-   29 expression: expression • sum term
-   30           | expression • minus term
-   40 condition: expression dot mc_ge dot expression •
+   34 loop: mc_for PARAO idf colon INTEGER colon • INTEGER PARAF instruction_list mc_end
 
-    sum    décalage et aller à l'état 72
-    minus  décalage et aller à l'état 73
-
-    $défaut  réduction par utilisation de la règle 40 (condition)
+    INTEGER  décalage et aller à l'état 125
 
 
 État 113
 
-   29 expression: expression • sum term
-   30           | expression • minus term
-   42 condition: expression dot mc_l dot expression •
+   29 read_display: mc_read PARAO STRING colon arobase idf • PARAF pvg
 
-    sum    décalage et aller à l'état 72
-    minus  décalage et aller à l'état 73
-
-    $défaut  réduction par utilisation de la règle 42 (condition)
+    PARAF  décalage et aller à l'état 126
 
 
 État 114
 
-   29 expression: expression • sum term
-   30           | expression • minus term
-   43 condition: expression dot mc_di dot expression •
+   30 read_display: mc_display PARAO STRING colon idf PARAF • pvg
 
-    sum    décalage et aller à l'état 72
-    minus  décalage et aller à l'état 73
-
-    $défaut  réduction par utilisation de la règle 43 (condition)
+    pvg  décalage et aller à l'état 127
 
 
 État 115
 
-   29 expression: expression • sum term
-   30           | expression • minus term
-   41 condition: expression dot mc_le dot expression •
+   10 vector: MC_VECTOR colon idf left_bracket INTEGER virgule INTEGER colon type right_bracket • vector_list
 
-    sum    décalage et aller à l'état 72
-    minus  décalage et aller à l'état 73
+    pvg      décalage et aller à l'état 128
+    virgule  décalage et aller à l'état 129
 
-    $défaut  réduction par utilisation de la règle 41 (condition)
+    vector_list  aller à l'état 130
 
 
 État 116
 
-   25 if_condition: mc_if PARAO condition paraf mc_code instruction_list mc_end •
-   26             | mc_if PARAO condition paraf mc_code instruction_list mc_end • mc_else mc_code instruction_list mc_end
+   36 expression: expression • sum term
+   37           | expression • minus term
+   52 condition: expression dot mc_or dot expression •
 
-    mc_else  décalage et aller à l'état 119
+    sum    décalage et aller à l'état 77
+    minus  décalage et aller à l'état 78
 
-    $défaut  réduction par utilisation de la règle 25 (if_condition)
+    $défaut  réduction par utilisation de la règle 52 (condition)
 
 
 État 117
 
-   27 loop: mc_for PARAO assignment condition pvg assignment paraf • mc_code instruction_list mc_end
+   36 expression: expression • sum term
+   37           | expression • minus term
+   51 condition: expression dot mc_not dot expression •
 
-    mc_code  décalage et aller à l'état 120
+    sum    décalage et aller à l'état 77
+    minus  décalage et aller à l'état 78
+
+    $défaut  réduction par utilisation de la règle 51 (condition)
 
 
 État 118
 
-    9 vector_list: virgule idf '[' • INTEGER virgule INTEGER colon type ']' vector_list
+   36 expression: expression • sum term
+   37           | expression • minus term
+   47 condition: expression dot mc_ge dot expression •
 
-    INTEGER  décalage et aller à l'état 121
+    sum    décalage et aller à l'état 77
+    minus  décalage et aller à l'état 78
+
+    $défaut  réduction par utilisation de la règle 47 (condition)
 
 
 État 119
 
-   26 if_condition: mc_if PARAO condition paraf mc_code instruction_list mc_end mc_else • mc_code instruction_list mc_end
+   36 expression: expression • sum term
+   37           | expression • minus term
+   49 condition: expression dot mc_l dot expression •
 
-    mc_code  décalage et aller à l'état 122
+    sum    décalage et aller à l'état 77
+    minus  décalage et aller à l'état 78
+
+    $défaut  réduction par utilisation de la règle 49 (condition)
 
 
 État 120
 
-   27 loop: mc_for PARAO assignment condition pvg assignment paraf mc_code • instruction_list mc_end
+   36 expression: expression • sum term
+   37           | expression • minus term
+   50 condition: expression dot mc_di dot expression •
 
-    mc_if       décalage et aller à l'état 30
-    mc_for      décalage et aller à l'état 31
-    mc_read     décalage et aller à l'état 32
-    mc_display  décalage et aller à l'état 33
-    idf         décalage et aller à l'état 34
+    sum    décalage et aller à l'état 77
+    minus  décalage et aller à l'état 78
 
-    instruction_list  aller à l'état 123
-    instruction       aller à l'état 36
-    assignment        aller à l'état 37
-    read_display      aller à l'état 38
-    if_condition      aller à l'état 39
-    loop              aller à l'état 40
+    $défaut  réduction par utilisation de la règle 50 (condition)
 
 
 État 121
 
-    9 vector_list: virgule idf '[' INTEGER • virgule INTEGER colon type ']' vector_list
+   36 expression: expression • sum term
+   37           | expression • minus term
+   48 condition: expression dot mc_le dot expression •
 
-    virgule  décalage et aller à l'état 124
+    sum    décalage et aller à l'état 77
+    minus  décalage et aller à l'état 78
+
+    $défaut  réduction par utilisation de la règle 48 (condition)
 
 
 État 122
 
-   26 if_condition: mc_if PARAO condition paraf mc_code instruction_list mc_end mc_else mc_code • instruction_list mc_end
+   33 else_condition: mc_end •
 
-    mc_if       décalage et aller à l'état 30
-    mc_for      décalage et aller à l'état 31
-    mc_read     décalage et aller à l'état 32
-    mc_display  décalage et aller à l'état 33
-    idf         décalage et aller à l'état 34
-
-    instruction_list  aller à l'état 125
-    instruction       aller à l'état 36
-    assignment        aller à l'état 37
-    read_display      aller à l'état 38
-    if_condition      aller à l'état 39
-    loop              aller à l'état 40
+    $défaut  réduction par utilisation de la règle 33 (else_condition)
 
 
 État 123
 
-   27 loop: mc_for PARAO assignment condition pvg assignment paraf mc_code instruction_list • mc_end
+   32 else_condition: mc_else • colon instruction_list mc_end
 
-    mc_end  décalage et aller à l'état 126
+    colon  décalage et aller à l'état 131
 
 
 État 124
 
-    9 vector_list: virgule idf '[' INTEGER virgule • INTEGER colon type ']' vector_list
+   31 if_condition: mc_if PARAO condition PARAF colon instruction_list else_condition •
 
-    INTEGER  décalage et aller à l'état 127
+    $défaut  réduction par utilisation de la règle 31 (if_condition)
 
 
 État 125
 
-   26 if_condition: mc_if PARAO condition paraf mc_code instruction_list mc_end mc_else mc_code instruction_list • mc_end
+   34 loop: mc_for PARAO idf colon INTEGER colon INTEGER • PARAF instruction_list mc_end
 
-    mc_end  décalage et aller à l'état 128
+    PARAF  décalage et aller à l'état 132
 
 
 État 126
 
-   27 loop: mc_for PARAO assignment condition pvg assignment paraf mc_code instruction_list mc_end •
+   29 read_display: mc_read PARAO STRING colon arobase idf PARAF • pvg
 
-    $défaut  réduction par utilisation de la règle 27 (loop)
+    pvg  décalage et aller à l'état 133
 
 
 État 127
 
-    9 vector_list: virgule idf '[' INTEGER virgule INTEGER • colon type ']' vector_list
+   30 read_display: mc_display PARAO STRING colon idf PARAF pvg •
 
-    colon  décalage et aller à l'état 129
+    $défaut  réduction par utilisation de la règle 30 (read_display)
 
 
 État 128
 
-   26 if_condition: mc_if PARAO condition paraf mc_code instruction_list mc_end mc_else mc_code instruction_list mc_end •
+   12 vector_list: pvg •
 
-    $défaut  réduction par utilisation de la règle 26 (if_condition)
+    $défaut  réduction par utilisation de la règle 12 (vector_list)
 
 
 État 129
 
-    9 vector_list: virgule idf '[' INTEGER virgule INTEGER colon • type ']' vector_list
+   11 vector_list: virgule • idf left_bracket INTEGER virgule INTEGER colon type right_bracket vector_list
 
-    mc_integer  décalage et aller à l'état 6
-    mc_float    décalage et aller à l'état 7
-    mc_char     décalage et aller à l'état 8
-    mc_string   décalage et aller à l'état 9
-
-    type  aller à l'état 130
+    idf  décalage et aller à l'état 134
 
 
 État 130
 
-    9 vector_list: virgule idf '[' INTEGER virgule INTEGER colon type • ']' vector_list
+   10 vector: MC_VECTOR colon idf left_bracket INTEGER virgule INTEGER colon type right_bracket vector_list •
 
-    ']'  décalage et aller à l'état 131
+    $défaut  réduction par utilisation de la règle 10 (vector)
 
 
 État 131
 
-    9 vector_list: virgule idf '[' INTEGER virgule INTEGER colon type ']' • vector_list
+   32 else_condition: mc_else colon • instruction_list mc_end
 
-    pvg      décalage et aller à l'état 98
-    virgule  décalage et aller à l'état 99
+    mc_if       décalage et aller à l'état 29
+    mc_for      décalage et aller à l'état 30
+    mc_read     décalage et aller à l'état 31
+    mc_display  décalage et aller à l'état 32
+    idf         décalage et aller à l'état 33
 
-    vector_list  aller à l'état 132
+    $défaut  réduction par utilisation de la règle 23 (instruction_list)
+
+    instruction_list  aller à l'état 135
+    instruction       aller à l'état 35
+    assignment        aller à l'état 36
+    read_display      aller à l'état 37
+    if_condition      aller à l'état 38
+    loop              aller à l'état 39
 
 
 État 132
 
-    9 vector_list: virgule idf '[' INTEGER virgule INTEGER colon type ']' vector_list •
+   34 loop: mc_for PARAO idf colon INTEGER colon INTEGER PARAF • instruction_list mc_end
 
-    $défaut  réduction par utilisation de la règle 9 (vector_list)
+    mc_if       décalage et aller à l'état 29
+    mc_for      décalage et aller à l'état 30
+    mc_read     décalage et aller à l'état 31
+    mc_display  décalage et aller à l'état 32
+    idf         décalage et aller à l'état 33
+
+    $défaut  réduction par utilisation de la règle 23 (instruction_list)
+
+    instruction_list  aller à l'état 136
+    instruction       aller à l'état 35
+    assignment        aller à l'état 36
+    read_display      aller à l'état 37
+    if_condition      aller à l'état 38
+    loop              aller à l'état 39
+
+
+État 133
+
+   29 read_display: mc_read PARAO STRING colon arobase idf PARAF pvg •
+
+    $défaut  réduction par utilisation de la règle 29 (read_display)
+
+
+État 134
+
+   11 vector_list: virgule idf • left_bracket INTEGER virgule INTEGER colon type right_bracket vector_list
+
+    left_bracket  décalage et aller à l'état 137
+
+
+État 135
+
+   32 else_condition: mc_else colon instruction_list • mc_end
+
+    mc_end  décalage et aller à l'état 138
+
+
+État 136
+
+   34 loop: mc_for PARAO idf colon INTEGER colon INTEGER PARAF instruction_list • mc_end
+
+    mc_end  décalage et aller à l'état 139
+
+
+État 137
+
+   11 vector_list: virgule idf left_bracket • INTEGER virgule INTEGER colon type right_bracket vector_list
+
+    INTEGER  décalage et aller à l'état 140
+
+
+État 138
+
+   32 else_condition: mc_else colon instruction_list mc_end •
+
+    $défaut  réduction par utilisation de la règle 32 (else_condition)
+
+
+État 139
+
+   34 loop: mc_for PARAO idf colon INTEGER colon INTEGER PARAF instruction_list mc_end •
+
+    $défaut  réduction par utilisation de la règle 34 (loop)
+
+
+État 140
+
+   11 vector_list: virgule idf left_bracket INTEGER • virgule INTEGER colon type right_bracket vector_list
+
+    virgule  décalage et aller à l'état 141
+
+
+État 141
+
+   11 vector_list: virgule idf left_bracket INTEGER virgule • INTEGER colon type right_bracket vector_list
+
+    INTEGER  décalage et aller à l'état 142
+
+
+État 142
+
+   11 vector_list: virgule idf left_bracket INTEGER virgule INTEGER • colon type right_bracket vector_list
+
+    colon  décalage et aller à l'état 143
+
+
+État 143
+
+   11 vector_list: virgule idf left_bracket INTEGER virgule INTEGER colon • type right_bracket vector_list
+
+    mc_integer  décalage et aller à l'état 8
+    mc_float    décalage et aller à l'état 9
+    mc_char     décalage et aller à l'état 10
+    mc_string   décalage et aller à l'état 11
+
+    type  aller à l'état 144
+
+
+État 144
+
+   11 vector_list: virgule idf left_bracket INTEGER virgule INTEGER colon type • right_bracket vector_list
+
+    right_bracket  décalage et aller à l'état 145
+
+
+État 145
+
+   11 vector_list: virgule idf left_bracket INTEGER virgule INTEGER colon type right_bracket • vector_list
+
+    pvg      décalage et aller à l'état 128
+    virgule  décalage et aller à l'état 129
+
+    vector_list  aller à l'état 146
+
+
+État 146
+
+   11 vector_list: virgule idf left_bracket INTEGER virgule INTEGER colon type right_bracket vector_list •
+
+    $défaut  réduction par utilisation de la règle 11 (vector_list)

@@ -170,10 +170,37 @@ void afficher(void) {
     }
 }
 
+int double_declaration (char entite[], char type[]){
+    unsigned int indice = hash_function(entite) % HASH_SIZE_IDF;
+    element* curr = tab[indice];
+
+    
+    while (curr != NULL && strcmp(curr->name, entite) != 0) curr = curr->next;
+
+    if (curr == NULL) {
+        return -1;
+    }
+
+
+    if (strcmp(curr->type, "") == 0) return 1;
+    else
+    { 
+        if (curr->type != type)
+        {
+            return 2;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+}
+
+
 void update_type(char *entite, char *nouveau_type) {
     unsigned int index = hash_function(entite) % HASH_SIZE_IDF;
     element *curr = tab[index];
-
+    
     while (curr != NULL) {
         if (strcmp(curr->name, entite) == 0) {
             strcpy(curr->type, nouveau_type);
@@ -182,3 +209,4 @@ void update_type(char *entite, char *nouveau_type) {
         curr = curr->next;
     }
 }
+

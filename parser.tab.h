@@ -54,46 +54,45 @@ extern int yydebug;
     YYEOF = 0,                     /* "end of file"  */
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
-    LOWER = 258,                   /* LOWER  */
-    mc_end = 259,                  /* mc_end  */
-    mc_data = 260,                 /* mc_data  */
-    mc_code = 261,                 /* mc_code  */
-    MC_VECTOR = 262,               /* MC_VECTOR  */
-    mc_const = 263,                /* mc_const  */
-    mc_if = 264,                   /* mc_if  */
-    mc_else = 265,                 /* mc_else  */
-    mc_for = 266,                  /* mc_for  */
-    mc_or = 267,                   /* mc_or  */
-    mc_not = 268,                  /* mc_not  */
-    mc_ge = 269,                   /* mc_ge  */
-    mc_l = 270,                    /* mc_l  */
-    mc_di = 271,                   /* mc_di  */
-    mc_le = 272,                   /* mc_le  */
-    mc_read = 273,                 /* mc_read  */
-    mc_display = 274,              /* mc_display  */
-    idf = 275,                     /* idf  */
-    INTEGER = 276,                 /* INTEGER  */
-    FLOAT = 277,                   /* FLOAT  */
-    CHAR = 278,                    /* CHAR  */
-    STRING = 279,                  /* STRING  */
-    pvg = 280,                     /* pvg  */
-    sum = 281,                     /* sum  */
-    mul = 282,                     /* mul  */
-    minus = 283,                   /* minus  */
-    PARAO = 284,                   /* PARAO  */
-    PARAF = 285,                   /* PARAF  */
-    colon = 286,                   /* colon  */
-    dot = 287,                     /* dot  */
-    DIV = 288,                     /* DIV  */
-    eq = 289,                      /* eq  */
-    virgule = 290,                 /* virgule  */
-    arobase = 291,                 /* arobase  */
-    batata = 292,                  /* batata  */
-    bata = 293,                    /* bata  */
-    mc_integer = 294,              /* mc_integer  */
-    mc_float = 295,                /* mc_float  */
-    mc_char = 296,                 /* mc_char  */
-    mc_string = 297                /* mc_string  */
+    mc_end = 258,                  /* mc_end  */
+    mc_data = 259,                 /* mc_data  */
+    mc_code = 260,                 /* mc_code  */
+    MC_VECTOR = 261,               /* MC_VECTOR  */
+    mc_const = 262,                /* mc_const  */
+    mc_if = 263,                   /* mc_if  */
+    mc_else = 264,                 /* mc_else  */
+    mc_for = 265,                  /* mc_for  */
+    mc_or = 266,                   /* mc_or  */
+    mc_not = 267,                  /* mc_not  */
+    mc_ge = 268,                   /* mc_ge  */
+    mc_l = 269,                    /* mc_l  */
+    mc_di = 270,                   /* mc_di  */
+    mc_le = 271,                   /* mc_le  */
+    mc_read = 272,                 /* mc_read  */
+    mc_display = 273,              /* mc_display  */
+    idf = 274,                     /* idf  */
+    INTEGER = 275,                 /* INTEGER  */
+    FLOAT = 276,                   /* FLOAT  */
+    CHAR = 277,                    /* CHAR  */
+    STRING = 278,                  /* STRING  */
+    pvg = 279,                     /* pvg  */
+    sum = 280,                     /* sum  */
+    mul = 281,                     /* mul  */
+    minus = 282,                   /* minus  */
+    PARAO = 283,                   /* PARAO  */
+    PARAF = 284,                   /* PARAF  */
+    colon = 285,                   /* colon  */
+    dot = 286,                     /* dot  */
+    DIV = 287,                     /* DIV  */
+    eq = 288,                      /* eq  */
+    virgule = 289,                 /* virgule  */
+    arobase = 290,                 /* arobase  */
+    left_bracket = 291,            /* left_bracket  */
+    right_bracket = 292,           /* right_bracket  */
+    mc_integer = 293,              /* mc_integer  */
+    mc_float = 294,                /* mc_float  */
+    mc_char = 295,                 /* mc_char  */
+    mc_string = 296                /* mc_string  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -102,14 +101,14 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 14 "parser.y"
+#line 13 "parser.y"
  
    int entier;
    float real; 
    char *string;
    char caracter;
 
-#line 113 "parser.tab.h"
+#line 112 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

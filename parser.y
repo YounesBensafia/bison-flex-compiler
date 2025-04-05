@@ -3,12 +3,11 @@
 int yylex(void);           
 void yyerror(const char *s);
 #include "SymbolTable.h"
-
+char type[20];
 int nb_ligne=1, nb_colonne=1;
 %}
 
 %start program
-%precedence LOWER
 
 %union 
 { 
@@ -23,11 +22,13 @@ int nb_ligne=1, nb_colonne=1;
 %token mc_if mc_else mc_for mc_or mc_not mc_ge mc_l mc_di mc_le mc_read mc_display
 %token <string> idf <entier> INTEGER <real> FLOAT <string> CHAR <string> STRING
 %token <string> pvg sum mul minus PARAO PARAF colon dot DIV eq virgule arobase
-%token batata bata
+%token left_bracket right_bracket
 %token <string> mc_integer mc_float mc_char mc_string
 %type <string> type
 
 %%
+
+// GITHUB ISSUE: #5 PROGRAM EXECUTED SUCCESSFULLY printed despite semantic errors
 
 program : 
     idf {
@@ -36,26 +37,45 @@ program :
 ;
 
 declartions_list : type colon idf {
+                if (double_declaration($3, $1) == 0) {
+                    printf("ERREUR SEMANTIQUE: %s double_declaration, a la ligne %d, et la colonne %d\n", $3, nb_ligne, nb_colonne);
+                } else {
+                    if (double_declaration($3, $1) == 2)
+                    {
+                        printf("ERREUR SEMANTIQUE: %s TYPE ERROR, a la ligne %d, et la colonne %d\n", $3, nb_ligne, nb_colonne);
+                    }
+                    else
+                    {
+                        strcpy(type, $1);
                         update_type($3, $1);
                     }
+                }
+                }
             liste_vars declartions_list
            | vector declartions_list | constante pvg declartions_list
            | /* empty */
 ;
 
-liste_vars : virgule idf liste_vars
+liste_vars : virgule idf liste_vars {
+                if (double_declaration($2, type) == 0) {
+                    printf("ERREUR SEMANTIQUE: %s double_declaration, a la ligne %d, et la colonne %d\n", $2, nb_ligne, nb_colonne);
+                } else {
+                    update_type($2, type);
+                }
+}
             | pvg
 ;
 
-vector :MC_VECTOR colon idf batata INTEGER virgule INTEGER colon type bata vector_list
+
+vector :MC_VECTOR colon idf left_bracket INTEGER virgule INTEGER colon type right_bracket vector_list
 ;
 
-vector_list : virgule idf batata INTEGER virgule INTEGER colon type bata vector_list | pvg
+vector_list : virgule idf left_bracket INTEGER virgule INTEGER colon type right_bracket vector_list | pvg
 ;
 
 constante: mc_const colon idf eq factor_constante
 
-factor_constante : INTEGER
+factor_constante : INTEGER 
                  | FLOAT 
                  | STRING 
                  | CHAR 
