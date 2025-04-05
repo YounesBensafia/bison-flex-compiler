@@ -52,6 +52,7 @@ Mkfile.old
 dkms.conf
 
 
+parser.output
 compilateur
 lex.yy.c
 parser.tab.h
