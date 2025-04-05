@@ -3,7 +3,8 @@ COMPILER
 DATA  
     FLOAT: x, y, z;
     INTEGER: z;
-    
+    VECTOR : a[3,3:INTEGER];
+    CONST : a = 2;
 END  
 
 CODE  

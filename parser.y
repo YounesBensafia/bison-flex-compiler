@@ -67,18 +67,50 @@ liste_vars : virgule idf liste_vars {
 ;
 
 
-vector :MC_VECTOR colon idf left_bracket INTEGER virgule INTEGER colon type right_bracket vector_list
+vector :MC_VECTOR colon idf left_bracket INTEGER virgule INTEGER colon type 
+    {
+        if (double_declaration($3, $9) == 0) {
+            printf("ERREUR SEMANTIQUE: %s double_declaration, a la ligne %d, et la colonne %d\n", $3, nb_ligne, nb_colonne);
+        } else {
+            if (double_declaration($3, $9) == 2)
+            {
+                printf("ERREUR SEMANTIQUE: %s TYPE ERROR, a la ligne %d, et la colonne %d\n", $3, nb_ligne, nb_colonne);
+            }
+            else
+            {
+                strcpy(type, $9);
+                update_type($3, $9);
+            }
+        }
+    }
+right_bracket pvg
 ;
 
-vector_list : virgule idf left_bracket INTEGER virgule INTEGER colon type right_bracket vector_list | pvg
-;
+// vector_list : virgule idf left_bracket INTEGER virgule INTEGER colon type right_bracket vector_list | pvg
+// ;
 
-constante: mc_const colon idf eq factor_constante
+constante: mc_const colon idf eq factor_constante {
+    if (double_declaration($3, type) == 0) {
+        printf("ERREUR SEMANTIQUE: %s double_declaration, a la ligne %d, et la colonne %d\n", $3, nb_ligne, nb_colonne);
+    } 
+    else
+    {
+        if (double_declaration($3, type) == 2)
+        {
+            printf("ERREUR SEMANTIQUE: %s TYPE ERROR, a la ligne %d, et la colonne %d\n", $3, nb_ligne, nb_colonne);
+        }
+        else
+        {
+            update_type($3,type);
+        }
+    }
+    
+    }
 
-factor_constante : INTEGER 
-                 | FLOAT 
-                 | STRING 
-                 | CHAR 
+factor_constante : INTEGER {strcpy(type, "INTEGER");}
+                 | FLOAT {strcpy(type, "FLOAT");}
+                 | STRING {strcpy(type, "STRING");}
+                 | CHAR {strcpy(type, "CHAR");}
 
 type : mc_integer {$$ = strdup($1); }
     | mc_float {$$ = strdup($1); }
