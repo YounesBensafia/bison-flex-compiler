@@ -1,25 +1,35 @@
+#include <stdio.h>
+#define RESET      "\033[0m"  // Reset to default color
+#define RED        "\033[31m" // Red
+#define GREEN      "\033[32m" // Green
+#define YELLOW     "\033[33m" // Yellow
+#define BLUE       "\033[34m" // Blue
+#define MAGENTA    "\033[35m" // Magenta
+#define CYAN       "\033[36m" // Cyan
+#define WHITE      "\033[37m" // White
 #include "SymbolTable.h"
 
 element* tab[HASH_SIZE_IDF];
 elt* tabm[HASH_SIZE_KW];
 elt* tabs[HASH_SIZE_SEP];
 
-unsigned int hash_function(const char* str) {
-    unsigned int hash = 0;
-    while (*str) {
-        hash = (hash * 31) + (*str++);
-    }
-    return hash;
-}
 
 void initialisation(void) {
     int i;
     for (i = 0; i < HASH_SIZE_IDF; i++)
-        tab[i] = NULL;
+    tab[i] = NULL;
     for (i = 0; i < HASH_SIZE_KW; i++)
-        tabm[i] = NULL;
+    tabm[i] = NULL;
     for (i = 0; i < HASH_SIZE_SEP; i++)
-        tabs[i] = NULL;
+    tabs[i] = NULL;
+}
+
+unsigned int hash_function(const char* str) {
+    unsigned int hash = 0;      
+    while (*str) {
+        hash = (hash * 31) + (*str++);
+    }
+    return hash;
 }
 
 void inserer(char entite[], char code[], char type[], float val, int y) {
@@ -89,7 +99,6 @@ void rechercher(char entite[], char code[], char type[], float val, int y) {
                 curr = curr->next;
             
             if (curr == NULL) {
-                // Insère le séparateur s'il n'existe pas encore
                 inserer(entite, code, type, val, 2);
             }
         }
@@ -110,16 +119,6 @@ void rechercher(char entite[], char code[], char type[], float val, int y) {
     }
 }
 
-#include <stdio.h>
-
-#define RESET      "\033[0m"  // Reset to default color
-#define RED        "\033[31m" // Red
-#define GREEN      "\033[32m" // Green
-#define YELLOW     "\033[33m" // Yellow
-#define BLUE       "\033[34m" // Blue
-#define MAGENTA    "\033[35m" // Magenta
-#define CYAN       "\033[36m" // Cyan
-#define WHITE      "\033[37m" // White
 
 void afficher(void) {
     int i;
@@ -168,5 +167,18 @@ void afficher(void) {
             }
             curr = curr->next;
         }
+    }
+}
+
+void update_type(char *entite, char *nouveau_type) {
+    unsigned int index = hash_function(entite) % HASH_SIZE_IDF;
+    element *curr = tab[index];
+
+    while (curr != NULL) {
+        if (strcmp(curr->name, entite) == 0) {
+            strcpy(curr->type, nouveau_type);
+            return;
+        }
+        curr = curr->next;
     }
 }

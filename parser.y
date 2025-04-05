@@ -14,24 +14,31 @@ int nb_ligne=1, nb_colonne=1;
 { 
    int entier;
    float real; 
-   char* string;
+   char *string;
    char caracter;
 }
 
-%token mc_end
-%token mc_data mc_code MC_VECTOR mc_const mc_integer mc_float
-%token mc_char mc_string mc_if mc_else mc_for mc_or mc_not mc_ge mc_l mc_di mc_le mc_read mc_display
+%token <string> mc_end
+%token <string> mc_data <string> mc_code MC_VECTOR mc_const
+%token mc_if mc_else mc_for mc_or mc_not mc_ge mc_l mc_di mc_le mc_read mc_display
 %token <string> idf <entier> INTEGER <real> FLOAT <string> CHAR <string> STRING
 %token <string> pvg sum mul minus PARAO PARAF colon dot DIV eq virgule arobase
 %token batata bata
+%token <string> mc_integer mc_float mc_char mc_string
+%type <string> type
 
 %%
 
 program : 
-    idf mc_data declartions_list mc_end mc_code instruction_list mc_end mc_end { printf("Program executed successfully.\n"); YYACCEPT; }
+    idf {
+            update_type($1, "STRING");
+        } mc_data declartions_list mc_end mc_code instruction_list mc_end mc_end { printf("Program executed successfully.\n"); YYACCEPT; }
 ;
 
-declartions_list : type colon idf liste_vars declartions_list
+declartions_list : type colon idf {
+                        update_type($3, $1);
+                    }
+            liste_vars declartions_list
            | vector declartions_list | constante pvg declartions_list
            | /* empty */
 ;
@@ -53,10 +60,10 @@ factor_constante : INTEGER
                  | STRING 
                  | CHAR 
 
-type : mc_integer
-       | mc_float
-       | mc_char
-       | mc_string
+type : mc_integer {$$ = strdup($1); }
+    | mc_float {$$ = strdup($1); }
+    | mc_char {$$ = strdup($1); }
+    | mc_string {$$ = strdup($1); }
 ;
 
 // GITHUB ISSUE: #3 There is an issue with generating the `mc_read` instruction after an `if-else` block. The parser does not handle this sequence correctly, leading to unexpected behavior or errors.

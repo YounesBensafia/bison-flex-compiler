@@ -1,24 +1,10 @@
 COMPILER
 
 DATA  
-    INTEGER: x , y ;  
-    FLOAT: z ;  
-    CONST: PI = 3;  
+    INTEGER: x;
 END  
 
 CODE  
     x = 10 ;  
-    y = 20 ;  
-    z = (x + y) / 2.2 ;  
-
-    IF (z.GE.15):  
-        DISPLAY("%" : z);  
-    ELSE:  
-        DISPLAY("%" : z);  
-    END  
-
-    FOR (i : 1 : 5)  
-        DISPLAY("$" : i);  
-    END  
 END  
 END  

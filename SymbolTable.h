@@ -38,5 +38,6 @@ void initialisation(void);
 void inserer(char entite[], char code[], char type[], float val, int y);
 void rechercher(char entite[], char code[], char type[], float val, int y);
 void afficher(void);
+void update_type(char *entite, char *nouveau_type);
 
 #endif
