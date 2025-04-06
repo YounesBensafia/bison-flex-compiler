@@ -131,9 +131,15 @@ instruction : assignment
 assignment : idf eq expression pvg {
     if(double_declaration($1, "") == 1) 
         printf("ERREUR SEMANTIQUE: %s non declare, a la ligne %d, et la colonne %d\n", $1, nb_ligne, nb_colonne);
-    if(isConstant($1))
-    {
-        printf("ERREUR SEMANTIQUE: %s est une constante et la constante est unchangeable, a la ligne %d, et la colonne %d\n", $1, nb_ligne, nb_colonne);
+    else {
+        if(isConstant($1))
+        {
+            printf("ERREUR SEMANTIQUE: %s est une constante et la constante est unchangeable, a la ligne %d, et la colonne %d\n", $1, nb_ligne, nb_colonne);
+        }
+        else
+        {
+            // type = getType($1);
+        }
     }
 }
 ;
@@ -162,7 +168,7 @@ term : factor
      | term DIV factor
 ;
 
-factor : INTEGER
+factor : INTEGER 
        | FLOAT
        | CHAR
        | STRING

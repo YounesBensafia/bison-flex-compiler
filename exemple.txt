@@ -2,7 +2,6 @@ COMPILER
 
 DATA  
     FLOAT: x, y, z;
-    INTEGER: z;
     VECTOR : a[3,3:INTEGER];
     CONST : b = 2;
 END  
@@ -10,6 +9,5 @@ END
 CODE  
     x = 10;
     x = 20;
-    b = 22;
 END  
 END  

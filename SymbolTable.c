@@ -79,7 +79,7 @@ void inserer(char entite[], char code[], char type[], float val, int y) {
         }
     }
 
-    void rechercher(char entite[], char code[], char type[], float val, int y) {
+void rechercher(char entite[], char code[], char type[], float val, int y) {
         unsigned int index = hash_function(entite);
         switch (y) {
             case 0:
@@ -129,7 +129,6 @@ void inserer(char entite[], char code[], char type[], float val, int y) {
         break;
     }
 }
-
 
 void afficher(void) {
     int i;
@@ -221,7 +220,6 @@ int double_declaration (char entite[], char type[]){
     }
 }
 
-
 void update_type(char *entite, char *nouveau_type) {
     unsigned int index = hash_function(entite) % HASH_SIZE_IDF;
     element *curr = tab[index];
@@ -234,7 +232,6 @@ void update_type(char *entite, char *nouveau_type) {
         curr = curr->next;
     }
 }
-
 
 bool isConstant(char *entite)
 {   unsigned int indice = hash_function(entite) % HASH_SIZE_IDF;
@@ -250,4 +247,15 @@ bool isConstant(char *entite)
         return true;
     }
     return false;
+}
+
+char* getType(char entite[])
+{
+    unsigned int index = hash_function(entite) % HASH_SIZE_IDF;
+    element *curr = tab[index];
+    
+    while (curr != NULL) {
+        if (strcmp(curr->name, entite) == 0) return curr->type;
+    }
+    return "";        
 }

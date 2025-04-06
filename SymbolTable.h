@@ -43,4 +43,5 @@ void afficher(void);
 void update_type(char *entite, char *nouveau_type);
 int double_declaration(char entite[], char type[]);
 bool isConstant(char entite[]);
+char* getType(char entite[]);
 #endif
