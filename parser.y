@@ -3,7 +3,7 @@
 int yylex(void);           
 void yyerror(const char *s);
 #include "SymbolTable.h"
-char type[20];
+char type[30];
 char* typeIdf;
 int nb_ligne=1, nb_colonne=1;
 %}
@@ -147,8 +147,14 @@ assignment : idf eq expression pvg {
 }
 ;
 
-read_display : mc_read PARAO STRING colon arobase idf PARAF pvg
+read_display : mc_read PARAO signe colon arobase idf PARAF pvg
              | mc_display PARAO STRING colon idf PARAF pvg
+;
+
+signe: "$" 
+    | "%" 
+    | "#" 
+    | "&"
 ;
 
 if_condition : mc_if PARAO condition PARAF colon instruction_list else_condition
@@ -172,7 +178,10 @@ term : factor
 ;
 
 factor : INTEGER 
-       | FLOAT {            
+       | FLOAT {
+            if(typeIdf == NULL){
+                return 0;
+            };             
             if (strcmp(typeIdf, "FLOAT") == 0 || isCTyped(typeIdf)) {
                 // do nothing, just skip
             }
@@ -184,6 +193,9 @@ factor : INTEGER
        }
        | CHAR
        {
+            if(typeIdf == NULL){
+                return 0;
+            }; 
             if (strcmp(typeIdf, "CHAR") == 0 || isCTyped(typeIdf)) {
                 // do nothing, just skip
             }
@@ -195,6 +207,9 @@ factor : INTEGER
        }
        | STRING
          {
+            if(typeIdf == NULL){
+                return 0;
+            }; 
             if (strcmp(typeIdf, "CHAR") == 0 || isCTyped(typeIdf)) {
                 // do nothing, just skip
             }
@@ -205,7 +220,9 @@ factor : INTEGER
             }
        }
        | idf {  
-   
+            if(typeIdf == NULL){
+                return 0;
+            }; 
             if (strcmp(typeIdf, getType($1)) == 0 || isCTyped(typeIdf)) {
                 // do nothing, just skip
             }
