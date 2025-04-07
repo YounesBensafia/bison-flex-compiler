@@ -26,7 +26,6 @@ void initialisation(void) {
     tabs[i] = NULL;
 }
 
-// Fonction pour choisir la couleur en fonction du compteur
 const char* get_color() {
     switch (color_counter % 3) {
         case 0: return RED;   // 0 -> Rouge
@@ -258,4 +257,12 @@ char* getType(char entite[])
         if (strcmp(curr->name, entite) == 0) return curr->type;
     }
     return "";        
+}
+
+int isCTyped(char *typeIdf) {
+    if (typeIdf == NULL) return 0;
+    return strcmp(typeIdf, "C_INTEGER") == 0 ||
+           strcmp(typeIdf, "C_CHAR") == 0 ||
+           strcmp(typeIdf, "C_STRING") == 0 ||
+           strcmp(typeIdf, "C_FLOAT") == 0;
 }

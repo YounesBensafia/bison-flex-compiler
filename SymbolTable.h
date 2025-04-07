@@ -25,9 +25,9 @@ typedef struct elt {
 
 
 // Hash table sizes
-#define HASH_SIZE_IDF 100
-#define HASH_SIZE_KW 20
-#define HASH_SIZE_SEP 20
+#define HASH_SIZE_IDF 1000
+#define HASH_SIZE_KW 200
+#define HASH_SIZE_SEP 200
 
 // External declarations of the hash tables
 extern element* tab[HASH_SIZE_IDF];
@@ -44,4 +44,6 @@ void update_type(char *entite, char *nouveau_type);
 int double_declaration(char entite[], char type[]);
 bool isConstant(char entite[]);
 char* getType(char entite[]);
+int isCTyped(char *typeIdf);
+
 #endif

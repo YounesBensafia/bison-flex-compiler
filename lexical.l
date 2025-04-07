@@ -88,6 +88,7 @@ DI      {nb_colonne = nb_colonne + yyleng; rechercher(yytext, "MC_DI", "Mot clé
 }
 
 {char} { 
+    printf("achcc\n"); 
     yylval.caracter = yytext[1]; 
     rechercher(yytext, "CHAR", "CHAR", 0, 0); 
     return CHAR; 

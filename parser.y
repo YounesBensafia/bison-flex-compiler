@@ -4,6 +4,7 @@ int yylex(void);
 void yyerror(const char *s);
 #include "SymbolTable.h"
 char type[20];
+char* typeIdf;
 int nb_ligne=1, nb_colonne=1;
 %}
 
@@ -38,11 +39,11 @@ program :
 
 declartions_list : type colon idf {
                 if (double_declaration($3, $1) == 0) {
-                    printf("ERREUR SEMANTIQUE: %s double_declaration, a la ligne %d, et la colonne %d\n", $3, nb_ligne, nb_colonne);
+                    printf("ERREUR SEMANTIQUE: %s double_declaration, a la ligne %d, et la colonne %d\n", $3, nb_ligne, nb_colonne); exit(1);
                 } else {
                     if (double_declaration($3, $1) == 2)
                     {
-                        printf("ERREUR SEMANTIQUE: %s TYPE ERROR, a la ligne %d, et la colonne %d\n", $3, nb_ligne, nb_colonne);
+                        printf("ERREUR SEMANTIQUE: %s TYPE ERROR, a la ligne %d, et la colonne %d\n", $3, nb_ligne, nb_colonne); exit(1);
                     }
                     else
                     {
@@ -58,7 +59,7 @@ declartions_list : type colon idf {
 
 liste_vars : virgule idf liste_vars {
                 if (double_declaration($2, type) == 0) {
-                    printf("ERREUR SEMANTIQUE: %s double_declaration, a la ligne %d, et la colonne %d\n", $2, nb_ligne, nb_colonne);
+                    printf("ERREUR SEMANTIQUE: %s double_declaration, a la ligne %d, et la colonne %d\n", $2, nb_ligne, nb_colonne); exit(1);
                 } else {
                     update_type($2, type);
                 }
@@ -70,11 +71,11 @@ liste_vars : virgule idf liste_vars {
 vector :MC_VECTOR colon idf left_bracket INTEGER virgule INTEGER colon type 
     {
         if (double_declaration($3, $9) == 0) {
-            printf("ERREUR SEMANTIQUE: %s double_declaration, a la ligne %d, et la colonne %d\n", $3, nb_ligne, nb_colonne);
+            printf("ERREUR SEMANTIQUE: %s double_declaration, a la ligne %d, et la colonne %d\n", $3, nb_ligne, nb_colonne); exit(1);
         } else {
             if (double_declaration($3, $9) == 2)
             {
-                printf("ERREUR SEMANTIQUE: %s TYPE ERROR, a la ligne %d, et la colonne %d\n", $3, nb_ligne, nb_colonne);
+                printf("ERREUR SEMANTIQUE: %s TYPE ERROR, a la ligne %d, et la colonne %d\n", $3, nb_ligne, nb_colonne); exit(1);
             }
             else
             {
@@ -91,13 +92,13 @@ right_bracket pvg
 
 constante: mc_const colon idf eq factor_constante {
     if (double_declaration($3, type) == 0) {
-        printf("ERREUR SEMANTIQUE: %s double_declaration, a la ligne %d, et la colonne %d\n", $3, nb_ligne, nb_colonne);
+        printf("ERREUR SEMANTIQUE: %s double_declaration, a la ligne %d, et la colonne %d\n", $3, nb_ligne, nb_colonne);exit(1);
     } 
     else
     {
         if (double_declaration($3, type) == 2)
         {
-            printf("ERREUR SEMANTIQUE: %s TYPE ERROR, a la ligne %d, et la colonne %d\n", $3, nb_ligne, nb_colonne);
+            printf("ERREUR SEMANTIQUE: %s TYPE ERROR, a la ligne %d, et la colonne %d\n", $3, nb_ligne, nb_colonne); exit(1);
         }
         else
         {
@@ -130,15 +131,17 @@ instruction : assignment
 
 assignment : idf eq expression pvg {
     if(double_declaration($1, "") == 1) 
-        printf("ERREUR SEMANTIQUE: %s non declare, a la ligne %d, et la colonne %d\n", $1, nb_ligne, nb_colonne);
+    {
+        printf("ERREUR SEMANTIQUE: %s non declare, a la ligne %d, et la colonne %d\n", $1, nb_ligne, nb_colonne); exit(1);
+    }
     else {
         if(isConstant($1))
         {
-            printf("ERREUR SEMANTIQUE: %s est une constante et la constante est unchangeable, a la ligne %d, et la colonne %d\n", $1, nb_ligne, nb_colonne);
+            printf("ERREUR SEMANTIQUE: %s est une constante et la constante est unchangeable, a la ligne %d, et la colonne %d\n", $1, nb_ligne, nb_colonne); exit(1);
         }
         else
         {
-            // type = getType($1);
+            typeIdf = getType($1);
         }
     }
 }
@@ -169,10 +172,54 @@ term : factor
 ;
 
 factor : INTEGER 
-       | FLOAT
+       | FLOAT {            
+            if (strcmp(typeIdf, "FLOAT") == 0 || isCTyped(typeIdf)) {
+                // do nothing, just skip
+            }
+            else
+            {
+                printf("ERREUR SEMANTIQUE: Incompatibilité de type a la ligne %d\n", nb_ligne);
+                exit(1);
+            }
+       }
        | CHAR
+       {
+            if (strcmp(typeIdf, "CHAR") == 0 || isCTyped(typeIdf)) {
+                // do nothing, just skip
+            }
+            else
+            {
+                printf("ERREUR SEMANTIQUE: Incompatibilité de type a la ligne %d\n", nb_ligne);
+                exit(1);
+            }
+       }
        | STRING
-       | idf
+         {
+            if (strcmp(typeIdf, "CHAR") == 0 || isCTyped(typeIdf)) {
+                // do nothing, just skip
+            }
+            else
+            {
+                printf("ERREUR SEMANTIQUE: Incompatibilité de type a la ligne %d\n", nb_ligne);
+                exit(1);
+            }
+       }
+       | idf {  
+   
+            if (strcmp(typeIdf, getType($1)) == 0 || isCTyped(typeIdf)) {
+                // do nothing, just skip
+            }
+            else
+            {
+                if (double_declaration($1,"") == 1)
+                {
+                    printf("ERREUR SEMANTIQUE: %s non declare, a la ligne %d, et la colonne %d\n", $1, nb_ligne, nb_colonne); exit(1);
+                }
+                printf("ERREUR SEMANTIQUE: Incompatibilité de type a la ligne %d\n", nb_ligne);
+                exit(1);
+            }
+
+            }
        | PARAO expression PARAF
 ;
 
