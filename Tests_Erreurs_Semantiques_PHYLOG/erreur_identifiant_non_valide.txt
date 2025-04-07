@@ -1,0 +1,10 @@
+1COMPILER
+
+DATA  
+    INTEGER: 12ab;
+END  
+
+CODE 
+    
+END  
+END 

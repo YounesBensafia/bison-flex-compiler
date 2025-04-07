@@ -6,8 +6,9 @@ Incorrect Use of Boolean Expressions {Using non-boolean expressions where a cond
 Invalid Loop Declaration {Using a variable not declared before in a FOR loop, or type mismatch in loop range}
 Identifier Violations
 {
-    * Don’t start with an uppercase letter
+    * Don’t start with a number
 }
+erreur identifiant non valide.txt
 
 DOING:
 Division by Zero

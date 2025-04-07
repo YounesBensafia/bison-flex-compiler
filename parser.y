@@ -178,7 +178,19 @@ term : factor
      | term DIV factor
 ;
 
-factor : INTEGER 
+factor : INTEGER {
+                if(typeIdf == NULL){
+                return 0;
+            };
+            if (strcmp(typeIdf, "INTEGER") == 0 || isCTyped(typeIdf)) {
+                // do nothing, just skip
+            }
+            else
+            {
+                printf("ERREUR SEMANTIQUE: Incompatibilité de type a la ligne %d\n", nb_ligne);
+                exit(1);
+            }
+}
        | FLOAT {
             
             if(typeIdf == NULL){

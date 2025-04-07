@@ -1,10 +1,10 @@
 COMPILER
 
 DATA  
-    STRING: 1c;
+    CONST: c = 12;
 END  
 
 CODE 
-    c = "text" + 3;
+    c = 15; 
 END  
 END 

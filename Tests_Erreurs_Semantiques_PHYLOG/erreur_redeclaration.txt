@@ -1,7 +1,8 @@
 COMPILER
 
 DATA  
-    STRING: 1c;
+    STRING: c;
+    FLOAT: c;
 END  
 
 CODE 

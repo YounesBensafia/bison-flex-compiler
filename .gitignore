@@ -57,3 +57,6 @@ compilateur
 lex.yy.c
 parser.tab.h
 parser.tab.c
+parser.o
+lexical.o
+SymbolTable.o

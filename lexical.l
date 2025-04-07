@@ -66,6 +66,7 @@ DI      {nb_colonne = nb_colonne + yyleng; rechercher(yytext, "MC_DI", "Mot clé
     if (yyleng > 8)
     {
         printf("ERREUR LEXICALE a la ligne %d, et la colonne %d sur l'entite %s (IDF trop long)\n",nb_ligne,nb_colonne,yytext);
+        exit(1);
     }
     yylval.string = strdup(yytext); 
     rechercher(yytext, "IDF", "", 0, 0);
@@ -88,7 +89,6 @@ DI      {nb_colonne = nb_colonne + yyleng; rechercher(yytext, "MC_DI", "Mot clé
 }
 
 {char} { 
-    printf("achcc\n"); 
     yylval.caracter = yytext[1]; 
     rechercher(yytext, "CHAR", "CHAR", 0, 0); 
     return CHAR; 
@@ -104,4 +104,5 @@ DI      {nb_colonne = nb_colonne + yyleng; rechercher(yytext, "MC_DI", "Mot clé
 
 \n {nb_colonne=1; nb_ligne++;}
 
+§.* {nb_colonne=1; nb_ligne++;}
 

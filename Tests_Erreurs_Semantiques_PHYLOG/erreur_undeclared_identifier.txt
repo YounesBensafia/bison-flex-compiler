@@ -1,10 +1,9 @@
 COMPILER
 
 DATA  
-    STRING: 1c;
 END  
 
 CODE 
-    c = "text" + 3;
+    A = 10;
 END  
 END 
