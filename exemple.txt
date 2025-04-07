@@ -1,16 +1,10 @@
 COMPILER
 
 DATA  
-    INTEGER: x, y, z;
     STRING: c;
-    VECTOR : a[3,3:INTEGER];
-    CONST : b = 2;
 END  
 
 CODE 
-    c = "Uz";
-    x = 10;
-    x = 20;
-    READ ("$": @ idf);
+    c = "text" + 3;
 END  
 END 

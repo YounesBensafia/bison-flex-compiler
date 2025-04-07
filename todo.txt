@@ -1,0 +1,25 @@
+TODO:
+Array Index Out of Bounds
+Invalid Format in READ or DISPLAY
+Use of Uninitialized Variables {Using a variable before assigning it a value (unless default values are handled by the language).}
+Incorrect Use of Boolean Expressions {Using non-boolean expressions where a condition is expected.}
+Invalid Loop Declaration {Using a variable not declared before in a FOR loop, or type mismatch in loop range}
+Identifier Violations
+{
+    * Don’t start with an uppercase letter
+}
+
+DOING:
+Division by Zero
+
+DONE:
+Undeclared Identifier
+Redeclaration of Identifier
+Type Mismatch in Assignment
+Constant Reassignment
+Invalid Operation Between Incompatible Types
+Identifier Violations
+{
+    * Are longer than 8 characters
+}
+Invalid Return Type for Expressions

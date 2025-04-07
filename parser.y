@@ -1,5 +1,6 @@
 %{
 #include <stdio.h>
+#include <string.h>
 int yylex(void);           
 void yyerror(const char *s);
 #include "SymbolTable.h"
@@ -29,7 +30,6 @@ int nb_ligne=1, nb_colonne=1;
 
 %%
 
-// GITHUB ISSUE: #5 PROGRAM EXECUTED SUCCESSFULLY printed despite semantic errors
 
 program : 
     idf {
@@ -52,11 +52,20 @@ declartions_list : type colon idf {
                     }
                 }
                 }
+                
             liste_vars declartions_list
            | vector declartions_list | constante pvg declartions_list
            | /* empty */
 ;
 
+instruction_list : instruction instruction_list |
+;
+
+instruction : assignment 
+            | read_display
+            | if_condition 
+            | loop
+;
 liste_vars : virgule idf liste_vars {
                 if (double_declaration($2, type) == 0) {
                     printf("ERREUR SEMANTIQUE: %s double_declaration, a la ligne %d, et la colonne %d\n", $2, nb_ligne, nb_colonne); exit(1);
@@ -92,7 +101,7 @@ right_bracket pvg
 
 constante: mc_const colon idf eq factor_constante {
     if (double_declaration($3, type) == 0) {
-        printf("ERREUR SEMANTIQUE: %s double_declaration, a la ligne %d, et la colonne %d\n", $3, nb_ligne, nb_colonne);exit(1);
+        printf("ERREUR SEMANTIQUE: %s double_declaration, a la ligne %d, et la colonne %d\n", $3, nb_ligne, nb_colonne); exit(1);
     } 
     else
     {
@@ -119,17 +128,9 @@ type : mc_integer {$$ = strdup($1); }
     | mc_string {$$ = strdup($1); }
 ;
 
-// GITHUB ISSUE: #3 There is an issue with generating the `mc_read` instruction after an `if-else` block. The parser does not handle this sequence correctly, leading to unexpected behavior or errors.
-instruction_list : instruction instruction_list | 
-;
 
-instruction : assignment 
-            | read_display
-            | if_condition 
-            | loop
-;
-
-assignment : idf eq expression pvg {
+assignment : idf {
+    
     if(double_declaration($1, "") == 1) 
     {
         printf("ERREUR SEMANTIQUE: %s non declare, a la ligne %d, et la colonne %d\n", $1, nb_ligne, nb_colonne); exit(1);
@@ -137,14 +138,14 @@ assignment : idf eq expression pvg {
     else {
         if(isConstant($1))
         {
-            printf("ERREUR SEMANTIQUE: %s est une constante et la constante est unchangeable, a la ligne %d, et la colonne %d\n", $1, nb_ligne, nb_colonne); exit(1);
+            printf("ERREUR SÉMANTIQUE : %s est une constante et ne peut pas être modifiée (ligne %d, colonne %d)\n", $1, nb_ligne, nb_colonne); exit(1);
         }
         else
         {
             typeIdf = getType($1);
         }
     }
-}
+} eq expression pvg
 ;
 
 read_display : mc_read PARAO signe colon arobase idf PARAF pvg
@@ -167,21 +168,22 @@ else_condition: mc_else colon instruction_list mc_end
 loop : mc_for PARAO idf colon INTEGER colon INTEGER PARAF instruction_list mc_end
 ;
 
-expression : term
-           | expression sum term
+expression : term 
+           | expression sum term 
            | expression minus term
 ;
 
-term : factor
+term : factor 
      | term mul factor
      | term DIV factor
 ;
 
 factor : INTEGER 
        | FLOAT {
+            
             if(typeIdf == NULL){
                 return 0;
-            };             
+            };
             if (strcmp(typeIdf, "FLOAT") == 0 || isCTyped(typeIdf)) {
                 // do nothing, just skip
             }
