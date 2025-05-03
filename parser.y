@@ -178,7 +178,8 @@ term : factor
 ;
 
 factor : INTEGER {
-                char* expected_type = peek_type();
+            push_type("INTEGER");
+            char* expected_type = peek_type();
                 if(expected_type == NULL) return 0;
 
                 if(strcmp(expected_type, "INTEGER") != 0 && !isCTyped(expected_type)) {
@@ -187,6 +188,7 @@ factor : INTEGER {
                 }
             }
        | FLOAT {
+                push_type("FLOAT");
                 char* expected_type = peek_type();
                 if(expected_type == NULL) return 0;
 
@@ -197,14 +199,15 @@ factor : INTEGER {
                         }
        | CHAR
        {
-                    char* expected_type = peek_type();
-                    if(expected_type == NULL) return 0;
+            push_type("FLOAT");
+            char* expected_type = peek_type();
+            if(expected_type == NULL) return 0;
 
-                    if(strcmp(expected_type, "CHAR") != 0 && !isCTyped(expected_type)) {
-                        printf("ERREUR SEMANTIQUE: Incompatibilité de type a la ligne %d\n", nb_ligne);
-                        exit(1);
-                    }
-                }
+            if(strcmp(expected_type, "CHAR") != 0 && !isCTyped(expected_type)) {
+                printf("ERREUR SEMANTIQUE: Incompatibilité de type a la ligne %d\n", nb_ligne);
+                exit(1);
+            }
+        }
        | STRING
         {
             char* expected_type = peek_type();
