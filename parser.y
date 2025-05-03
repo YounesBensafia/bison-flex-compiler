@@ -88,8 +88,8 @@ vector :MC_VECTOR colon idf left_bracket INTEGER virgule INTEGER colon type
             }
             else
             {
-                strcpy(type, $9);
-                update_type($3, $9);
+                sprintf(type, "%s*", $9);
+                update_type($3, type);
             }
         }
     }
@@ -164,7 +164,7 @@ else_condition: mc_else colon instruction_list mc_end
                 | mc_end
 ;
 
-loop : mc_for PARAO idf colon INTEGER colon INTEGER PARAF instruction_list mc_end
+loop : mc_for PARAO idf colon INTEGER {pop_type();} colon expression PARAF instruction_list mc_end
 ;
 
 expression : term 
@@ -199,7 +199,7 @@ factor : INTEGER {
                         }
        | CHAR
        {
-            push_type("FLOAT");
+            push_type("CHAR");
             char* expected_type = peek_type();
             if(expected_type == NULL) return 0;
 
@@ -210,10 +210,11 @@ factor : INTEGER {
         }
        | STRING
         {
+            push_type("STRING");
             char* expected_type = peek_type();
             if(expected_type == NULL) return 0;
 
-            if(strcmp(expected_type, "STRING") != 0 && !isCTyped(expected_type)) {
+            if(strcmp(expected_type, "CHAR") != 0 && !isCTyped(expected_type)) {
                 printf("ERREUR SEMANTIQUE: Incompatibilité de type a la ligne %d\n", nb_ligne);
                 exit(1);
             }
