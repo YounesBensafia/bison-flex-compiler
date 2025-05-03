@@ -19,13 +19,14 @@ int nb_ligne=1, nb_colonne=1;
    char caracter;
 }
 
-%token <string> mc_end
+%token <string> mc_end double_quote 
 %token <string> mc_data <string> mc_code MC_VECTOR mc_const
 %token mc_if mc_else mc_for mc_or mc_not mc_ge mc_l mc_di mc_le mc_read mc_display
-%token <string> idf <entier> INTEGER <real> FLOAT <string> CHAR <string> STRING
+%token <string> idf <entier> INTEGER <real> FLOAT <caracter> CHAR <string> STRING
 %token <string> pvg sum mul minus PARAO PARAF colon dot DIV eq virgule bar arobase
 %token left_bracket right_bracket
 %token <string> mc_integer mc_float mc_char mc_string
+%token <string> percent hash dollar ampersand
 %type <string> type
 
 %%
@@ -62,7 +63,7 @@ instruction_list : instruction instruction_list |
 ;
 
 instruction : assignment 
-            | read_display
+            | read_display 
             | if_condition 
             | loop
 ;
@@ -147,15 +148,27 @@ assignment : idf {
 } eq expression {pop_type();} pvg
 ;
 
-read_display : mc_read PARAO signe colon arobase idf PARAF pvg
+
+read_display : mc_read PARAO CHAR colon arobase idf PARAF pvg
+{
+        if (double_declaration($6, "") == 1) {
+            printf("ERREUR SEMANTIQUE: %s non declare, a la ligne %d\n", $6, nb_ligne);
+            exit(1);
+        }
+        char* expected = getType($6);
+        if (($3 == '$' && strcmp(expected, "INTEGER") != 0) ||
+            ($3 == '%' && strcmp(expected, "FLOAT") != 0)   ||
+            ($3 == '#' && strcmp(expected, "STRING") != 0)  ||
+            ($3 == '&' && strcmp(expected, "CHAR") != 0))
+        {
+            printf("ERREUR SEMANTIQUE: Type incompatible pour %s, a la ligne %d\n", $6, nb_ligne);
+            exit(1);
+        
+        }
+}
              | mc_display PARAO STRING colon idf PARAF pvg
 ;
 
-signe: "$" 
-    | "%" 
-    | "#" 
-    | "&"
-;
 
 if_condition : mc_if PARAO condition PARAF colon instruction_list else_condition
 ;

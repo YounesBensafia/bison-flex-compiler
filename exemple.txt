@@ -1,37 +1,11 @@
 careersi
 
     DATA
-        INTEGER: limit|bonus;
-        VECTOR: Scores[0,10:INTEGER];         
-        STRING: str1|str2|str3;               
-        CONST: PI = 3.14;                     
-        VECTOR: Table[5,6:CHAR];             
-        CHAR: letter;
-        INTEGER: n|y;
-        FLOAT: x|z|score1;
-        INTEGER: result|i|j;
+        FLOAT: x;
     END
 
     CODE
-        letter = 'c';
-
-        IF (12.GE.limit):
-            result = 25;
-        ELSE:
-            result = 50;
-        END
-
-        FOR (i : 2 : n)
-            x = 10;
-            DISPLAY("float value x: " : x);
-
-            FOR (j : 2 : n)
-                y = 20;
-            END
-
-            y = 30;
-        END
-        y = 40;
+        READ ('%':@ x);
     END
 
 END
