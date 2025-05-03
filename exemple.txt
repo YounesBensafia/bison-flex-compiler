@@ -31,6 +31,7 @@ careers
             y = 30;
         END
         y = 40;
+        DISPLAY ("c est un reel $":x);
     END
-    DISPLAY ("c est un reel %":x);
+    
 END

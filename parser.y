@@ -166,7 +166,33 @@ read_display : mc_read PARAO CHAR colon arobase idf PARAF pvg
         
         }
 }
-             | mc_display PARAO STRING colon idf PARAF pvg
+| mc_display PARAO STRING colon idf PARAF pvg
+        {
+            if (double_declaration($5, "") == 1) {
+                printf("ERREUR SEMANTIQUE: %s non declare, a la ligne %d\n", $5, nb_ligne);
+                exit(1);
+            }
+
+            char* expected = getType($5);
+            char* str = $3;
+            int len = strlen(str);
+            char last_char = '\0';
+
+            for (int i = len - 2; i >= 0; i--) {
+                if (str[i] != ' ' && str[i] != '"') {
+                    last_char = str[i];
+                    break;
+                }
+            }
+            printf("Last character: %c\n", last_char);
+            if ((last_char == '%' && strcmp(expected, "FLOAT") != 0) ||
+                (last_char == '$' && strcmp(expected, "INTEGER") != 0) ||
+                (last_char == '#' && strcmp(expected, "STRING") != 0) ||
+                (last_char == '&' && strcmp(expected, "CHAR") != 0)) {
+                printf("ERREUR SEMANTIQUE: Type incompatible pour %s, a la ligne %d\n", $5, nb_ligne);
+                exit(1);
+            }
+        }
 ;
 
 
