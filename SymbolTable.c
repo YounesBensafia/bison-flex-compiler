@@ -258,7 +258,6 @@ char* getType(char entite[])
     
     while (curr != NULL) {
         if (strcmp(curr->name, entite) == 0) return curr->type;
-        curr = curr->next;
     }
 
     return "";        

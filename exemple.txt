@@ -1,11 +1,36 @@
-careersi
-
+careers
     DATA
-        FLOAT: x;
+        INTEGER: limit;
+        VECTOR: Scores[0,10:INTEGER];         
+        STRING: str1|str2|str3;               
+        CONST: PI = 3.14;                     
+        VECTOR: Table[5,6:CHAR];             
+        CHAR: letter;
+        INTEGER: n|y;
+        FLOAT: x|z|score1;
+        INTEGER: result|i|j;
     END
 
     CODE
-        READ ('%':@ x);
-    END
+        letter = 'c';
 
+        IF (12.GE.limit):
+            result = 25;
+        ELSE:
+            result = 50;
+        END
+
+        FOR (i : 2 : n)
+            x = 10;
+            READ ('%':@ x);
+
+            FOR (j : 2 : n)
+                y = 20;
+            END
+
+            y = 30;
+        END
+        y = 40;
+    END
+    DISPLAY ("c est un reel %":x);
 END
