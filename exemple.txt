@@ -1,37 +1,44 @@
-careers
+school
     DATA
-        INTEGER: limit;
-        VECTOR: Scores[0,10:INTEGER];         
-        STRING: str1|str2|str3;               
-        CONST: PI = 3.14;                     
-        VECTOR: Table[5,6:CHAR];             
-        CHAR: letter;
-        INTEGER: n|y;
-        FLOAT: x|z|score1;
-        INTEGER: result|i|j;
+        INTEGER: max;
+        VECTOR: notes[0,10:INTEGER];         
+        STRING: nom1 | nom2 | nom3;               
+        CONST: COEF = 3.14;                     
+        VECTOR: places[5,6:CHAR];             
+        CHAR: lettre;
+        INTEGER: count | stud;
+        FLOAT: moy | coef | final;
+        INTEGER: total | i | j;
     END
 
     CODE
-        letter = 'c';
+        lettre = 'B';
 
-        IF (12.GE.limit):
-            result = 25;
+        IF (100.GE.max):
+            total = 25;
         ELSE:
-            result = 50;
+            total = 50;
         END
 
-        FOR (i : 2 : n)
-            x = 10;
-            READ ('%':@ x);
+        IF (count.LE.10):
+            total = 25;
+        ELSE:
+            total = 50;
+        END
 
-            FOR (j : 2 : n)
-                y = 20;
+        FOR (i : 2 : count)
+            moy = 10;
+            READ ('%':@ moy);
+
+            FOR (j : 2 : count)
+                stud = 20;
             END
 
-            y = 30;
+            stud = 30;
         END
-        y = 40;
-        DISPLAY ("c est un reel $":x);
+
+        count = 40;
+        DISPLAY ("moyenne = %": moy);
     END
-    
+
 END
