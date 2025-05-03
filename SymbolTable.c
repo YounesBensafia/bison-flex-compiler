@@ -14,6 +14,9 @@ element* tab[HASH_SIZE_IDF];
 elt* tabm[HASH_SIZE_KW];
 elt* tabs[HASH_SIZE_SEP];
 static int color_counter = 0;  // Compteur pour alterner les couleurs
+#define STACK_SIZE 100
+char* type_stack[STACK_SIZE];
+int stack_top = -1;
 
 
 void initialisation(void) {
@@ -265,4 +268,29 @@ int isCTyped(char *typeIdf) {
            strcmp(typeIdf, "C_CHAR") == 0 ||
            strcmp(typeIdf, "C_STRING") == 0 ||
            strcmp(typeIdf, "C_FLOAT") == 0;
+}
+
+void push_type(const char* t) {
+    if (stack_top < STACK_SIZE - 1) {
+        type_stack[++stack_top] = strdup(t);
+    } else {
+        fprintf(stderr, "Type stack overflow\n");
+        exit(1);
+    }
+}
+
+char* pop_type() {
+    if (stack_top >= 0) {
+        return type_stack[stack_top--];
+    } else {
+        fprintf(stderr, "Type stack underflow\n");
+        exit(1);
+    }
+}
+
+char* peek_type() {
+    if (stack_top >= 0) {
+        return type_stack[stack_top];
+    }
+    return NULL;
 }

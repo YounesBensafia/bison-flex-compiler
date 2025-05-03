@@ -1,10 +1,32 @@
-COMPILER
+nom_pgrm
+    DATA
+        INTEGER: lm|B;
+        VECTOR: S[0,10:INTEGER];
+        STRING: s1|s2|s3;
+        CONST: PI=3.14;
+        VECTOR: T[5,6:CHAR];
+        CHAR: c;
+        FLOAT: X|z|s1;
+    END
 
-DATA  
-    STRING: 1c;
-END  
+    CODE
+        c = 'c';
+        IF (12.GE.1):
+            e = 25;
+        ELSE:
+            e = 50;
+        END
 
-CODE 
-    c = "text" + 3;
-END  
-END 
+
+        FOR (i :2 :n)
+            X = 10;
+            DISPLAY("float %":  X);
+            FOR (i :2 :n)
+                X = 20;
+            END
+            X = 30;
+        END
+        X = 40;
+
+    END
+END

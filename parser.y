@@ -23,7 +23,7 @@ int nb_ligne=1, nb_colonne=1;
 %token <string> mc_data <string> mc_code MC_VECTOR mc_const
 %token mc_if mc_else mc_for mc_or mc_not mc_ge mc_l mc_di mc_le mc_read mc_display
 %token <string> idf <entier> INTEGER <real> FLOAT <string> CHAR <string> STRING
-%token <string> pvg sum mul minus PARAO PARAF colon dot DIV eq virgule arobase
+%token <string> pvg sum mul minus PARAO PARAF colon dot DIV eq virgule bar arobase
 %token left_bracket right_bracket
 %token <string> mc_integer mc_float mc_char mc_string
 %type <string> type
@@ -66,7 +66,7 @@ instruction : assignment
             | if_condition 
             | loop
 ;
-liste_vars : virgule idf liste_vars {
+liste_vars : bar idf liste_vars {
                 if (double_declaration($2, type) == 0) {
                     printf("ERREUR SEMANTIQUE: %s double_declaration, a la ligne %d, et la colonne %d\n", $2, nb_ligne, nb_colonne); exit(1);
                 } else {
@@ -96,8 +96,6 @@ vector :MC_VECTOR colon idf left_bracket INTEGER virgule INTEGER colon type
 right_bracket pvg
 ;
 
-// vector_list : virgule idf left_bracket INTEGER virgule INTEGER colon type right_bracket vector_list | pvg
-// ;
 
 constante: mc_const colon idf eq factor_constante {
     if (double_declaration($3, type) == 0) {
@@ -142,10 +140,11 @@ assignment : idf {
         }
         else
         {
-            typeIdf = getType($1);
+           push_type(getType($1));
+            
         }
     }
-} eq expression pvg
+} eq expression {pop_type();} pvg
 ;
 
 read_display : mc_read PARAO signe colon arobase idf PARAF pvg
@@ -179,78 +178,57 @@ term : factor
 ;
 
 factor : INTEGER {
-                if(typeIdf == NULL){
-                return 0;
-            };
-            if (strcmp(typeIdf, "INTEGER") == 0 || isCTyped(typeIdf)) {
-                // do nothing, just skip
+                char* expected_type = peek_type();
+                if(expected_type == NULL) return 0;
+
+                if(strcmp(expected_type, "INTEGER") != 0 && !isCTyped(expected_type)) {
+                    printf("ERREUR SEMANTIQUE: Incompatibilité de type a la ligne %d\n", nb_ligne);
+                    exit(1);
+                }
             }
-            else
-            {
-                printf("ERREUR SEMANTIQUE: Incompatibilité de type a la ligne %d\n", nb_ligne);
-                exit(1);
-            }
-}
        | FLOAT {
-            
-            if(typeIdf == NULL){
-                return 0;
-            };
-            if (strcmp(typeIdf, "FLOAT") == 0 || isCTyped(typeIdf)) {
-                // do nothing, just skip
-            }
-            else
-            {
-                printf("ERREUR SEMANTIQUE: Incompatibilité de type a la ligne %d\n", nb_ligne);
-                exit(1);
-            }
-       }
+                char* expected_type = peek_type();
+                if(expected_type == NULL) return 0;
+
+                if(strcmp(expected_type, "FLOAT") != 0 && !isCTyped(expected_type)) {
+                    printf("ERREUR SEMANTIQUE: Incompatibilité de type a la ligne %d\n", nb_ligne);
+                    exit(1);
+                }
+                        }
        | CHAR
        {
-            if(typeIdf == NULL){
-                return 0;
-            }; 
-            if (strcmp(typeIdf, "CHAR") == 0 || isCTyped(typeIdf)) {
-                // do nothing, just skip
-            }
-            else
-            {
-                printf("ERREUR SEMANTIQUE: Incompatibilité de type a la ligne %d\n", nb_ligne);
-                exit(1);
-            }
-       }
-       | STRING
-         {
-            if(typeIdf == NULL){
-                return 0;
-            }; 
-            if (strcmp(typeIdf, "CHAR") == 0 || isCTyped(typeIdf)) {
-                // do nothing, just skip
-            }
-            else
-            {
-                printf("ERREUR SEMANTIQUE: Incompatibilité de type a la ligne %d\n", nb_ligne);
-                exit(1);
-            }
-       }
-       | idf {  
-            if(typeIdf == NULL){
-                return 0;
-            }; 
-            if (strcmp(typeIdf, getType($1)) == 0 || isCTyped(typeIdf)) {
-                // do nothing, just skip
-            }
-            else
-            {
-                if (double_declaration($1,"") == 1)
-                {
-                    printf("ERREUR SEMANTIQUE: %s non declare, a la ligne %d, et la colonne %d\n", $1, nb_ligne, nb_colonne); exit(1);
+                    char* expected_type = peek_type();
+                    if(expected_type == NULL) return 0;
+
+                    if(strcmp(expected_type, "CHAR") != 0 && !isCTyped(expected_type)) {
+                        printf("ERREUR SEMANTIQUE: Incompatibilité de type a la ligne %d\n", nb_ligne);
+                        exit(1);
+                    }
                 }
+       | STRING
+        {
+            char* expected_type = peek_type();
+            if(expected_type == NULL) return 0;
+
+            if(strcmp(expected_type, "STRING") != 0 && !isCTyped(expected_type)) {
                 printf("ERREUR SEMANTIQUE: Incompatibilité de type a la ligne %d\n", nb_ligne);
+                exit(1);
+            }
+        }
+       | idf {
+            char* expected_type = peek_type();
+            if (expected_type == NULL) return 0;
+
+            if (double_declaration($1,"") == 1) {
+                printf("ERREUR SEMANTIQUE: %s non declare, a la ligne %d, et la colonne %d\n", $1, nb_ligne, nb_colonne);
                 exit(1);
             }
 
+            if (strcmp(expected_type, getType($1)) != 0 && !isCTyped(expected_type)) {
+                printf("ERREUR SEMANTIQUE: Incompatibilité de type a la ligne %d\n", nb_ligne);
+                exit(1);
             }
+        }
        | PARAO expression PARAF
 ;
 

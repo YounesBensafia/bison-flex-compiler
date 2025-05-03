@@ -45,5 +45,7 @@ int double_declaration(char entite[], char type[]);
 bool isConstant(char entite[]);
 char* getType(char entite[]);
 int isCTyped(char *typeIdf);
-
+void push_type(const char* t);
+char* pop_type();
+char* peek_type();
 #endif
