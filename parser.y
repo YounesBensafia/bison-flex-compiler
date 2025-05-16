@@ -7,6 +7,7 @@ void yyerror(const char *s);
 char type[30];
 char* typeIdf;
 int nb_ligne=1, nb_colonne=1;
+
 %}
 
 %start program

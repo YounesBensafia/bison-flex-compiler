@@ -3,14 +3,10 @@
 #include <stdlib.h>
 
 #define MAX_QUAD 1000
+#define MAX_STR 100
 
-typedef struct Qdr
-{
-  char oper[100];
-  char op1[100];
-  char op2[100];
-  char res[100];
-} Qdr;
+// Matrice des quadruplets avec LABEL : [quadruplet][colonne]
+char quad[MAX_QUAD][5][MAX_STR]; // 5 colonnes : label, oper, op1, op2, res
 
 typedef struct Cellule
 {
@@ -23,7 +19,6 @@ typedef struct
   Cellule *sommet;
 } Pile;
 
-Qdr *quad[MAX_QUAD];
 Pile branch;
 extern int qc;
 
@@ -54,70 +49,61 @@ int depiler_branch()
 void init_qdr()
 {
   for (int i = 0; i < MAX_QUAD; i++)
-  {
-    quad[i] = NULL;
-  }
+    for (int j = 0; j < 5; j++)
+      quad[i][j][0] = '\0'; // initialise chaque case à chaîne vide
 
   branch.sommet = NULL;
 }
 
-void quadr(char oper[], char op1[], char op2[], char res[])
+// Nouvelle version avec LABEL
+void quadr(char label[], char oper[], char op1[], char op2[], char res[])
 {
-  Qdr *nouv = malloc(sizeof(Qdr));
-  strcpy(nouv->oper, oper);
-  strcpy(nouv->op1, op1);
-  strcpy(nouv->op2, op2);
-  strcpy(nouv->res, res);
-
-  quad[qc] = nouv;
-  qc++;
-}
-
-void changer_quad(int ligne, int colone, char val[])
-{
-  if (ligne >= MAX_QUAD || quad[ligne] == NULL)
+  if (qc >= MAX_QUAD)
   {
-    printf("Erreur: Quad %d n'existe pas\n", ligne);
+    printf("Erreur : dépassement du nombre maximum de quadruplets\n");
     return;
   }
 
-  Qdr *q = quad[ligne];
+  strcpy(quad[qc][0], label); // label
+  strcpy(quad[qc][1], oper);  // oper
+  strcpy(quad[qc][2], op1);   // op1
+  strcpy(quad[qc][3], op2);   // op2
+  strcpy(quad[qc][4], res);   // res
 
-  switch (colone)
+  qc++;
+}
+
+void changer_quad(int ligne, int colonne, char val[])
+{
+  if (ligne >= MAX_QUAD || colonne < 0 || colonne > 4)
   {
-  case 0:
-    strcpy(q->oper, val);
-    break;
-  case 1:
-    strcpy(q->op1, val);
-    break;
-  case 2:
-    strcpy(q->op2, val);
-    break;
-  case 3:
-    strcpy(q->res, val);
-    break;
-  default:
-    printf("Erreur: Colonne %d n'existe pas\n", colone);
-    break;
+    printf("Erreur : Indice invalide (ligne=%d, colonne=%d)\n", ligne, colonne);
+    return;
   }
+
+  if (quad[ligne][1][0] == '\0') // colonne 1 = oper, on teste sa validité
+  {
+    printf("Erreur : Quad %d n'existe pas\n", ligne);
+    return;
+  }
+
+  strcpy(quad[ligne][colonne], val);
 }
 
 void afficher_qdr()
 {
-  printf("\n\n********************* Les Quadruplets ***********************\n");
+  printf("\n\n********************* Les Quadruplets avec Label ***********************\n");
 
   for (int i = 0; i < MAX_QUAD; i++)
   {
-    Qdr *q = quad[i];
-
-    if (q == NULL)
+    if (quad[i][1][0] == '\0') // colonne oper vide = fin
     {
       printf("\n %d - \n", i);
       break;
     }
 
-    printf("\n %d - ( %s , %s , %s , %s )", i, q->oper, q->op1, q->op2, q->res);
-    printf("\n--------------------------------------------------------\n");
+    printf("\n %d - ( %s , %s , %s , %s , %s )",
+           i, quad[i][0], quad[i][1], quad[i][2], quad[i][3], quad[i][4]);
+    printf("\n---------------------------------------------------------------------\n");
   }
 }
