@@ -8,36 +8,45 @@ school
         CHAR: lettre;
         INTEGER: count | stud;
         FLOAT: moy | coef | final;
-        INTEGER: total | i | j;
+        INTEGER: total | i | j | temp | inutile;
     END
 
     CODE
         lettre = 'B';
+        inutile = 0;
+        temp = 0;
 
-        IF (100.GE.max):
-            total = 25;
-        ELSE:
-            total = 50;
-        END
-
-        IF (count.LE.10):
-            total = 25;
-        ELSE:
-            total = 50;
-        END
-
-        FOR (i : 2 : count)
-            moy = 10;
-            READ ('%':@ moy);
-
-            FOR (j : 2 : count)
-                stud = 20;
+        IF (max.LE.100):
+            IF (max.L.100):   
+                total = 50;
+            ELSE:
+                total = 25;
             END
+        ELSE:
+            total = 50;
+        END
 
+        IF (count.GE.10):
+            IF (count.GE.11):
+                total = 50;
+            ELSE:
+                total = 50;
+            END
+        ELSE:
+            total = 25;
+        END
+
+        i = 2;
+        FOR (i : 1 : count)
+            j = 2;
+            moy = 0;
+            moy = moy + 10;
+            READ ('%':@ moy);
             stud = 30;
         END
 
         count = 40;
+        final = moy / 5;
         DISPLAY ("moyenne = %": moy);
     END
 
