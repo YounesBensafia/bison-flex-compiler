@@ -14,7 +14,7 @@ FLOAT          [\-]?{NATUREL}\.{NATUREL}
 chiffre        [0-9]
 char           \'.\'
 string         \".+\"   
-commentaire %.*;
+commentaire §.*;
 IDF {lettre}({lettre}|{chiffre}|\_){0,9}
 
 

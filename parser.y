@@ -56,8 +56,7 @@ declartions_list : type colon idf {
                         update_type($3, $1);
                     }
                 }
-                }
-                
+                }    
             liste_vars declartions_list
            | vector declartions_list | constante pvg declartions_list
            | /* empty */
@@ -149,13 +148,24 @@ assignment : idf {
             
         }
     }
-} eq expression pvg {
-    printf("DEBUG: %s = %s (ligne %d)\n", $1, $3, nb_ligne);
+} eq expression {
     pop_type(); 
-    quadr("", "=", $1, "", $3);
-}
+    quadr("", "=", string, "", $1);
+} pvg 
 ;
 
+expression : term { 
+                printf("Valeur de term: %s\n", $1);
+                string = $1;
+                $$ = $1; 
+            }
+           | expression sum term { 
+                printf("Valeur de term: %s\n", $1);
+                string = $1;
+                $$ = $1; 
+            }
+           | expression minus term
+;
 
 read_display : mc_read PARAO CHAR colon arobase idf PARAF pvg
 {
@@ -214,10 +224,6 @@ else_condition: mc_else colon instruction_list mc_end
 loop : mc_for PARAO idf colon INTEGER {pop_type();} colon expression PARAF instruction_list mc_end
 ;
 
-expression : term { $$ = $1;}
-           | expression sum term 
-           | expression minus term
-;
 
 term : factor { $$ = $1;}
      | term mul factor 
@@ -273,7 +279,7 @@ factor : INTEGER {
             char* expected_type = peek_type();
             if(expected_type == NULL) return 0;
 
-            if(strcmp(expected_type, "CHAR") != 0 && !isCTyped(expected_type)) {
+            if(strcmp(expected_type, "STRING") != 0 && !isCTyped(expected_type)) {
                 printf("ERREUR SEMANTIQUE: Incompatibilité de type a la ligne %d\n", nb_ligne);
                 exit(1);
             }

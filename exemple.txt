@@ -12,7 +12,7 @@ school
     END
 
     CODE
-        lettre = 'B';
+        § lettre = 'B';
         inutile = 0;
         temp = 0;
 
