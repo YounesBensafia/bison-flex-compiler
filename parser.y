@@ -223,11 +223,11 @@ read_display : mc_read PARAO CHAR colon arobase idf PARAF pvg
 ;
 
 
-if_condition : mc_if PARAO condition {empiler_quad(nbQdr);} PARAF colon instruction_list { printf("Valeur de nbQdr: %d\n", nbQdr);}else_condition mc_end {{tempQdr = depiler_quad(); char tempQdrStr[16]; sprintf(tempQdrStr, "%d", tempQdr); nbQdr = nbQdr + 1; quadr(nbQdr,"BR",tempQdrStr,"","");}}
+if_condition : mc_if PARAO condition {empiler_quad(nbQdr);} PARAF colon instruction_list {tempQdr = depiler_quad(); ajour_quad(tempQdr,3,nbQdr+1); nbQdr = nbQdr + 1; quadr(nbQdr,"BR","","",""); empiler_quad(nbQdr);} else_condition
 ;
 
-else_condition: {tempQdr = depiler_quad(); ajour_quad(tempQdr,3,nbQdr+1); } mc_else colon instruction_list {empiler_quad(nbQdr);}
-                | {tempQdr = depiler_quad(); ajour_quad(tempQdr,3,nbQdr+1); }
+else_condition: mc_else colon instruction_list {tempQdr = depiler_quad();  ajour_quad(tempQdr,3,nbQdr+1);} mc_end  
+                | mc_end 
 ;
 
 loop : mc_for PARAO idf colon INTEGER {pop_type();} colon expression PARAF instruction_list mc_end
