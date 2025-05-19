@@ -98,24 +98,63 @@ void ajour_quad(int num_quad, int colonne, int val) {
 }
 
 void afficher_qdr() {
-    printf("\n\n********************* Les Quadruplets avec Label ***********************\n");
+    // Header with gradient effect
+    printf("\n\033[38;5;63m╔═══════════════════════════════════════════════════════════════════════════════╗\033[0m\n");
+    printf("\033[38;5;63m║\033[0m\033[1;38;5;51m                     ⚙️  TABLE DES QUADRUPLETS - VM MODE ⚙️                    \033[0m\033[38;5;63m║\033[0m\n");
+    printf("\033[38;5;63m╠═══════╦════════════════╦════════════════════╦════════════════════╦═══════════════╣\033[0m\n");
+    printf("\033[38;5;63m║\033[0m \033[1;38;5;227m%-5s \033[38;5;63m║\033[0m \033[1;38;5;39m%-14s \033[38;5;63m║\033[0m \033[1;38;5;51m%-16s \033[38;5;63m║\033[0m \033[1;38;5;51m%-16s \033[38;5;63m║\033[0m \033[1;38;5;227m%-13s \033[38;5;63m║\033[0m\n", 
+           "ID", "OPÉRATION", "ARGUMENT 1", "ARGUMENT 2", "RÉSULTAT");
+    printf("\033[38;5;63m╠═══════╬════════════════╬════════════════════╬════════════════════╬═══════════════╣\033[0m\n");
+
+    // Define color palette
+    const char *color_default = "\033[0m";
+    const char *color_id = "\033[1;38;5;251m";         // bright white
+    const char *color_op_std = "\033[1;38;5;39m";      // bright blue
+    const char *color_op_jmp = "\033[1;38;5;83m";      // bright green
+    const char *color_op_math = "\033[1;38;5;213m";    // pink
+    const char *color_op_io = "\033[1;38;5;208m";      // orange
+    const char *color_arg = "\033[1;38;5;51m";         // cyan
+    const char *color_res = "\033[1;38;5;227m";        // yellow
+    const char *color_borders = "\033[38;5;63m";       // softer blue for borders
+
+    // Row counter for alternating background
+    int row = 0;
+    
     for (int i = 0; i < qc; i++) {
-        // Vérifier si oper doit être affiché en vert
-        if (
-            strcmp(quad[i].oper, "BGE") == 0 ||
-            strcmp(quad[i].oper, "BG") == 0 ||
-            strcmp(quad[i].oper, "BLE") == 0 ||
-            strcmp(quad[i].oper, "BL") == 0 ||
-            strcmp(quad[i].oper, "BR") == 0
-        ) {
-            printf("%i - ( \033[0;32m%s\033[0m , %s , %s , %s )\n", quad[i].label, 
-                   quad[i].oper, quad[i].op1, quad[i].op2, quad[i].res);
-        } else {
-            printf("%i - ( %s , %s , %s , %s )\n", quad[i].label, 
-                   quad[i].oper, quad[i].op1, quad[i].op2, quad[i].res);
+        // Determine operation type for color coding
+        const char *op_color = color_op_std;
+        
+        // Jump and branch operations
+        if (strstr("BGE BG BLE BL BE BNE BR BRF JMP", quad[i].oper)) {
+            op_color = color_op_jmp;
         }
-        printf("---------------------------------------------------------------------\n");
+        // Math operations
+        else if (strstr("ADD SUB MUL DIV MOD POW", quad[i].oper)) {
+            op_color = color_op_math;
+        }
+        // I/O operations
+        else if (strstr("READ WRITE PRINT SCAN", quad[i].oper)) {
+            op_color = color_op_io;
+        }
+        
+        // Subtle alternating row background for better readability
+        const char *bg = (row % 2 == 0) ? "" : "\033[48;5;236m";
+        row++;
+        
+        // Print the row with appropriate colors and alignments
+        printf("\033[38;5;63m║\033[0m %s%s%-5d \033[0m\033[38;5;63m║\033[0m %s%s%-14s\033[0m \033[38;5;63m║\033[0m %s%s%-16s\033[0m \033[38;5;63m║\033[0m %s%s%-16s\033[0m \033[38;5;63m║\033[0m %s%s%-13s\033[0m \033[38;5;63m║\033[0m\n",
+               bg, color_id, quad[i].label,
+               bg, op_color, quad[i].oper,
+               bg, color_arg, quad[i].op1[0] ? quad[i].op1 : "—",
+               bg, color_arg, quad[i].op2[0] ? quad[i].op2 : "—",
+               bg, color_res, quad[i].res[0] ? quad[i].res : "—"
+        );
     }
+
+    // Footer with statistics
+    printf("\033[38;5;63m╠═══════╩════════════════╩════════════════════╩════════════════════╩═══════════════╣\033[0m\n");
+    printf("\033[38;5;63m║\033[0m \033[1;38;5;251mStat: \033[1;38;5;227m%-3d\033[0m \033[1;38;5;251mquadruplets générés                                             \033[38;5;63m║\033[0m\n", qc);
+    printf("\033[38;5;63m╚═══════════════════════════════════════════════════════════════════════════════╝\033[0m\n");
 }
 
 typedef struct {
