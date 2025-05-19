@@ -8,6 +8,7 @@ void yyerror(const char *s);
 char type[30];
 char* typeIdf;
 int nb_ligne=1, nb_colonne=1;
+char* string;
 
 %}
 
@@ -30,7 +31,7 @@ int nb_ligne=1, nb_colonne=1;
 %token <string> mc_integer mc_float mc_char mc_string
 %token <string> percent hash dollar ampersand
 %type <string> type
-%type <string> factor
+%type <string> factor term expression
  
 %%
 
@@ -148,7 +149,11 @@ assignment : idf {
             
         }
     }
-} eq expression {pop_type();} pvg {quadr("", "=", $3, "", $1);}
+} eq expression pvg {
+    printf("DEBUG: %s = %s (ligne %d)\n", $1, $3, nb_ligne);
+    pop_type(); 
+    quadr("", "=", $1, "", $3);
+}
 ;
 
 
@@ -209,18 +214,21 @@ else_condition: mc_else colon instruction_list mc_end
 loop : mc_for PARAO idf colon INTEGER {pop_type();} colon expression PARAF instruction_list mc_end
 ;
 
-expression : term 
+expression : term { $$ = $1;}
            | expression sum term 
            | expression minus term
 ;
 
-term : factor 
-     | term mul factor
+term : factor { $$ = $1;}
+     | term mul factor 
      | term DIV factor
 ;
 
 factor : INTEGER {
-            $$ = strdup($1);
+            char buffer[32];
+            sprintf(buffer, "%d", $1);
+            $$ = strdup(buffer);
+
             push_type("INTEGER");
             char* expected_type = peek_type();
                 if(expected_type == NULL) return 0;
@@ -231,7 +239,10 @@ factor : INTEGER {
                 }
             }
        | FLOAT {
-        $$ = strdup($1);
+        char buffer[64];
+        sprintf(buffer, "%f", $1);
+        $$ = strdup(buffer);
+
                 push_type("FLOAT");
                 char* expected_type = peek_type();
                 if(expected_type == NULL) return 0;
@@ -243,7 +254,9 @@ factor : INTEGER {
                         }
        | CHAR
        {
-        $$ = strdup($1);
+            char buffer[4];
+            sprintf(buffer, "'%c'", $1);
+            $$ = strdup(buffer);
             push_type("CHAR");
             char* expected_type = peek_type();
             if(expected_type == NULL) return 0;
@@ -255,7 +268,7 @@ factor : INTEGER {
         }
        | STRING
         {
-            $$ = strdup($1);
+            $$ = $1;
             push_type("STRING");
             char* expected_type = peek_type();
             if(expected_type == NULL) return 0;
@@ -266,7 +279,7 @@ factor : INTEGER {
             }
         }
        | idf {
-            $$ = strdup($1);
+            // $$ = strdup($1);
             char* expected_type = peek_type();
             if (expected_type == NULL) return 0;
 
