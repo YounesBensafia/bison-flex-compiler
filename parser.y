@@ -9,7 +9,15 @@ char type[30];
 char* typeIdf;
 int nb_ligne=1, nb_colonne=1;
 char* string;
+int tempCount = 0;
+int nbQdr = -1;
+int tempQdr = 0; 
 
+char* newtemp() {
+    char* tempName = malloc(10);       // alloue de l'espace pour le nom (ex: "t123")
+    sprintf(tempName, "t%d", tempCount++); // génère "t0", "t1", "t2", ...
+    return tempName;
+}
 %}
 
 %start program
@@ -150,7 +158,8 @@ assignment : idf {
     }
 } eq expression {
     pop_type(); 
-    quadr("", "=", string, "", $1);
+    nbQdr = nbQdr + 1;
+    quadr(nbQdr, "=", string, "", $1);
 } pvg 
 ;
 
@@ -214,11 +223,11 @@ read_display : mc_read PARAO CHAR colon arobase idf PARAF pvg
 ;
 
 
-if_condition : mc_if PARAO condition PARAF colon instruction_list else_condition
+if_condition : mc_if PARAO condition {empiler_quad(nbQdr);} PARAF colon instruction_list { printf("Valeur de nbQdr: %d\n", nbQdr);}else_condition mc_end {{tempQdr = depiler_quad(); char tempQdrStr[16]; sprintf(tempQdrStr, "%d", tempQdr); nbQdr = nbQdr + 1; quadr(nbQdr,"BR",tempQdrStr,"","");}}
 ;
 
-else_condition: mc_else colon instruction_list mc_end 
-                | mc_end
+else_condition: {tempQdr = depiler_quad(); ajour_quad(tempQdr,3,nbQdr+1); } mc_else colon instruction_list {empiler_quad(nbQdr);}
+                | {tempQdr = depiler_quad(); ajour_quad(tempQdr,3,nbQdr+1); }
 ;
 
 loop : mc_for PARAO idf colon INTEGER {pop_type();} colon expression PARAF instruction_list mc_end
@@ -302,12 +311,12 @@ factor : INTEGER {
        | PARAO expression PARAF
 ;
 
-condition : expression dot mc_ge dot expression
-          | expression dot mc_le dot expression
-          | expression dot mc_l dot expression
-          | expression dot mc_di dot expression
-          | expression dot mc_not dot expression
-          | expression dot mc_or dot expression
+condition : expression dot mc_ge dot expression {char* temp = newtemp(); nbQdr = nbQdr + 1; quadr(nbQdr,"-",$1,$5,temp); nbQdr = nbQdr + 1; quadr(nbQdr,"BL",temp,"","");}
+          | expression dot mc_le dot expression {char* temp = newtemp(); nbQdr = nbQdr + 1; quadr(nbQdr,"-",$1,$5,temp); nbQdr = nbQdr + 1; quadr(nbQdr,"BG",temp,"","");}
+          | expression dot mc_l dot expression  {char* temp = newtemp(); nbQdr = nbQdr + 1; quadr(nbQdr,"-",$1,$5,temp); nbQdr = nbQdr + 1; quadr(nbQdr,"BGE",temp,"","");}
+          | expression dot mc_di dot expression  {char* temp = newtemp(); nbQdr = nbQdr + 1; quadr(nbQdr,"-",$1,$5,temp); nbQdr = nbQdr + 1; quadr(nbQdr,"BZ",temp,"","");}
+          | expression dot mc_not dot expression  {char* temp = newtemp(); nbQdr = nbQdr + 1; quadr(nbQdr,"-",$1,$5,temp); nbQdr = nbQdr + 1; quadr(nbQdr,"BG",temp,"","");}
+          | expression dot "EQ" dot expression  {char* temp = newtemp(); nbQdr = nbQdr + 1; quadr(nbQdr,"-",$1,$5,temp); nbQdr = nbQdr + 1; quadr(nbQdr,"BNZ",temp,"","");}
 ;
 ;
 

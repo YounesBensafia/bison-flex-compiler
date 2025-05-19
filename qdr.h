@@ -6,7 +6,7 @@
 
 // Structure de quadruplet
 typedef struct qdr {
-    char label[MAX_STR];
+    int label;
     char oper[MAX_STR];
     char op1[MAX_STR];
     char op2[MAX_STR];
@@ -35,8 +35,10 @@ int depiler_branch();
 
 // Fonctions pour les quadruplets
 void init_qdr();
-void quadr(char label[], char oper[], char op1[], char op2[], char res[]);
-void ajour_quad(int num_quad, int colonne, char val[]);
+void quadr(int label, char oper[], char op1[], char op2[], char res[]);
+void ajour_quad(int num_quad, int colonne, int val);
+void empiler_quad(int val);
+int depiler_quad();
 void afficher_qdr();
 
 #endif // QUAD_H
