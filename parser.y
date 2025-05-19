@@ -164,12 +164,10 @@ assignment : idf {
 ;
 
 expression : term { 
-                printf("Valeur de term: %s\n", $1);
                 string = $1;
                 $$ = $1; 
             }
            | expression sum term { 
-                printf("Valeur de term: %s\n", $1);
                 string = $1;
                 $$ = $1; 
             }
