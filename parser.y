@@ -209,7 +209,6 @@ read_display : mc_read PARAO CHAR colon arobase idf PARAF pvg
                     break;
                 }
             }
-            printf("Last character: %c\n", last_char);
             if ((last_char == '%' && strcmp(expected, "FLOAT") != 0) ||
                 (last_char == '$' && strcmp(expected, "INTEGER") != 0) ||
                 (last_char == '#' && strcmp(expected, "STRING") != 0) ||
