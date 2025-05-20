@@ -104,6 +104,13 @@ vector :MC_VECTOR colon idf left_bracket INTEGER virgule INTEGER colon type
                 update_type($3, type);
             }
         }
+        char buf1[20], buf2[20];
+        sprintf(buf1, "%d", $5);
+        sprintf(buf2, "%d", $7);
+        nbQdr = nbQdr + 1;
+        quadr(nbQdr, "BOUNDS", strdup(buf1), strdup(buf2), "");
+        nbQdr = nbQdr + 1;
+        quadr(nbQdr,"ADEC",$3,"","");
     }
 right_bracket pvg
 ;
@@ -167,15 +174,33 @@ expression : term {
                 string = $1;
                 $$ = $1; 
             }
-           | expression sum term { 
-                string = $1;
+           | expression sum term {
                 $$ = $1; 
+                nbQdr = nbQdr + 1;
+                char* temp = newtemp();
+                string = temp;
+                quadr(nbQdr,"+",strdup($1),strdup($3),temp); 
             }
            | expression minus term
+           {
+                $$ = $1; 
+                nbQdr = nbQdr + 1;
+                char* temp = newtemp();
+                string = temp;
+                quadr(nbQdr,"-",strdup($1),strdup($3),temp); 
+            }
 ;
 
 read_display : mc_read PARAO CHAR colon arobase idf PARAF pvg
 {
+        nbQdr = nbQdr + 1;
+        char format[4];
+        if ($3 == '$') strcpy(format, "%d");
+        else if ($3 == '%') strcpy(format, "%f");
+        else if ($3 == '#') strcpy(format, "%s");
+        else if ($3 == '&') strcpy(format, "%c");
+        else strcpy(format, "");
+        quadr(nbQdr, "READ", $6, format, "");
         if (double_declaration($6, "") == 1) {
             printf("ERREUR SEMANTIQUE: %s non declare, a la ligne %d\n", $6, nb_ligne);
             exit(1);
@@ -193,6 +218,8 @@ read_display : mc_read PARAO CHAR colon arobase idf PARAF pvg
 }
 | mc_display PARAO STRING colon idf PARAF pvg
         {
+            nbQdr = nbQdr + 1;
+            quadr(nbQdr, "DISPLAY", strdup($3), strdup($5), "");
             if (double_declaration($5, "") == 1) {
                 printf("ERREUR SEMANTIQUE: %s non declare, a la ligne %d\n", $5, nb_ligne);
                 exit(1);
@@ -220,20 +247,38 @@ read_display : mc_read PARAO CHAR colon arobase idf PARAF pvg
 ;
 
 
-if_condition : mc_if PARAO condition {printf("nbQdr = %d\n", nbQdr); empiler_quad(nbQdr);} PARAF colon instruction_list {tempQdr = depiler_quad(); nbQdr = nbQdr + 1; ajour_quad(tempQdr,3,nbQdr+1); quadr(nbQdr,"BR","","",""); empiler_quad(nbQdr);} else_condition
+if_condition : mc_if PARAO condition {empiler_quad(nbQdr);} PARAF colon instruction_list {tempQdr = depiler_quad(); nbQdr = nbQdr + 1; ajour_quad(tempQdr,3,nbQdr+1); quadr(nbQdr,"BR","","",""); empiler_quad(nbQdr);} else_condition
 ;
 
 else_condition: mc_else colon instruction_list {tempQdr = depiler_quad();  ajour_quad(tempQdr,3,nbQdr+1);} mc_end  
                 | mc_end 
 ;
 
-loop : mc_for PARAO idf colon INTEGER {pop_type();} colon expression PARAF instruction_list mc_end
+loop : mc_for PARAO idf colon INTEGER {pop_type();} colon expression 
+{
+    char* qdrRet = get_colonne_qdr(nbQdr,4);
+    nbQdr = nbQdr + 1; 
+    char* temp = newtemp();
+    quadr(nbQdr,"-",strdup($3),qdrRet,temp); 
+    nbQdr = nbQdr + 1; 
+    quadr(nbQdr,"BG",temp,"","");
+    empiler_quad(nbQdr);
+}  
+PARAF instruction_list mc_end {tempQdr = depiler_quad(); ajour_quad(tempQdr,3,nbQdr+1);}
 ;
 
 
 term : factor { $$ = $1;}
-     | term mul factor 
-     | term DIV factor
+     | term mul factor {                
+                nbQdr = nbQdr + 1;
+                char* temp = newtemp();
+                quadr(nbQdr,"*",strdup($1),strdup($3),temp); 
+            }
+     | term DIV factor {                
+                nbQdr = nbQdr + 1;
+                char* temp = newtemp();
+                quadr(nbQdr,"/",strdup($1),strdup($3),temp); 
+            }
 ;
 
 factor : INTEGER {

@@ -184,3 +184,17 @@ int depiler_quad() {
     free(temp);
     return val;
 }
+// Retourne un pointeur vers la chaîne correspondant à la colonne demandée pour une ligne donnée
+// colonne: 1=oper, 2=op1, 3=op2, 4=res
+char* get_colonne_qdr(int ligne, int colonne) {
+    if (ligne < 0 || ligne >= qc) {
+        return NULL;
+    }
+    switch (colonne) {
+        case 1: return quad[ligne].oper;
+        case 2: return quad[ligne].op1;
+        case 3: return quad[ligne].op2;
+        case 4: return quad[ligne].res;
+        default: return NULL;
+    }
+}

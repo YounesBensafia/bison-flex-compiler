@@ -40,5 +40,6 @@ void ajour_quad(int num_quad, int colonne, int val);
 void empiler_quad(int val);
 int depiler_quad();
 void afficher_qdr();
+char* get_colonne_qdr(int ligne, int colonne);
 
 #endif // QUAD_H

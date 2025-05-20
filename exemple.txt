@@ -35,19 +35,23 @@ school
         ELSE:
             total = 25;
         END
-
         i = 2;
-        FOR (i : 1 : count)
+        i = 2;
+        i = 2;
+        FOR (i : 1 : count+1)
             j = 2;
             moy = 0;
             moy = moy + 10;
             READ ('%':@ moy);
             stud = 30;
         END
+        i = 2;
 
         count = 40;
         final = moy / 5;
+        j = 2;
         DISPLAY ("moyenne = %": moy);
+        j = 2;
     END
 
 END
