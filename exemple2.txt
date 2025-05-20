@@ -1,0 +1,158 @@
+Testprg
+DATA
+   § Déclaration des variables à virgule flottante
+   FLOAT: Var1|Var2|Var3|Var4|Var5|Var6;
+   FLOAT: Temp1|Temp2|Temp3|Temp4|Temp5;
+   FLOAT: Res1|Res2|Res3;
+   STRING: Message;
+
+   § Variables entières
+   INTEGER: Ind1|Ind2|Ind3|Ind4|Ind5|Ind6;
+   INTEGER: Cnt1|Cnt2|Cnt3;
+
+   § Déclaration des tableaux
+   VECTOR: Tab1[10, 5: INTEGER];
+   VECTOR: Tab2[10, 5: INTEGER];
+   VECTOR: Mat1[5, 5: FLOAT];
+
+   § Constantes
+   CONST: Cst1 = 5;
+   CONST: Cst2 = 10;
+   CONST: Cst3 = 15;
+END
+
+CODE
+   READ ('%': @Var1);
+   DISPLAY("lA VALEUR DE VAR1 EST %": Var1);
+   § Initialisation avec expressions redondantes
+   Var1 = 5.0 + 0.0;
+   Var2 = Var1;
+   Var3 = Var2;
+   Var4 = Var3;
+
+   § Initialisation des variables entières
+   Ind1 = 1;
+   Ind2 = 2;
+   Ind3 = 3;
+   Ind4 = 4;
+   Ind5 = 5;
+   Ind6 = 6;
+   Cnt1 = 0;
+   Cnt2 = 0;
+   Cnt3 = 0;
+
+   § Expressions avec sous-expressions communes
+   Temp1 = (Var1 + Var2) * 2.0;
+   Temp2 = (Var1 + Var2) * 3.0;
+   Temp3 = (Var1 + Var2) * 4.0;
+
+   § Calculs redondants
+   Res1 = Var1 * 2.0;
+   Res2 = Var1 * 2.0 + 0.0;
+   Res3 = Var1 * 2.0;
+
+   § Affectations en cascade
+   Ind1 = 1;
+   Ind2 = Ind1;
+   Ind3 = Ind2;
+   Ind4 = Ind3;
+
+   § Expressions avec constantes qui pourraient être précalculées
+   Temp4 = 5.0 * 3.0 + 2.0;
+   Temp5 = 5.0 * 3.0 + 2.0 + 0.0;
+
+   § Boucle avec calculs redondants
+   FOR (Ind1:1:10)
+      § Calcul répété à chaque itération
+      Ind5 = 5 * 3;
+      Ind6 = 5 * 3;
+      Tab1[Ind1] = (Ind1 * 2 + 3) * 4;
+      Tab2[Ind1] = (Ind1 * 2 + 3) * 5;
+      § Sous-expressions communes dans la boucle
+
+
+      § Calcul qui pourrait être sorti de la boucle
+      Cnt1 = Cst1 * Cst2;
+
+      § Expressions avec variables mortes
+      Temp1 = Ind1 * 2.0;
+      Temp2 = Ind1 * 3.0;
+      § Temp1 et Temp2 ne sont pas utilisés après
+   END
+
+
+
+   § Boucle imbriquée avec redondances
+   FOR (Ind1:0:4)
+      FOR (Ind2:0:4)
+         § Calculs redondants
+         Ind3 = Ind1 + Ind2;
+         Ind4 = Ind1 + Ind2;
+
+         § Affectation avec expression complexe redondante
+         Mat1[Ind1,Ind2] = (Ind12.0+Ind22.0) / 2.0;
+
+         § Calcul qui pourrait être simplifié
+         IF (Ind1.EQ.Ind2):
+            Mat1[Ind1,Ind2] = Mat1[Ind1,Ind2] * 1.0;
+         END
+
+         § Opérations inutiles
+         Cnt2 = Cnt2 + 0;
+         Cnt3 = Cnt3 * 1;
+      END
+   END
+
+   § Conditions avec expressions redondantes
+   IF ((Var1+Var2).GT.(Var3-Var4)):
+      Res1 = (Var1+Var2) * 2.0;
+   ELSE:
+      Res1 = (Var1+Var2) * 3.0;
+   END
+
+   § Condition avec test toujours vrai
+   IF (5.GT.3):
+      Cnt1 = Cnt1 + 1;
+   END
+
+   § Boucle avec incrémentation inefficace
+   FOR (Ind1:1:5)
+      Cnt2 = Cnt2 + 1;
+      Cnt2 = Cnt2 + 1;
+      Cnt2 = Cnt2 + 1;
+      § Au lieu de Cnt2 = Cnt2 + 3;
+   END
+
+   § Expressions avec neutralité
+   Res2 = Res2 + 0.0;
+   Res2 = Res2 * 1.0;
+
+   § Calculs en cascade qui pourraient être combinés
+   Var1 = Var2 + 5.0;
+   Var1 = Var1 + 3.0;
+   Var1 = Var1 + 2.0;
+   § Au lieu de Var1 = Var2 + 10.0;
+
+   § Opérations avec variables non utilisées
+   Var5 = Var1 * Var2;
+   Var6 = Var3 * Var4;
+   § Var5 et Var6 ne sont jamais utilisés après
+
+   § Affichage avec expressions redondantes
+   DISPLAY("Résultat 1": (Var1+Var2)2.0);
+   DISPLAY("Résultat 2": (Var1+Var2)2.0);
+
+   § Dernière boucle avec calculs inefficaces
+   FOR (Ind1:1:Cst3)
+      § Calcul qui pourrait être sorti de la boucle
+      Ind2 = Cst1 + Cst2;
+
+      § Opération redondante
+      Ind3 = Ind1 * 1;
+
+      § Condition toujours vraie
+      IF (1.EQ.1):
+         Ind4 = Ind4 + 1;
+      END
+   END
+END
