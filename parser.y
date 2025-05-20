@@ -220,7 +220,7 @@ read_display : mc_read PARAO CHAR colon arobase idf PARAF pvg
 ;
 
 
-if_condition : mc_if PARAO condition {empiler_quad(nbQdr);} PARAF colon instruction_list {tempQdr = depiler_quad(); ajour_quad(tempQdr,3,nbQdr+1); nbQdr = nbQdr + 1; quadr(nbQdr,"BR","","",""); empiler_quad(nbQdr);} else_condition
+if_condition : mc_if PARAO condition {printf("nbQdr = %d\n", nbQdr); empiler_quad(nbQdr);} PARAF colon instruction_list {tempQdr = depiler_quad(); nbQdr = nbQdr + 1; ajour_quad(tempQdr,3,nbQdr+1); quadr(nbQdr,"BR","","",""); empiler_quad(nbQdr);} else_condition
 ;
 
 else_condition: mc_else colon instruction_list {tempQdr = depiler_quad();  ajour_quad(tempQdr,3,nbQdr+1);} mc_end  
