@@ -152,8 +152,7 @@ void afficher_qdr() {
     }
 
     // Footer with statistics
-    printf("\033[38;5;63m╠═══════╩════════════════╩════════════════════╩════════════════════╩═══════════════╣\033[0m\n");
-    printf("\033[38;5;63m║\033[0m \033[1;38;5;251mStat: \033[1;38;5;227m%-3d\033[0m \033[1;38;5;251mquadruplets générés                                             \033[38;5;63m║\033[0m\n", qc);
+    printf("\033[38;5;63m╠═══════╩════════════════╩════════════════════╩════════════════════╩════════════╣\033[0m\n");
     printf("\033[38;5;63m╚═══════════════════════════════════════════════════════════════════════════════╝\033[0m\n");
 }
 
@@ -184,3 +183,139 @@ int depiler_quad() {
     free(temp);
     return val;
 }
+// Retourne un pointeur vers la chaîne correspondant à la colonne demandée pour une ligne donnée
+// colonne: 1=oper, 2=op1, 3=op2, 4=res
+char* get_colonne_qdr(int ligne, int colonne) {
+    if (ligne < 0 || ligne >= qc) {
+        return NULL;
+    }
+    switch (colonne) {
+        case 1: return quad[ligne].oper;
+        case 2: return quad[ligne].op1;
+        case 3: return quad[ligne].op2;
+        case 4: return quad[ligne].res;
+        default: return NULL;
+    }
+}
+
+void eliminer_sous_expressions_communes() {
+    for (int i = 0; i < qc; i++) {
+        for (int j = 0; j < i; j++) {
+            // Comparaison des opérateurs et opérandes
+            if (strcmp(quad[i].oper, quad[j].oper) == 0 &&
+                strcmp(quad[i].op1, quad[j].op1) == 0 &&
+                strcmp(quad[i].op2, quad[j].op2) == 0) {
+                printf("🔁 Sous-expression commune détectée entre %d et %d : (%s %s %s)\n", j, i, quad[i].oper, quad[i].op1, quad[i].op2);
+                // Remplacement par une affectation
+                strcpy(quad[i].oper, "=");
+                strcpy(quad[i].op1, quad[j].res);
+                quad[i].op2[0] = '\0';
+                // garder la même destination
+                break;
+            }
+        }
+    }
+}
+
+
+int est_utilisee(char* var, int debut) {
+    for (int i = debut; i < qc; i++) {
+        if (strcmp(quad[i].op1, var) == 0 || strcmp(quad[i].op2, var) == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void eliminer_instructions_inutiles() {
+    for (int i = 0; i < qc; i++) {
+        if (quad[i].res[0] == '\0') continue;
+        if (!est_utilisee(quad[i].res, i + 1)) {
+            printf("🗑️ Instruction inutile détectée à %d : %s ← %s %s %s\n", i, quad[i].res, quad[i].oper, quad[i].op1, quad[i].op2);
+            quad[i].oper[0] = '\0';
+            quad[i].op1[0] = '\0';
+            quad[i].op2[0] = '\0';
+            quad[i].res[0] = '\0';
+        }
+    }
+}
+
+void eliminer_variables_induction() {
+    for (int i = 0; i < qc - 1; i++) {
+        if (strcmp(quad[i].oper, "ADD") == 0 && strcmp(quad[i].res, quad[i].op1) == 0) {
+            // Ex : I = I + 1
+            char var_induction[MAX_STR];
+            char const1[MAX_STR];
+            strcpy(var_induction, quad[i].op1);
+            strcpy(const1, quad[i].op2);
+
+            if (strcmp(var_induction, quad[i].res) != 0) continue;
+
+            for (int j = i + 1; j < qc; j++) {
+                if (strcmp(quad[j].oper, "ADD") == 0 &&
+                    strcmp(quad[j].op1, var_induction) == 0) {
+                    // Ex : J = I + 6 → devient J = (I+1)+6
+                    printf("🔁 Variable d'induction optimisée entre %d et %d\n", i, j);
+
+                    // Fusion des constantes
+                    int c1 = atoi(const1);
+                    int c2 = atoi(quad[j].op2);
+                    int fusion = c1 + c2;
+                    
+                    // Modifier quad j
+                    snprintf(quad[j].op1, MAX_STR, "%s", var_induction);
+                    snprintf(quad[j].op2, MAX_STR, "%d", fusion);
+
+                    // Supprimer l'instruction d'induction si plus utilisée
+                    if (!est_utilisee(quad[i].res, j + 1)) {
+                        quad[i].oper[0] = '\0';
+                        quad[i].op1[0] = '\0';
+                        quad[i].op2[0] = '\0';
+                        quad[i].res[0] = '\0';
+                    }
+                    break;
+                }
+            }
+        }
+    }
+}
+
+int est_constant(char* var) {
+    // Hypothèse simplifiée : si ce n’est pas une variable temporaire (T...)
+    return !(var[0] == 'T' || var[0] == 't');
+}
+
+// Hypothèse : boucle délimitée par labels "DEBLOOP" et "ENDLOOP"
+void optimiser_boucles() {
+    int deb = -1, fin = -1;
+    for (int i = 0; i < qc; i++) {
+        if (strcmp(quad[i].oper, "LBL") == 0 && strcmp(quad[i].res, "DEBLOOP") == 0) {
+            deb = i;
+        } else if (strcmp(quad[i].oper, "LBL") == 0 && strcmp(quad[i].res, "ENDLOOP") == 0) {
+            fin = i;
+        }
+    }
+
+    if (deb == -1 || fin == -1) return;
+
+    for (int i = deb + 1; i < fin; i++) {
+        if ((strcmp(quad[i].oper, "ADD") == 0 || strcmp(quad[i].oper, "MUL") == 0) &&
+            est_constant(quad[i].op1) && est_constant(quad[i].op2)) {
+            printf("📤 Invariant de boucle détecté à %d (%s %s %s)\n", i, quad[i].oper, quad[i].op1, quad[i].op2);
+            // On pourrait déplacer ce quadruplet avant `deb`
+            // Pour l’instant on se contente de le marquer
+        }
+    }
+}
+
+
+void optimiser_quadruplets() {
+    printf("\n🚀 Démarrage de l'optimisation...\n");
+    eliminer_sous_expressions_communes();
+    eliminer_variables_induction();
+    eliminer_instructions_inutiles();
+    optimiser_boucles(); // si applicable
+    printf("✅ Optimisation terminée.\n");
+}
+
+

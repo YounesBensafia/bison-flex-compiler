@@ -371,12 +371,10 @@ int main() {
     yyparse();
     // affiche()
     printf("Avant optimisation :\n");
-    afficher_qdr();     // Affiche la matrice avant optimisation
-
-    optimize_all();
-
-    printf("\nAprès optimisation :\n");
-    afficher_qdr();     // Affiche la matrice après optimisation
+    afficher_qdr();   
+    printf("Apres optimisation :\n");
+    optimiser_quadruplets();
+    afficher_qdr();
     return 0;
 }
 
