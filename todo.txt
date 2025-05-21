@@ -1,10 +1,11 @@
 TODO:
-Array Index Out of Bounds
 Use of Uninitialized Variables {Using a variable before assigning it a value (unless default values are handled by the language).}
 Invalid Loop Declaration {Using a variable not declared before in a FOR loop, or type mismatch in loop range}
+Focus more on vectors also
 DOING:
 
 DONE:
+Array Index Out of Bounds
 Incorrect Use of Boolean Expressions
 erreur identifiant non valide
 Invalid Format in READ or DISPLAY

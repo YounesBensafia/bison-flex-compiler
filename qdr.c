@@ -80,6 +80,9 @@ void quadr(int label, char oper[], char op1[], char op2[], char res[]) {
     qc++;
 }
 
+
+
+
 void ajour_quad(int num_quad, int colonne, int val) {
     if (num_quad < 0 || num_quad >= qc) {
         printf("Erreur : numéro de quadruplet invalide\n");

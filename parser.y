@@ -13,6 +13,39 @@ int tempCount = 0;
 int nbQdr = -1;
 int tempQdr = 0; 
 
+#define MAX_STACK_SIZE 100
+
+char* idf_stack[MAX_STACK_SIZE];
+int idf_stack_top = -1;
+
+void push_idf(char* idf) {
+    if (idf_stack_top < MAX_STACK_SIZE - 1) {
+        idf_stack[++idf_stack_top] = strdup(idf);
+    } else {
+        printf("Erreur : pile d'idf pleine\n");
+        exit(1);
+    }
+}
+
+char* pop_idf() {
+    if (idf_stack_top >= 0) {
+        return idf_stack[idf_stack_top--];
+    } else {
+        printf("Erreur : pile d'idf vide\n");
+        exit(1);
+    }
+}
+
+char* peek_idf() {
+    if (idf_stack_top >= 0) {
+        return idf_stack[idf_stack_top];
+    } else {
+        return NULL;
+    }
+}
+
+
+
 char* newtemp() {
     char* tempName = malloc(10);       // alloue de l'espace pour le nom (ex: "t123")
     sprintf(tempName, "t%d", tempCount++); // génère "t0", "t1", "t2", ...
@@ -39,7 +72,7 @@ char* newtemp() {
 %token <string> mc_integer mc_float mc_char mc_string
 %token <string> percent hash dollar ampersand
 %type <string> type
-%type <string> factor term expression
+%type <string> factor term expression factor_constante
  
 %%
 
@@ -100,6 +133,7 @@ vector :MC_VECTOR colon idf left_bracket INTEGER virgule INTEGER colon type
             }
             else
             {
+                updateTaille($3,$5,$7);
                 sprintf(type, "%s*", $9);
                 update_type($3, type);
             }
@@ -129,15 +163,25 @@ constante: mc_const colon idf eq factor_constante {
         else
         {
             update_type($3,type);
+            // update_constant_value($3,$5);
         }
     }
     
     }
 
-factor_constante : INTEGER {strcpy(type, "C_INTEGER");}
-                 | FLOAT {strcpy(type, "C_FLOAT");}
-                 | STRING {strcpy(type, "C_STRING");}
-                 | CHAR {strcpy(type, "C_CHAR");}
+factor_constante : INTEGER {strcpy(type, "C_INTEGER");
+                            char temp[32];
+        sprintf(temp, "%d", $1);
+        $$ = strdup(temp);}
+                 | FLOAT {strcpy(type, "C_FLOAT"); char temp[32];
+        sprintf(temp, "%f", $1);
+        $$ = strdup(temp);}
+                 | STRING {strcpy(type, "C_STRING"); char temp[32];
+        sprintf(temp, "%s", $1);
+        $$ = strdup(temp);}
+                 | CHAR {strcpy(type, "C_CHAR"); char temp[32];
+        sprintf(temp, "%c", $1);
+        $$ = strdup(temp);}
 
 type : mc_integer {$$ = strdup($1); }
     | mc_float {$$ = strdup($1); }
@@ -145,8 +189,9 @@ type : mc_integer {$$ = strdup($1); }
     | mc_string {$$ = strdup($1); }
 ;
 
+vectorElement : left_bracket INTEGER right_bracket {char* idfVec = pop_idf(); check_bounds(idfVec, $2);} | 
 
-assignment : idf {
+assignment : idf {push_idf($1);} vectorElement{
     
     if(double_declaration($1, "") == 1) 
     {
@@ -484,13 +529,13 @@ int main() {
     init_qdr();
     initialisation();
     yyparse();
-    // affiche()
-    printf("Avant optimisation :\n");
-    afficher_qdr();   
-    printf("Apres optimisation :\n");
-    optimiser_quadruplets();
-    afficher_qdr_apres_opti();
-    generer_code_objet();
+    afficher();
+    // printf("Avant optimisation :\n");
+    // afficher_qdr();   
+    // printf("Apres optimisation :\n");
+    // optimiser_quadruplets();
+    // afficher_qdr_apres_opti();
+    // generer_code_objet();
     return 0;
 }
 

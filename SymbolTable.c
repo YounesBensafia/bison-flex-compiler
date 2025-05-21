@@ -46,7 +46,35 @@ unsigned int hash_function(const char* str) {
     return hash;
 }
 
-void inserer(char entite[], char code[], char type[], float val, int y) {
+void check_bounds(const char* vecteur_name, int index) {
+    unsigned int idx = hash_function(vecteur_name) % HASH_SIZE_IDF;
+    element* curr = tab[idx];
+    int taille_min = 0, taille_max = 0;
+
+    // Recherche du vecteur dans la table des symboles
+    while (curr != NULL) {
+        if (strcmp(curr->name, vecteur_name) == 0) {
+            taille_min = curr->scope;
+            taille_max = curr->line_number;
+            break;
+        }
+        curr = curr->next;
+    }
+
+    if (curr == NULL) {
+        printf("Erreur : Vecteur '%s' non trouvé dans la table des symboles.\n", vecteur_name);
+        exit(EXIT_FAILURE);
+    }
+
+    if (index < taille_min || index > taille_max) {
+        printf("Erreur : Dépassement de bornes pour le vecteur '%s'. Index = %d, Bornes = [%d, %d]\n",
+               vecteur_name, index, taille_min, taille_max);
+        exit(EXIT_FAILURE);
+    }
+}
+
+void inserer(char entite[], char code[], char type[], float val, int y, int scope, int line_number)
+ {
     unsigned int index = hash_function(entite);
     switch (y) {
         case 0:
@@ -58,6 +86,9 @@ void inserer(char entite[], char code[], char type[], float val, int y) {
             strcpy(new_elem->type, type);
             new_elem->val = val;
             new_elem->next = tab[index];
+            new_elem->scope = scope;
+            new_elem->line_number = line_number;
+
             tab[index] = new_elem;
             break;
             case 1: 
@@ -91,7 +122,7 @@ void rechercher(char entite[], char code[], char type[], float val, int y) {
                 while (curr != NULL && strcmp(entite, curr->name) != 0)
                 curr = curr->next;
                 if (curr == NULL)
-                inserer(entite, code, type, val, 0);
+                inserer(entite, code, type, val, 0, 0, 0);
             }
             break;
             case 1: 
@@ -101,7 +132,7 @@ void rechercher(char entite[], char code[], char type[], float val, int y) {
                 while (curr != NULL && strcmp(entite, curr->name) != 0)
                 curr = curr->next;
                 if (curr == NULL)
-                inserer(entite, code, type, val, 1);
+                inserer(entite, code, type, val, 1, 0, 0);
             }
             break;
             case 2:
@@ -112,7 +143,7 @@ void rechercher(char entite[], char code[], char type[], float val, int y) {
                 curr = curr->next;
                 
                 if (curr == NULL) {
-                    inserer(entite, code, type, val, 2);
+                    inserer(entite, code, type, val, 2, 0, 0);
                 }
         }
         break;
@@ -124,7 +155,7 @@ void rechercher(char entite[], char code[], char type[], float val, int y) {
             while (curr != NULL && strcmp(entite, curr->name) != 0)
             curr = curr->next;
             if (curr == NULL)
-            inserer(entite, code, type, val, 0);
+            inserer(entite, code, type, val, 0, 0, 0);
             else
             printf("entité existe déjà\n");
         }
@@ -139,24 +170,28 @@ void afficher(void) {
     // Table des symboles IDF
     printf(YELLOW "/***************Table des symboles IDF*************/\n" RESET);
     printf("____________________________________________________________________\n");
-    printf("\t| " GREEN "Nom_Entite" RESET " | " GREEN "Code_Entite" RESET " | " GREEN "Type_Entite" RESET " | " GREEN "Val_Entite" RESET "\n");
+    printf("\t| " GREEN "Nom_Entite" RESET " | " GREEN "Code_Entite" RESET " | " GREEN "Type_Entite" RESET " | " GREEN "Val_Entite" RESET " | " GREEN "TailleMIN" RESET " | " GREEN "TailleMAX" RESET "\n");
+    printf("___________________________________________________________________________________\n");
     printf("____________________________________________________________________\n");
     for (i = 0; i < HASH_SIZE_IDF; i++) {
         element* curr = tab[i];
         while (curr != NULL) {
             if (curr->state == 1) {
                 if (strncmp(curr->type, "C_", 2) == 0) {
-                    printf("\t| %s%-10s" RESET " | %-15s | " GREEN "%-12s" RESET " | %-12f\n",
-                           CYAN, curr->name, curr->code, curr->type, curr->val);
+                   printf("\t| %s%-10s" RESET " | %-15s | " GREEN "%-12s" RESET " | %-12f | %-5d | %-5d\n",
+                    CYAN, curr->name, curr->code, curr->type, curr->val, curr->scope, curr->line_number);
+
                 } else if (strcmp(curr->type, "INTEGER") == 0) {
-                    printf("\t| %s%-10s" RESET " | %-15s | " RED "%-12s" RESET " | %-12f\n",
-                           CYAN, curr->name, curr->code, curr->type, curr->val);
+                    printf("\t| %s%-10s" RESET " | %-15s | " GREEN "%-12s" RESET " | %-12f | %-5d | %-5d\n",
+                        CYAN, curr->name, curr->code, curr->type, curr->val, curr->scope, curr->line_number);
+
                 } else if (strcmp(curr->type, "FLOAT") == 0) {
-                    printf("\t| %s%-10s" RESET " | %-15s | " BLUE "%-12s" RESET " | %-12f\n",
-                           CYAN, curr->name, curr->code, curr->type, curr->val);
+                    printf("\t| %s%-10s" RESET " | %-15s | " GREEN "%-12s" RESET " | %-12f | %-5d | %-5d\n",
+                        CYAN, curr->name, curr->code, curr->type, curr->val, curr->scope, curr->line_number);
+
                 } else {
-                    printf("\t| %s%-10s" RESET " | %-15s | %-12s | %-12f\n",
-                           CYAN, curr->name, curr->code, curr->type, curr->val);
+                    printf("\t| %s%-10s" RESET " | %-15s | " GREEN "%-12s" RESET " | %-12f | %-5d | %-5d\n",
+                        CYAN, curr->name, curr->code, curr->type, curr->val, curr->scope, curr->line_number);
                 }
                 
         
@@ -221,6 +256,43 @@ int double_declaration (char entite[], char type[]){
         }
     }
 }
+
+
+void update_constant_value(const char* nomConstante, float nouvelle_valeur) {
+    unsigned int index = hash_function(nomConstante) % HASH_SIZE_IDF;
+    element* curr = tab[index];
+
+    while (curr != NULL) {
+        if (strcmp(curr->name, nomConstante) == 0) {
+            if (strncmp(curr->type, "C_", 2) == 0) {
+                curr->val = nouvelle_valeur;
+                return;
+            } else {
+                printf("Erreur : %s n'est pas une constante.\n", nomConstante);
+                return;
+            }
+        }
+        curr = curr->next;
+    }
+    printf("Constante %s non trouvée dans la table des symboles.\n", nomConstante);
+}
+
+
+void updateTaille(const char* nomVecteur, int TailleMin, int TailleMax) {
+    unsigned int index = hash_function(nomVecteur) % HASH_SIZE_IDF;
+    element* curr = tab[index];
+
+    while (curr != NULL) {
+        if (strcmp(curr->name, nomVecteur) == 0) {
+            curr->scope = TailleMin;
+            curr->line_number = TailleMax;
+            return;
+        }
+        curr = curr->next;
+    }
+    printf("Vecteur %s non trouvé dans la table des symboles.\n", nomVecteur);
+}
+
 
 void update_type(char *entite, char *nouveau_type) {
     unsigned int index = hash_function(entite) % HASH_SIZE_IDF;

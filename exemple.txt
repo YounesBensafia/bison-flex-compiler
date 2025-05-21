@@ -20,6 +20,7 @@ school
         lettre = 'B';
         § Expressions redondantes
 
+        notes[12]=12;
         utile = 0;
         temp = 0;
 
