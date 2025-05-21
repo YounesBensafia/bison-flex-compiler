@@ -20,5 +20,21 @@ To test the compiler with an example input file:
 ```sh
 ./compilateur < exemple.txt
 ```
+<div align="center">
+
+| ![Symbol Table](images/image.png) | ![Quadruplets Table](images/image-1.png) |
+|:-------------------------:|:----------------------------------:|
+| **Symbol Table**          | **Quadruplets Table**              |
+
+| ![Avant optimisation](images/image-2.png) | ![Apres optimisation](images/image-3.png) |
+|:----------------------------------:|:----------------------------------:|
+| **Avant optimisation**             | **Après optimisation**             |
+
+![Code Objet](images/image-4.png)
+<br>
+**Code Objet**
+
+</div>
+
 
 > **Note:** Make sure all dependencies (Bison, Flex, GCC) are installed and available in your system's PATH.
