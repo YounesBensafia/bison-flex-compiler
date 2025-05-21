@@ -160,6 +160,56 @@ void afficher_qdr() {
     printf("\033[38;5;63m╚═══════════════════════════════════════════════════════════════════════════════╝\033[0m\n");
 }
 
+
+void afficher_qdr_apres_opti() {
+    printf("\n\033[1;38;5;240m┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\033[0m\n");
+    printf("\033[1;38;5;240m┃\033[0m \033[1;38;5;39m                         🧠 TABLE DES QUADRUPLETS - VM MODE                         \033[0m \033[1;38;5;240m┃\033[0m\n");
+    printf("\033[1;38;5;240m┣━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┓\033[0m\n");
+    printf("\033[1;38;5;240m┃\033[0m \033[1;38;5;250m%-3s \033[1;38;5;240m┃\033[0m \033[1;38;5;44m%-12s \033[1;38;5;240m┃\033[0m \033[1;38;5;51m%-16s \033[1;38;5;240m┃\033[0m \033[1;38;5;51m%-16s \033[1;38;5;240m┃\033[0m \033[1;38;5;227m%-14s \033[1;38;5;240m┃\033[0m\n",
+           "ID", "OPÉRATION", "ARGUMENT 1", "ARGUMENT 2", "RÉSULTAT");
+    printf("\033[1;38;5;240m┣━━━━━╋━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━┫\033[0m\n");
+
+    // Couleurs
+    const char *color_default = "\033[0m";
+    const char *color_id = "\033[1;38;5;250m";         // gris clair
+    const char *color_op_std = "\033[1;38;5;45m";      // bleu clair
+    const char *color_op_jmp = "\033[1;38;5;34m";      // vert
+    const char *color_op_math = "\033[1;38;5;198m";    // magenta
+    const char *color_op_io = "\033[1;38;5;208m";      // orange
+    const char *color_arg = "\033[1;38;5;51m";         // cyan
+    const char *color_res = "\033[1;38;5;227m";        // jaune
+
+    int row = 0;
+    for (int i = 0; i < qc; i++) {
+        if (quad[i].oper[0] == '\0' && quad[i].res[0] == '\0')
+            continue;
+
+        const char *op_color = color_op_std;
+        if (strstr("BGE BG BLE BL BE BNE BR BRF JMP", quad[i].oper)) {
+            op_color = color_op_jmp;
+        } else if (strstr("ADD SUB MUL DIV MOD POW", quad[i].oper)) {
+            op_color = color_op_math;
+        } else if (strstr("READ WRITE PRINT SCAN", quad[i].oper)) {
+            op_color = color_op_io;
+        }
+
+        const char *bg = (row % 2 == 0) ? "" : "\033[48;5;236m";
+        row++;
+
+        printf("\033[1;38;5;240m┃\033[0m %s%s%-3d \033[0m\033[1;38;5;240m┃\033[0m %s%s%-12s\033[0m \033[1;38;5;240m┃\033[0m %s%s%-16s\033[0m \033[1;38;5;240m┃\033[0m %s%s%-16s\033[0m \033[1;38;5;240m┃\033[0m %s%s%-14s\033[0m \033[1;38;5;240m┃\033[0m\n",
+               bg, color_id, quad[i].label,
+               bg, op_color, quad[i].oper,
+               bg, color_arg, quad[i].op1[0] ? quad[i].op1 : "—",
+               bg, color_arg, quad[i].op2[0] ? quad[i].op2 : "—",
+               bg, color_res, quad[i].res[0] ? quad[i].res : "—"
+        );
+    }
+
+    // Footer
+    printf("\033[1;38;5;240m┗━━━━━┻━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━┛\033[0m\n");
+}
+
+
 typedef struct {
     Cellule* sommet;
 } PileQuad;

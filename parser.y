@@ -374,7 +374,7 @@ int main() {
     afficher_qdr();   
     printf("Apres optimisation :\n");
     optimiser_quadruplets();
-    afficher_qdr();
+    afficher_qdr_apres_opti();
     return 0;
 }
 

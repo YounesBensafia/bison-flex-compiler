@@ -49,5 +49,6 @@ int est_constant(char* var);
 void optimiser_boucles();
 void optimiser_quadruplets();
 void nettoyer_quadruplets_triviaux();
+void afficher_qdr_apres_opti();
 
 #endif // QUAD_H
