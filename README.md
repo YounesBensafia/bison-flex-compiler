@@ -28,7 +28,7 @@ To test the compiler with an example input file:
 
 | ![Avant optimisation](images/image-2.png) | ![Apres optimisation](images/image-3.png) |
 |:----------------------------------:|:----------------------------------:|
-| **Avant optimisation**             | **Après optimisation**             |
+| **Au cours de l'optimisation**             | **Après optimisation**             |
 
 ![Code Objet](images/image-4.png)
 <br>
