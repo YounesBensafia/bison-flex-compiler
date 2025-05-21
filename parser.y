@@ -369,8 +369,14 @@ int main() {
     init_qdr();
     initialisation();
     yyparse();
-    afficher_qdr();
-    // afficher();
+    // affiche()
+    printf("Avant optimisation :\n");
+    afficher_qdr();     // Affiche la matrice avant optimisation
+
+    optimize_all();
+
+    printf("\nAprès optimisation :\n");
+    afficher_qdr();     // Affiche la matrice après optimisation
     return 0;
 }
 

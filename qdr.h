@@ -41,5 +41,11 @@ void empiler_quad(int val);
 int depiler_quad();
 void afficher_qdr();
 char* get_colonne_qdr(int ligne, int colonne);
+void optimize_common_subexpressions(qdr quads[], int n);
+void eliminate_unused_assignments(qdr quads[], int n);
+void eliminate_induction_variables(qdr quads[], int n);
+void print_quads(qdr quads[], int n);
+void optimize_all();
+
 
 #endif // QUAD_H

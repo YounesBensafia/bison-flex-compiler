@@ -21,6 +21,7 @@ typedef struct qdr {
     char op1[MAX_STR];
     char op2[MAX_STR];
     char res[MAX_STR];
+    int valid;  // Ajouté pour optimisation
 } qdr;
 
 // Tableau de quadruplets
@@ -61,6 +62,7 @@ void init_qdr() {
         quad[i].op1[0] = '\0';
         quad[i].op2[0] = '\0';
         quad[i].res[0] = '\0';
+        quad[i].valid = 1;
     }
     branch.sommet = NULL;
     qc = 0;
@@ -140,7 +142,7 @@ void afficher_qdr() {
         // Subtle alternating row background for better readability
         const char *bg = (row % 2 == 0) ? "" : "\033[48;5;236m";
         row++;
-        
+        if (!quad[i].valid) continue;
         // Print the row with appropriate colors and alignments
         printf("\033[38;5;63m║\033[0m %s%s%-5d \033[0m\033[38;5;63m║\033[0m %s%s%-14s\033[0m \033[38;5;63m║\033[0m %s%s%-16s\033[0m \033[38;5;63m║\033[0m %s%s%-16s\033[0m \033[38;5;63m║\033[0m %s%s%-13s\033[0m \033[38;5;63m║\033[0m\n",
                bg, color_id, quad[i].label,
@@ -153,7 +155,12 @@ void afficher_qdr() {
 
     // Footer with statistics
     printf("\033[38;5;63m╠═══════╩════════════════╩════════════════════╩════════════════════╩═══════════════╣\033[0m\n");
-    printf("\033[38;5;63m║\033[0m \033[1;38;5;251mStat: \033[1;38;5;227m%-3d\033[0m \033[1;38;5;251mquadruplets générés                                             \033[38;5;63m║\033[0m\n", qc);
+    // Compter le nombre de quadruplets valides
+    int nb_valid = 0;
+    for (int i = 0; i < qc; i++) {
+        if (quad[i].valid) nb_valid++;
+    }
+    printf("\033[38;5;63m║\033[0m \033[1;38;5;251mStat: \033[1;38;5;227m%-3d\033[0m \033[1;38;5;251m quadruplets valides générés                                             \033[38;5;63m║\033[0m\n", nb_valid);
     printf("\033[38;5;63m╚═══════════════════════════════════════════════════════════════════════════════╝\033[0m\n");
 }
 
@@ -197,4 +204,64 @@ char* get_colonne_qdr(int ligne, int colonne) {
         case 4: return quad[ligne].res;
         default: return NULL;
     }
+}
+
+int same_expr(qdr *a, qdr *b) {
+    return strcmp(a->oper, b->oper) == 0 &&
+           strcmp(a->op1, b->op1) == 0 &&
+           strcmp(a->op2, b->op2) == 0;
+}
+
+void optimize_common_subexpressions(qdr quads[], int n) {
+    for (int i = 0; i < n; i++) {
+        if (!quads[i].valid) continue;
+        for (int j = i + 1; j < n; j++) {
+            if (!quads[j].valid) continue;
+            if (same_expr(&quads[i], &quads[j])) {
+                strcpy(quads[j].oper, "MOV");
+                strcpy(quads[j].op1, quads[i].res);
+                quads[j].op2[0] = '\0';
+                quads[i].valid = 0;
+                // On peut aussi mettre à jour res si besoin
+            }
+        }
+    }
+}
+
+void eliminate_unused_assignments(qdr quads[], int n) {
+    for (int i = 0; i < n; i++) {
+        if (!quads[i].valid) continue;
+        int used = 0;
+        for (int j = i + 1; j < n; j++) {
+            if (!quads[j].valid) continue;
+            if (strcmp(quads[i].res, quads[j].op1) == 0 ||
+                strcmp(quads[i].res, quads[j].op2) == 0) {
+                used = 1;
+                break;
+            }
+        }
+        if (!used) quads[i].valid = 0;
+    }
+}
+
+void eliminate_induction_variables(qdr quads[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        if (!quads[i].valid || strcmp(quads[i].oper, "+") != 0) continue;
+
+        char *i_var = quads[i].res;
+
+        if (strcmp(quads[i + 1].op1, i_var) == 0 &&
+            strcmp(quads[i + 1].oper, "+") == 0) {
+            // Ex: I = I + 1; J = I + 6; devient J = (I+1) + 6;
+            snprintf(quads[i + 1].op1, MAX_STR, "(%.*s)", MAX_STR - 3, quads[i].res);
+            quads[i].valid = 0; // Supprimer I = I + 1;
+        }
+    }
+}
+
+void optimize_all() {
+optimize_common_subexpressions(quad, qc);
+eliminate_induction_variables(quad, qc);
+eliminate_unused_assignments(quad, qc);
+
 }
