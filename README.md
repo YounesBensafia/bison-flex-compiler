@@ -24,11 +24,11 @@ To test the compiler with an example input file:
 
 | ![Symbol Table](images/image.png) | ![Quadruplets Table](images/image-1.png) |
 |:-------------------------:|:----------------------------------:|
-| **Symbol Table**          | **Quadruplets Table**              |
+| **Symbol Table**          | **Quadruplets Table (Before optimization)**              |
 
 | ![Avant optimisation](images/image-2.png) | ![Apres optimisation](images/image-3.png) |
 |:----------------------------------:|:----------------------------------:|
-| **Au cours de l'optimisation**             | **Après optimisation**             |
+| **During optimization**             | **After optimization**             |
 
 ![Code Objet](images/image-4.png)
 <br>
