@@ -530,12 +530,12 @@ int main() {
     initialisation();
     yyparse();
     afficher();
-    // printf("Avant optimisation :\n");
-    // afficher_qdr();   
-    // printf("Apres optimisation :\n");
-    // optimiser_quadruplets();
-    // afficher_qdr_apres_opti();
-    // generer_code_objet();
+    printf("Avant optimisation :\n");
+    afficher_qdr();   
+    printf("Apres optimisation :\n");
+    optimiser_quadruplets();
+    afficher_qdr_apres_opti();
+    generer_code_objet();
     return 0;
 }
 
