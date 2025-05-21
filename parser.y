@@ -264,7 +264,14 @@ loop : mc_for PARAO idf colon INTEGER {pop_type();} colon expression
     quadr(nbQdr,"BG",temp,"","");
     empiler_quad(nbQdr);
 }  
-PARAF instruction_list mc_end {tempQdr = depiler_quad(); ajour_quad(tempQdr,3,nbQdr+1);}
+PARAF instruction_list mc_end { 
+    tempQdr = depiler_quad(); 
+    nbQdr = nbQdr + 1; 
+    char tempQdrStr[16]; 
+    sprintf(tempQdrStr, "%d", tempQdr); 
+    ajour_quad(tempQdr, 3, nbQdr + 1); 
+    quadr(nbQdr, "BR", "", strdup(tempQdrStr), ""); 
+}
 ;
 
 
@@ -274,7 +281,12 @@ term : factor { $$ = $1;}
                 char* temp = newtemp();
                 quadr(nbQdr,"*",strdup($1),strdup($3),temp); 
             }
-     | term DIV factor {                
+     | term DIV factor { 
+                // if (strcmp($3,"0"))
+                // {
+                //     printf("ERREUR SEMANTIQUE: Division par zero a la ligne %d\n", nb_ligne);
+                //     exit(1);
+                // }            
                 nbQdr = nbQdr + 1;
                 char* temp = newtemp();
                 quadr(nbQdr,"/",strdup($1),strdup($3),temp); 
@@ -365,7 +377,110 @@ condition : expression dot mc_ge dot expression {char* temp = newtemp(); nbQdr =
 
 %%
 
+void afficher_menu() {
+    printf("\n\033[1;38;5;45m========== MENU DU COMPILATEUR ==========\033[0m\n");
+    printf(" 1. Initialisation\n");
+    printf(" 2. Table de TS\n");
+    printf(" 3. Afficher les quadruplets (avant optimisation)\n");
+    printf(" 4. Optimiser les quadruplets\n");
+    printf(" 5. Afficher les quadruplets (après optimisation)\n");
+    printf(" 6. Générer le code objet\n");
+    printf(" 0. Quitter\n");
+    printf("\033[1;38;5;45m=========================================\033[0m\n");
+    printf("Choisissez une option : ");
+}
+void lancer_menu() {
+    int choix;
+    int parser_effectue = 0;
+    int optimisation_effectuee = 0;
+    extern FILE *yyin;
+    printf("\n\033[1;38;5;220m>> Analyse syntaxique en cours...\033[0m\n");
+    yyin = fopen("exemple.txt", "r");
+    if (!yyin) {
+        printf("Erreur : impossible d'ouvrir le fichier exemple.Txt\n");
+        exit(1);
+    }
+    yyparse();
+    fclose(yyin);
+
+    do {
+        afficher_menu();
+        parser_effectue = 1;
+
+        scanf("%d", &choix);
+        while (getchar() != '\n');
+
+        switch (choix) {
+
+            case 1:
+                printf("\n\033[1;38;5;220m>> Initialisation...\033[0m\n");
+                init_qdr();
+                initialisation();
+                break;
+
+            case 2:  printf("\n\033[1;38;5;82m>> TABLE DES SYMBOLES:\033[0m\n"); afficher();
+
+
+            case 3:
+                if (!parser_effectue) {
+                    printf("\033[1;31m>> Erreur : Vous devez parser avant d'afficher les quadruplets.\033[0m\n");
+                } else {
+                    printf("\n\033[1;38;5;70m>> Quadruplets avant optimisation :\033[0m\n");
+                    afficher_qdr();
+                }
+                break;
+
+            case 4:
+                if (!parser_effectue) {
+                    printf("\033[1;31m>> Erreur : Vous devez parser avant d'optimiser.\033[0m\n");
+                } else {
+                    printf("\n\033[1;38;5;208m>> Optimisation en cours...\033[0m\n");
+                    optimiser_quadruplets();
+                    optimisation_effectuee = 1;
+                }
+                break;
+
+            case 5:
+                if (!optimisation_effectuee) {
+                    printf("\033[1;31m>> Erreur : Vous devez optimiser avant d'afficher le résultat.\033[0m\n");
+                } else {
+                    printf("\n\033[1;38;5;82m>> Quadruplets après optimisation :\033[0m\n");
+                    afficher_qdr_apres_opti();
+                }
+                break;
+
+            case 6:
+                if (!parser_effectue) {
+                    printf("\033[1;31m>> Erreur : Vous devez parser d'abord.\033[0m\n");
+                } else {
+                    printf("\n\033[1;38;5;45m>> Génération du code objet...\033[0m\n");
+                    generer_code_objet();
+                }
+                break;
+
+            case 0:
+                printf("\033[1;38;5;240m>> Fin du programme. Merci !\033[0m\n");
+                break;
+
+            default:
+                printf("\033[1;31m>> Option invalide. Réessayez.\033[0m\n");
+                break;
+        }
+
+    } while (choix != 0);
+}
+
 int main() {
+    // lancer_menu();
+
+
+
+
+
+
+
+
+    
     init_qdr();
     initialisation();
     yyparse();
@@ -375,6 +490,7 @@ int main() {
     printf("Apres optimisation :\n");
     optimiser_quadruplets();
     afficher_qdr_apres_opti();
+    generer_code_objet();
     return 0;
 }
 

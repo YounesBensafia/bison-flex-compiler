@@ -210,6 +210,82 @@ void afficher_qdr_apres_opti() {
 }
 
 
+void generer_code_objet() {
+    printf("\n\033[1;38;5;45m// ===== Code Objet Généré =====\033[0m\n");
+
+    // En-tête de tableau
+    printf("\n\033[1;38;5;240m┏━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\033[0m\n");
+    printf("\033[1;38;5;240m┃ ID  ┃ INSTRUCTION                                                           ┃\033[0m\n");
+    printf("\033[1;38;5;240m┣━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫\033[0m\n");
+
+    int ligne = 0;
+    for (int i = 0; i < qc; i++) {
+        const char *op = quad[i].oper;
+        const char *a1 = quad[i].op1;
+        const char *a2 = quad[i].op2;
+        const char *res = quad[i].res;
+
+        if (op[0] == '\0') continue;
+
+        // Génération de l'instruction
+        char buffer[256] = "";
+        if (strcmp(op, "+") == 0) {
+            snprintf(buffer, sizeof buffer, "LOAD %s | ADD %s | STORE %s", a1, a2, res);
+        } else if (strcmp(op, "-") == 0) {
+            if (res[0] != '\0')
+                snprintf(buffer, sizeof buffer, "LOAD %s | SUB %s | STORE %s", a1, a2, res);
+            else
+                snprintf(buffer, sizeof buffer, "LOAD %s | SUB %s", a1, a2);
+        } else if (strcmp(op, "*") == 0 || strcmp(op, "MUL") == 0) {
+            snprintf(buffer, sizeof buffer, "LOAD %s | MUL %s | STORE %s", a1, a2, res);
+        } else if (strcmp(op, "/") == 0 || strcmp(op, "DIV") == 0) {
+            snprintf(buffer, sizeof buffer, "LOAD %s | DIV %s | STORE %s", a1, a2, res);
+        } else if (strcmp(op, "=") == 0) {
+            snprintf(buffer, sizeof buffer, "LOAD %s | STORE %s", a1, res);
+        } else if (strcmp(op, "BG") == 0) {
+            snprintf(buffer, sizeof buffer, "LOAD %s | JG %s", a1, a2);
+        } else if (strcmp(op, "BL") == 0) {
+            snprintf(buffer, sizeof buffer, "LOAD %s | JL %s", a1, a2);
+        } else if (strcmp(op, "BGE") == 0) {
+            snprintf(buffer, sizeof buffer, "LOAD %s | JGE %s", a1, a2);
+        } else if (strcmp(op, "BLE") == 0) {
+            snprintf(buffer, sizeof buffer, "LOAD %s | JLE %s", a1, a2);
+        } else if (strcmp(op, "BE") == 0) {
+            snprintf(buffer, sizeof buffer, "LOAD %s | JE %s", a1, a2);
+        } else if (strcmp(op, "BNE") == 0) {
+            snprintf(buffer, sizeof buffer, "LOAD %s | JNE %s", a1, a2);
+        } else if (strcmp(op, "BR") == 0) {
+            snprintf(buffer, sizeof buffer, "JMP %s", a2);
+        } else if (strcmp(op, "READ") == 0) {
+            snprintf(buffer, sizeof buffer, "IN %s", a1);
+        } else if (strcmp(op, "WRITE") == 0 || strcmp(op, "PRINT") == 0) {
+            snprintf(buffer, sizeof buffer, "OUT %s", a1);
+        } else if (strcmp(op, "ADEC") == 0) {
+            snprintf(buffer, sizeof buffer, "DECL %s", a1);
+        } else if (strcmp(op, "BOUNDS") == 0) {
+            snprintf(buffer, sizeof buffer, "BOUNDS %s %s", a1, a2);
+        } else {
+            snprintf(buffer, sizeof buffer, "// ⚠️ Instruction inconnue : %s", op);
+        }
+
+        // Alternance de couleurs
+        const char *bg = (ligne++ % 2) ? "\033[48;5;236m" : "";
+
+        // Affichage de la ligne
+        printf("\033[1;38;5;240m┃\033[0m %s\033[1;38;5;250m%-3d\033[0m \033[1;38;5;240m┃\033[0m %s%-70s\033[0m \033[1;38;5;240m┃\033[0m\n",
+               bg, i, bg, buffer);
+    }
+
+    // Pied de tableau
+    printf("\033[1;38;5;240m┗━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\033[0m\n");
+    printf("\033[1;38;5;45m// =============================\033[0m\n");
+}
+
+
+
+
+
+
 typedef struct {
     Cellule* sommet;
 } PileQuad;
@@ -339,6 +415,73 @@ int est_constant(char* var) {
     return !(var[0] == 'T' || var[0] == 't');
 }
 
+int est_utilise_apres(int i_debut, char *nom) {
+    for (int i = i_debut + 1; i < qc; i++) {
+        if (
+            strcmp(quad[i].op1, nom) == 0 ||
+            strcmp(quad[i].op2, nom) == 0
+        ) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void eliminer_operations_neutres() {
+    for (int i = 0; i < qc; i++) {
+        char *op = quad[i].oper;
+        char *a1 = quad[i].op1;
+        char *a2 = quad[i].op2;
+        char *res = quad[i].res;
+
+        if (strcmp(op, "+") == 0) {
+            if (strcmp(a2, "0") == 0 || strcmp(a1, "0") == 0) {
+                char *val = (strcmp(a1, "0") == 0) ? a2 : a1;
+
+                if (!est_utilise_apres(i, res)) {
+                    quad[i].oper[0] = '\0'; // inutile => on supprime
+                } else {
+                    strcpy(op, "=");
+                    strcpy(a1, val);
+                    quad[i].op2[0] = '\0';
+                }
+            }
+        } else if (strcmp(op, "-") == 0 && strcmp(a2, "0") == 0) {
+            if (!est_utilise_apres(i, res)) {
+                quad[i].oper[0] = '\0';
+            } else {
+                strcpy(op, "=");
+                quad[i].op2[0] = '\0';
+            }
+        } else if ((strcmp(op, "*") == 0 || strcmp(op, "MUL") == 0) &&
+                   (strcmp(a1, "1") == 0 || strcmp(a2, "1") == 0)) {
+            char *val = (strcmp(a1, "1") == 0) ? a2 : a1;
+
+            if (!est_utilise_apres(i, res)) {
+                quad[i].oper[0] = '\0';
+            } else {
+                strcpy(op, "=");
+                strcpy(a1, val);
+                quad[i].op2[0] = '\0';
+            }
+        } else if ((strcmp(op, "/") == 0 || strcmp(op, "DIV") == 0) &&
+                    strcmp(a2, "1") == 0) {
+            if (!est_utilise_apres(i, res)) {
+                quad[i].oper[0] = '\0';
+            } else {
+                strcpy(op, "=");
+                quad[i].op2[0] = '\0';
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
 // Hypothèse : boucle délimitée par labels "DEBLOOP" et "ENDLOOP"
 void optimiser_boucles() {
     int deb = -1, fin = -1;
@@ -356,8 +499,6 @@ void optimiser_boucles() {
         if ((strcmp(quad[i].oper, "ADD") == 0 || strcmp(quad[i].oper, "MUL") == 0) &&
             est_constant(quad[i].op1) && est_constant(quad[i].op2)) {
             printf("📤 Invariant de boucle détecté à %d (%s %s %s)\n", i, quad[i].oper, quad[i].op1, quad[i].op2);
-            // On pourrait déplacer ce quadruplet avant `deb`
-            // Pour l’instant on se contente de le marquer
         }
     }
 }
@@ -389,6 +530,7 @@ void nettoyer_quadruplets_triviaux() {
 
 void optimiser_quadruplets() {
     printf("\n🚀 Démarrage de l'optimisation...\n");
+    eliminer_operations_neutres();
     eliminer_sous_expressions_communes();
     eliminer_variables_induction();
     eliminer_instructions_inutiles();

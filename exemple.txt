@@ -2,7 +2,7 @@ school
     DATA
         § Variables de base
         INTEGER: max;
-        INTEGER: count | stud | total | i | j | temp | inutile;
+        INTEGER: count | stud | total | i | j | temp | utile;
         FLOAT: moy | coef | final;
         CHAR: lettre;
         STRING: nom1 | nom2 | nom3;
@@ -18,7 +18,9 @@ school
     CODE
         § Initialisation avec valeur morte
         lettre = 'B';
-        inutile = 0;
+        § Expressions redondantes
+
+        utile = 0;
         temp = 0;
 
         § Condition imbriquée avec redondance
@@ -64,24 +66,12 @@ school
 
         j = 2;
 
-        § Expressions redondantes
-        temp = (count + 1) * 2;
-        inutile = (count + 1) * 2;
-        total = (count + 1) * 2;
-
-        final = (moy + coef) * 1.0;
-        moy = (moy + coef) * 1.0;
-
 
         § Boucle imbriquée avec redondances
         FOR (i : 0 : 4)
             FOR (j : 0 : 4)
                 temp = i + j;
-                inutile = i + j;
-
-                § Affectation redondante
-                i = (i + j) * 2;
-                j = (i + j) * 2;
+                utile = i + j;
 
                 § Opérations neutres
                 total = total + 0;

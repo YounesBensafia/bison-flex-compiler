@@ -18,3 +18,4 @@ Identifier Violations
     * Are longer than 8 characters
 }
 Invalid Return Type for Expressions
+Devide by zero

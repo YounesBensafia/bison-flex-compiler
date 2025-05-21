@@ -50,5 +50,7 @@ void optimiser_boucles();
 void optimiser_quadruplets();
 void nettoyer_quadruplets_triviaux();
 void afficher_qdr_apres_opti();
+void generer_code_objet();
+void eliminer_operations_neutres();
 
 #endif // QUAD_H
