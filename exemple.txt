@@ -1,22 +1,29 @@
 school
     DATA
+        § Variables de base
         INTEGER: max;
-        VECTOR: notes[0,10:INTEGER];         
-        STRING: nom1 | nom2 | nom3;               
-        CONST: COEF = 3.14;                     
-        VECTOR: places[5,6:CHAR];             
-        CHAR: lettre;
-        INTEGER: count | stud;
+        INTEGER: count | stud | total | i | j | temp | inutile;
         FLOAT: moy | coef | final;
-        INTEGER: total | i | j | temp | inutile;
+        CHAR: lettre;
+        STRING: nom1 | nom2 | nom3;
+
+        § Constante
+        CONST: COEF = 3.14;
+
+        § Tableaux
+        VECTOR: notes[0,10:INTEGER];
+        VECTOR: places[5,6:CHAR];
     END
 
     CODE
+        § Initialisation avec valeur morte
         lettre = 'B';
+        inutile = 0;
         temp = 0;
 
+        § Condition imbriquée avec redondance
         IF (max.LE.100):
-            IF (max.L.100):   
+            IF (max.L.100):
                 total = 50;
             ELSE:
                 total = 25;
@@ -25,6 +32,7 @@ school
             total = 50;
         END
 
+        § Autre condition avec branches identiques
         IF (count.GE.10):
             IF (count.GE.11):
                 total = 50;
@@ -34,23 +42,52 @@ school
         ELSE:
             total = 25;
         END
+
+        § Répétition inutile
         i = 2;
         i = 2;
         i = 2;
+
+        § Boucle simple avec lecture
         FOR (i : 1 : count+1)
             j = 2;
             moy = 0;
             moy = moy + 10;
-            READ ('%':@ moy);
+            READ ('%': @moy);
             stud = 30;
         END
+
         i = 2;
 
         count = 40;
         final = moy / 5;
+
         j = 2;
-        DISPLAY ("moyenne = %": moy);
+
+        § Expressions redondantes
+        temp = (count + 1) * 2;
+        inutile = (count + 1) * 2;
+        total = (count + 1) * 2;
+
+        final = (moy + coef) * 1.0;
+        moy = (moy + coef) * 1.0;
+
+
+        § Boucle imbriquée avec redondances
+        FOR (i : 0 : 4)
+            FOR (j : 0 : 4)
+                temp = i + j;
+                inutile = i + j;
+
+                § Affectation redondante
+                i = (i + j) * 2;
+                j = (i + j) * 2;
+
+                § Opérations neutres
+                total = total + 0;
+                stud = stud * 1;
+            END
+        END
         j = 2;
     END
-
 END
