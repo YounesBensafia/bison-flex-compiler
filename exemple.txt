@@ -34,7 +34,6 @@ school
             total = 50;
         END
 
-        § Autre condition avec branches identiques
         IF (count.GE.10):
             IF (count.GE.11):
                 total = 50;
@@ -59,6 +58,10 @@ school
             stud = 30;
         END
 
+
+        i = i + 1;
+        j = i + 6;
+        
         i = 2;
 
         count = 40;

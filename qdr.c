@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
+#include <stdbool.h>
 #define MAX_QUAD 1000
 #define MAX_STR 100
 
@@ -350,7 +350,7 @@ void eliminer_sous_expressions_communes() {
 
 int est_utilisee(char* var, int debut) {
     for (int i = debut; i < qc; i++) {
-        if (strcmp(quad[i].op1, var) == 0 || strcmp(quad[i].op2, var) == 0) {
+        if (strcmp(quad[i].op1, var) == 0 || strcmp(quad[i].op2, var) == 0 || strcmp(quad[i].res, var) == 0) {
             return 1;
         }
     }
@@ -360,7 +360,7 @@ int est_utilisee(char* var, int debut) {
 void eliminer_instructions_inutiles() {
     for (int i = 0; i < qc; i++) {
         if (quad[i].res[0] == '\0') continue;
-        if (!est_utilisee(quad[i].res, i + 1)) {
+        if (!est_utilisee(quad[i].res, i + 1) ) {
             printf("🗑️ Instruction inutile détectée à %d : %s ← %s %s %s\n", i, quad[i].res, quad[i].oper, quad[i].op1, quad[i].op2);
             quad[i].oper[0] = '\0';
             quad[i].op1[0] = '\0';
@@ -372,19 +372,17 @@ void eliminer_instructions_inutiles() {
 
 void eliminer_variables_induction() {
     for (int i = 0; i < qc - 1; i++) {
-        if (strcmp(quad[i].oper, "ADD") == 0 && strcmp(quad[i].res, quad[i].op1) == 0) {
+        if (strcmp(quad[i].oper, "+") == 0 && strcmp(quad[i].res, quad[i].op1) == 0) {
             // Ex : I = I + 1
             char var_induction[MAX_STR];
             char const1[MAX_STR];
             strcpy(var_induction, quad[i].op1);
             strcpy(const1, quad[i].op2);
 
-            if (strcmp(var_induction, quad[i].res) != 0) continue;
-
             for (int j = i + 1; j < qc; j++) {
-                if (strcmp(quad[j].oper, "ADD") == 0 &&
+                if (strcmp(quad[j].oper, "+") == 0 &&
                     strcmp(quad[j].op1, var_induction) == 0) {
-                    // Ex : J = I + 6 → devient J = (I+1)+6
+                    // Ex : J = I + 6 → devient J = (I+1)+6 = I+7
                     printf("🔁 Variable d'induction optimisée entre %d et %d\n", i, j);
 
                     // Fusion des constantes
@@ -393,17 +391,34 @@ void eliminer_variables_induction() {
                     int fusion = c1 + c2;
                     
                     // Modifier quad j
-                    snprintf(quad[j].op1, MAX_STR, "%s", var_induction);
                     snprintf(quad[j].op2, MAX_STR, "%d", fusion);
 
-                    // Supprimer l'instruction d'induction si plus utilisée
-                    if (!est_utilisee(quad[i].res, j + 1)) {
+                    // Supprimer l'instruction d'induction si plus utilisée après cette modification
+                    bool encore_utilisee = false;
+                    bool est_reaffectee = false;
+                    
+                    for (int k = j + 1; k < qc; k++) {
+                        // Vérifier si la variable est utilisée comme opérande
+                        if ((strcmp(quad[k].op1, var_induction) == 0) || 
+                            (strcmp(quad[k].op2, var_induction) == 0)) {
+                            encore_utilisee = true;
+                            break;
+                        }
+                        
+                        // Vérifier si la variable est réaffectée
+                        if (strcmp(quad[k].res, var_induction) == 0) {
+                            est_reaffectee = true;
+                            break;
+                        }
+                    }
+                    
+                    // Ne supprimer que si la variable n'est plus utilisée ou si elle est réaffectée
+                    if (!encore_utilisee || est_reaffectee) {
                         quad[i].oper[0] = '\0';
                         quad[i].op1[0] = '\0';
                         quad[i].op2[0] = '\0';
                         quad[i].res[0] = '\0';
                     }
-                    break;
                 }
             }
         }
@@ -425,6 +440,23 @@ int est_utilise_apres(int i_debut, char *nom) {
         }
     }
     return 0;
+}
+
+
+void eliminer_affectations_inutiles() {
+    for (int i = 0; i < qc; i++) {
+        char *res = quad[i].res;
+        if (strcmp(quad[i].oper, "=") == 0 && quad[i].op2[0] == '\0' && strcmp(quad[i].op1, res) == 0) {
+            
+
+            if (!est_utilise_apres(i, res)) {
+            quad[i].oper[0] = '\0';
+            quad[i].op1[0] = '\0';
+            quad[i].op2[0] = '\0';
+            quad[i].res[0] = '\0';
+            }
+        }
+    }
 }
 
 void eliminer_operations_neutres() {
@@ -526,14 +558,51 @@ void nettoyer_quadruplets_triviaux() {
     qc = j;
 }
 
+void eliminer_copies_expressives() {
+    for (int i = 0; i < qc - 1; i++) {
+        // Ex : t2 = a + b
+        if ((strcmp(quad[i].oper, "+") == 0 || strcmp(quad[i].oper, "-") == 0 ||
+             strcmp(quad[i].oper, "*") == 0 || strcmp(quad[i].oper, "/") == 0)) {
+            
+            char temp_result[MAX_STR];
+            strcpy(temp_result, quad[i].res);
+
+            for (int j = i + 1; j < qc; j++) {
+                // Ex : t3 = t2
+                if (strcmp(quad[j].oper, "=") == 0 && strcmp(quad[j].op1, temp_result) == 0) {
+                    printf("🔁 Copie supprimée entre lignes %d et %d (%s remplacé)\n", i, j, temp_result);
+
+                    // Modifier ligne j : remplacer t2 par a + b directement
+                    strcpy(quad[j].oper, quad[i].oper);
+                    strcpy(quad[j].op1, quad[i].op1);
+                    strcpy(quad[j].op2, quad[i].op2);
+
+                    // Résultat reste le même (quad[j].res)
+
+                    // Supprimer ligne i (ancienne op)
+                    quad[i].oper[0] = '\0';
+                    quad[i].op1[0] = '\0';
+                    quad[i].op2[0] = '\0';
+                    quad[i].res[0] = '\0';
+
+                    break;
+                }
+            }
+        }
+    }
+}
+
+
 
 
 void optimiser_quadruplets() {
     printf("\n🚀 Démarrage de l'optimisation...\n");
+    eliminer_instructions_inutiles();
+    eliminer_affectations_inutiles();
+    eliminer_copies_expressives();
     eliminer_operations_neutres();
     eliminer_sous_expressions_communes();
     eliminer_variables_induction();
-    eliminer_instructions_inutiles();
     optimiser_boucles();
     nettoyer_quadruplets_triviaux();
     printf("✅ Optimisation terminée.\n");
