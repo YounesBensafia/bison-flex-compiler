@@ -121,6 +121,12 @@ void afficher_qdr() {
     int row = 0;
     
     for (int i = 0; i < qc; i++) {
+        // Ignore lines where oper, op1, op2, res are all empty
+        if (quad[i].oper[0] == '\0' && quad[i].op1[0] == '\0' &&
+            quad[i].op2[0] == '\0' && quad[i].res[0] == '\0') {
+            continue;
+        }
+
         // Determine operation type for color coding
         const char *op_color = color_op_std;
         
@@ -309,12 +315,36 @@ void optimiser_boucles() {
 }
 
 
+void nettoyer_quadruplets_triviaux() {
+    int j = 0;
+    for (int i = 0; i < qc; i++) {
+        // Si ligne vide, on saute
+        if (quad[i].oper[0] == '\0') continue;
+
+        // Ignorer les identités triviales comme i = i
+        if (strcmp(quad[i].oper, "=") == 0 &&
+            strcmp(quad[i].op1, quad[i].res) == 0) {
+            printf("⚠️ Affectation triviale supprimée à %d : %s = %s\n", i, quad[i].res, quad[i].op1);
+            continue;
+        }
+
+        // Sinon, on garde
+        if (i != j) {
+            quad[j] = quad[i];
+        }
+        j++;
+    }
+    qc = j;
+}
+
+
 void optimiser_quadruplets() {
     printf("\n🚀 Démarrage de l'optimisation...\n");
     eliminer_sous_expressions_communes();
     eliminer_variables_induction();
     eliminer_instructions_inutiles();
     optimiser_boucles(); // si applicable
+    nettoyer_quadruplets_triviaux();
     printf("✅ Optimisation terminée.\n");
 }
 

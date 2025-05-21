@@ -48,6 +48,7 @@ void eliminer_variables_induction();
 int est_constant(char* var);
 void optimiser_boucles();
 void optimiser_quadruplets();
+void nettoyer_quadruplets_triviaux();
 
 
 #endif // QUAD_H
