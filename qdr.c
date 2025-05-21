@@ -258,7 +258,7 @@ void generer_code_objet() {
             snprintf(buffer, sizeof buffer, "JMP %s", a2);
         } else if (strcmp(op, "READ") == 0) {
             snprintf(buffer, sizeof buffer, "IN %s", a1);
-        } else if (strcmp(op, "WRITE") == 0 || strcmp(op, "PRINT") == 0) {
+        } else if (strcmp(op, "DISPLAY") == 0 || strcmp(op, "PRINT") == 0) {
             snprintf(buffer, sizeof buffer, "OUT %s", a1);
         } else if (strcmp(op, "ADEC") == 0) {
             snprintf(buffer, sizeof buffer, "DECL %s", a1);

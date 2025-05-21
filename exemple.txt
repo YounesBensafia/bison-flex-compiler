@@ -58,15 +58,15 @@ school
             stud = 30;
         END
 
-
         i = i + 1;
+        DISPLAY("La valeur de moyenne est %": moy);
         j = i + 6;
-        
+
         i = 2;
 
         count = 40;
         final = moy / 5;
-
+        
         j = 2;
 
 
