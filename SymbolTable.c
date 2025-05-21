@@ -80,7 +80,7 @@ void inserer(char entite[], char code[], char type[], float val, int y) {
             break;
         }
     }
-//
+
 void rechercher(char entite[], char code[], char type[], float val, int y) {
         unsigned int index = hash_function(entite);
         switch (y) {

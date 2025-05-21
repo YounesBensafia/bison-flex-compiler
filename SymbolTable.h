@@ -23,6 +23,7 @@ typedef struct elt {
     struct elt* next;
 } elt;
 
+//
 
 // Hash table sizes
 #define HASH_SIZE_IDF 1000
