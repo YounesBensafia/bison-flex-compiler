@@ -7,3 +7,4 @@ gcc -c lex.yy.c -o lexical.o
 gcc -o compilateur SymbolTable.o lexical.o parser.o qdr.o -lfl
 
 ./compilateur < exemple.txt
+./compilateur

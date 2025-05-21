@@ -109,4 +109,3 @@ DI      {nb_colonne = nb_colonne + yyleng; rechercher(yytext, "MC_DI", "Mot clé
 \n {nb_colonne=1; nb_ligne++;}
 
 §.* {nb_colonne=1; nb_ligne++;}
-

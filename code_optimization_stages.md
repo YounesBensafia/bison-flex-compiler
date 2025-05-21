@@ -16,7 +16,6 @@ J = I + 6;
 ```
 
 Après (si 'I' n'est pas utilisé dans le programme après) :
-
 ```c
 J = (I+1) + 6;
 ```
